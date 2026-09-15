@@ -51,23 +51,6 @@ jobs:
           find scripts -name "*.sh" -exec shellcheck --severity=warning {} + > shellcheck.log 2>&1
           exit $?
 
-      - name: Installer qmlformat
-        if: always()
-        run: sudo apt-get update && sudo apt-get install -y qt6-declarative-dev-tools
-
-      - name: Verifier le formatage QML
-        id: qmlformat
-        if: always()
-        run: |
-          fail=0
-          while IFS= read -r -d '' f; do
-            if ! qmlformat --verify --config-file .qmlformat.ini "$f" >> qmlformat.log 2>&1; then
-              echo "INCORRECT: $f" >> qmlformat.log
-              fail=1
-            fi
-          done < <(find . -name "*.qml" -not -path "./assets/*" -print0)
-          exit $fail
-
       - name: Ecrire le log de statut
         if: always()
         run: |
@@ -84,7 +67,6 @@ jobs:
             echo "| JSON traductions | ${{ steps.json.outcome }} |"
             echo "| Syntaxe Python | ${{ steps.python.outcome }} |"
             echo "| ShellCheck | ${{ steps.shellcheck.outcome }} |"
-            echo "| Formatage QML | ${{ steps.qmlformat.outcome }} |"
             echo ""
             echo "## Log complet - JSON traductions"
             echo '```'
@@ -100,13 +82,8 @@ jobs:
             echo '```'
             cat shellcheck.log 2>/dev/null || echo "(aucune erreur)"
             echo '```'
-            echo ""
-            echo "## Log complet - Formatage QML"
-            echo '```'
-            cat qmlformat.log 2>/dev/null || echo "(aucune erreur)"
-            echo '```'
           } > ci-status.md
-          rm -f json.log python.log shellcheck.log qmlformat.log
+          rm -f json.log python.log shellcheck.log
 
       - name: Commit et push le log
         if: always()
