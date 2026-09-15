@@ -1341,3 +1341,4 @@ INCORRECT: ./panelFamilies/IllogicalImpulseFamily.qml
 /home/runner/work/_temp/2f82cae8-b075-47fe-8d64-0aa948b67141.sh: line 3: qmlformat: command not found
 INCORRECT: ./panelFamilies/WaffleFamily.qml
 ```
+Test apres correction content-type - Tue Sep 15 07:04:16 UTC 2026
