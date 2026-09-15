@@ -21,12 +21,14 @@ jobs:
         id: json
         run: |
           fail=0
-          for f in translations/*.json; do
-            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
-              echo "::error file=$f::JSON invalide"
-              fail=1
-            fi
-          done
+          {
+            for f in translations/*.json; do
+              if ! python3 -m json.tool "$f" > /dev/null 2>>json.log; then
+                echo "INVALIDE: $f" >> json.log
+                fail=1
+              fi
+            done
+          }
           exit $fail
 
       - name: Verifier la syntaxe des scripts Python
@@ -35,8 +37,8 @@ jobs:
         run: |
           fail=0
           while IFS= read -r -d '' f; do
-            if ! python3 -m py_compile "$f" 2>&1; then
-              echo "::error file=$f::Erreur de syntaxe Python"
+            if ! python3 -m py_compile "$f" >> python.log 2>&1; then
+              echo "ERREUR: $f" >> python.log
               fail=1
             fi
           done < <(find scripts -name "*.py" -print0)
@@ -45,10 +47,9 @@ jobs:
       - name: ShellCheck sur les scripts shell
         id: shellcheck
         if: always()
-        uses: ludeeus/action-shellcheck@master
-        with:
-          scandir: './scripts'
-          severity: warning
+        run: |
+          find scripts -name "*.sh" -exec shellcheck --severity=warning {} + > shellcheck.log 2>&1
+          exit $?
 
       - name: Installer qmlformat
         if: always()
@@ -60,8 +61,8 @@ jobs:
         run: |
           fail=0
           while IFS= read -r -d '' f; do
-            if ! qmlformat --verify --config-file .qmlformat.ini "$f" 2>&1; then
-              echo "::error file=$f::Formatage QML incorrect"
+            if ! qmlformat --verify --config-file .qmlformat.ini "$f" >> qmlformat.log 2>&1; then
+              echo "INCORRECT: $f" >> qmlformat.log
               fail=1
             fi
           done < <(find . -name "*.qml" -not -path "./assets/*" -print0)
@@ -84,7 +85,28 @@ jobs:
             echo "| Syntaxe Python | ${{ steps.python.outcome }} |"
             echo "| ShellCheck | ${{ steps.shellcheck.outcome }} |"
             echo "| Formatage QML | ${{ steps.qmlformat.outcome }} |"
+            echo ""
+            echo "## Log complet - JSON traductions"
+            echo '```'
+            cat json.log 2>/dev/null || echo "(aucune erreur)"
+            echo '```'
+            echo ""
+            echo "## Log complet - Syntaxe Python"
+            echo '```'
+            cat python.log 2>/dev/null || echo "(aucune erreur)"
+            echo '```'
+            echo ""
+            echo "## Log complet - ShellCheck"
+            echo '```'
+            cat shellcheck.log 2>/dev/null || echo "(aucune erreur)"
+            echo '```'
+            echo ""
+            echo "## Log complet - Formatage QML"
+            echo '```'
+            cat qmlformat.log 2>/dev/null || echo "(aucune erreur)"
+            echo '```'
           } > ci-status.md
+          rm -f json.log python.log shellcheck.log qmlformat.log
 
       - name: Commit et push le log
         if: always()
