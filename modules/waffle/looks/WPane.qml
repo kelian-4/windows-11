@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Effects
 import Quickshell
 import qs
 import qs.services
@@ -44,20 +43,12 @@ Item {
         z: 0
 
         color: Looks.colors.bgPanelFooterBackground
+        radius: root.radius
         implicitWidth: contentItem.implicitWidth
         implicitHeight: contentItem.implicitHeight
         width: implicitWidth
         height: implicitHeight
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            maskEnabled: true
-            maskSource: Rectangle {
-                id: contentAreaMask
-                width: contentRect.width
-                height: contentRect.height
-                radius: root.radius - borderRect.border.width
-            }
-        }
+        clip: true
         children: [root.contentItem]
     }
 }
