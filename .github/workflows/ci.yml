@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Lint & validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Valider les fichiers JSON de traduction
+        run: |
+          fail=0
+          for f in translations/*.json; do
+            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+              echo "::error file=$f::JSON invalide"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Verifier la syntaxe des scripts Python
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! python3 -m py_compile "$f" 2>&1; then
+              echo "::error file=$f::Erreur de syntaxe Python"
+              fail=1
+            fi
+          done < <(find scripts -name "*.py" -print0)
+          exit $fail
+
+      - name: ShellCheck sur les scripts shell
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './scripts'
+          severity: warning
+
+      - name: Installer qmlformat
+        run: sudo apt-get update && sudo apt-get install -y qt6-declarative-dev-tools
+
+      - name: Verifier le formatage QML
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! qmlformat --verify --config-file .qmlformat.ini "$f" 2>&1; then
+              echo "::error file=$f::Formatage QML incorrect"
+              fail=1
+            fi
+          done < <(find . -name "*.qml" -not -path "./assets/*" -print0)
+          exit $fail
