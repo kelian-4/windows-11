@@ -5,8 +5,6 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.functions
 
-// Was a Kirigami.Icon. See FluentIcon.qml for why this uses a simple
-// brightness push instead of colorization/masking for isMask mode.
 Item {
     id: root
 
@@ -15,7 +13,7 @@ Item {
     property bool tryCustomIcon: true
     property string fallback: iconName
     property bool isMask: false
-    property bool animated: true // accepted for API compat; no fade implemented
+    property bool animated: true
 
     property real implicitSize: 26
     implicitWidth: implicitSize

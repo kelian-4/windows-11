@@ -13,9 +13,6 @@ Singleton {
     readonly property int fetchInterval: Config.options.bar.weather.fetchInterval * 60 * 1000
     readonly property string city: Config.options.bar.weather.city
     readonly property bool useUSCS: Config.options.bar.weather.useUSCS
-    // GPS-based location requires QtPositioning, which isn't available in
-    // this environment. Forced off — weather always falls back to the
-    // configured city name (root.city) instead.
     property bool gpsActive: false
 
     onUseUSCSChanged: {
@@ -104,10 +101,6 @@ Singleton {
         return cityName.trim().split(/\s+/).join('+');
     }
 
-    Component.onCompleted: {
-        // GPS support removed (needs QtPositioning) — nothing to start here.
-    }
-
     Process {
         id: fetcher
         command: ["bash", "-c", ""]
@@ -125,9 +118,6 @@ Singleton {
             }
         }
     }
-
-    // PositionSource (GPS) block removed — required QtPositioning, not
-    // available here. City-based fetch via the Timer below still works.
 
     Timer {
         running: !root.gpsActive

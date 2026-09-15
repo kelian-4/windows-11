@@ -72,11 +72,6 @@ Singleton {
         onLoadFailed: error => {
             if (error == FileViewError.FileNotFound) {
                 writeAdapter();
-                // Bug fix: writeAdapter() only writes the default config
-                // to disk, it doesn't trigger onLoaded — so `ready` was
-                // never set true on a genuinely fresh install (no config
-                // file yet), and every panel family stayed inactive
-                // forever with zero visible error. Set it here too.
                 root.ready = true;
             }
         }

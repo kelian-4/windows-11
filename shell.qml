@@ -34,14 +34,6 @@ ShellRoot {
 
 
     // Panel families
-    // NOTE: the "ii" family (modules/ii/*) has been dropped from this
-    // config entirely rather than kept-but-unused. Quickshell/QML
-    // type-checks everything reachable via `import`, even inside a
-    // LazyLoader's `component:` — so as long as `IllogicalImpulseFamily`
-    // was referenced anywhere below, its whole dependency tree (kirigami,
-    // and whatever else modules/ii/* pulls in) had to compile too, even
-    // though it never runs. Since only "waffle" is wanted here, the
-    // fastest fix is to stop referencing "ii" at all.
     property list<string> families: ["waffle"]
     function cyclePanelFamily() {
         const currentIndex = families.indexOf(Config.options.panelFamily)

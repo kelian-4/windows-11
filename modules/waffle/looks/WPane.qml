@@ -48,17 +48,16 @@ Item {
         implicitHeight: contentItem.implicitHeight
         width: implicitWidth
         height: implicitHeight
-        // --- TEMPORARY DEBUG: masking disabled to isolate the bug ---
-        // layer.enabled: true
-        // layer.effect: MultiEffect {
-        //     maskEnabled: true
-        //     maskSource: Rectangle {
-        //         id: contentAreaMask
-        //         width: contentRect.width
-        //         height: contentRect.height
-        //         radius: root.radius - borderRect.border.width
-        //     }
-        // }
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            maskEnabled: true
+            maskSource: Rectangle {
+                id: contentAreaMask
+                width: contentRect.width
+                height: contentRect.height
+                radius: root.radius - borderRect.border.width
+            }
+        }
         children: [root.contentItem]
     }
 }

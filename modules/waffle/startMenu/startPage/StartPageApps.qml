@@ -28,7 +28,7 @@ BodyRectangle {
         }
 
         AllApps {
-            implicitHeight: 220 // was 300
+            implicitHeight: 340
         }
     }
 

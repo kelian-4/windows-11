@@ -165,9 +165,6 @@ Button {
                 animation: Appearance?.animation.elementMoveFast.colorAnimation.createObject(this)
             }
 
-            // Simplified from a Qt5Compat RadialGradient (not available
-            // here) to a flat translucent circle — loses the soft
-            // fade-to-edge, keeps the ripple functional.
             Rectangle {
                 anchors.fill: parent
                 radius: width / 2
