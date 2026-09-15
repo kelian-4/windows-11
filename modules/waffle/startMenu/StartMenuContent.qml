@@ -85,7 +85,7 @@ WBarAttachedPanelContent {
             SearchBar {
                 id: searchBar
                 Layout.fillWidth: true
-                implicitWidth: 660 // was 832 — reference Win11 Start menu is ~660px wide
+                implicitWidth: 580 // was 660, was 832 originally
                 horizontalPadding: 32
                 // verticalPadding: root.searching ? 32 : 16 // TODO: make this not nuke the panel
                 Synchronizer on searching {
@@ -101,8 +101,12 @@ WBarAttachedPanelContent {
                 }
             }
             Item {
-                implicitHeight: 660 // was 800 — reference Win11 Start menu is ~760px tall total incl. search bar
+                implicitHeight: 520 // was 660, was 800 originally
                 Layout.fillWidth: true
+                clip: true // nothing clipped the loaded page before — it
+                           // could render taller than this box and spill
+                           // out past the panel instead of being
+                           // contained by it
                 Loader {
                     id: pageContentLoader
                     anchors.fill: parent

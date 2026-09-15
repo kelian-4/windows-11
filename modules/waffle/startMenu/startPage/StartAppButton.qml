@@ -18,17 +18,17 @@ WButton {
     property bool pinnedStart: LauncherApps.isPinned(root.desktopEntry.id);
     property bool pinnedTaskbar: TaskbarApps.isPinned(root.desktopEntry.id);
 
-    implicitWidth: 96
-    implicitHeight: 84
+    implicitWidth: 76
+    implicitHeight: 70
     horizontalPadding: 0
     verticalPadding: 0
     contentItem: ColumnLayout {
         spacing: 3
         WAppIcon {
-            Layout.topMargin: 12
+            Layout.topMargin: 8
             Layout.alignment: Qt.AlignHCenter
             iconName: root.desktopEntry.icon
-            implicitSize: 34
+            implicitSize: 28
             tryCustomIcon: false
         }
         WText {

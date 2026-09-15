@@ -16,19 +16,19 @@ BodyRectangle {
     ColumnLayout {
         anchors {
             fill: parent
-            leftMargin: 32
-            rightMargin: 32
-            topMargin: 25
-            bottomMargin: 30
+            leftMargin: 20
+            rightMargin: 20
+            topMargin: 16
+            bottomMargin: 20
         }
-        spacing: 26
+        spacing: 14
 
         PinnedApps {
             Layout.fillWidth: true
         }
 
         AllApps {
-            implicitHeight: 300 // for now
+            implicitHeight: 220 // was 300
         }
     }
 
@@ -37,7 +37,7 @@ BodyRectangle {
 
         BigAppGrid {
             Layout.fillWidth: true
-            columns: 8
+            columns: 6
             desktopEntries: Config.options.launcher.pinnedApps
                 .map(appId => DesktopEntries.byId(appId))
                 .filter(entry => entry !== null && entry !== undefined) // default pinned IDs (Arch/Flatpak-style names) rarely match what's actually installed on NixOS — drop the misses instead of crashing the grid

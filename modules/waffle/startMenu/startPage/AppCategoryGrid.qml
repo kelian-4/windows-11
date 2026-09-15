@@ -38,8 +38,8 @@ Rectangle {
     color: Looks.colors.bg1
     border.width: 1
     border.color: ColorUtils.transparentize(Looks.colors.ambientShadow, 0.7)
-    implicitWidth: 156
-    implicitHeight: 156
+    implicitWidth: 120
+    implicitHeight: 120
 
     GridLayout {
         id: categoryAppsGrid
