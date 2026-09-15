@@ -85,7 +85,7 @@ WBarAttachedPanelContent {
             SearchBar {
                 id: searchBar
                 Layout.fillWidth: true
-                implicitWidth: 580 // was 660, was 832 originally
+                implicitWidth: 580
                 horizontalPadding: 32
                 // verticalPadding: root.searching ? 32 : 16 // TODO: make this not nuke the panel
                 Synchronizer on searching {
@@ -101,7 +101,7 @@ WBarAttachedPanelContent {
                 }
             }
             Item {
-                implicitHeight: 520 // was 660, was 800 originally
+                implicitHeight: 580
                 Layout.fillWidth: true
                 clip: true // nothing clipped the loaded page before — it
                            // could render taller than this box and spill

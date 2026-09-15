@@ -8,9 +8,6 @@ import qs.modules.common.widgets
 import qs.modules.common.functions
 import qs.modules.waffle.looks
 
-// Was a Kirigami.Icon. `isMask: !root.icon` meant: show the app's real
-// icon in color when one is given, or fall back to a flat fg-colored
-// generic "apps" glyph when it isn't. Preserved below without kirigami.
 Item {
     id: root
 
@@ -45,8 +42,6 @@ Item {
                 ? `${Looks.iconsPath}/apps.svg`
                 : (root._iconLoadFailed ? Quickshell.iconPath(root.icon, "image-missing") : "")
 
-        // See FluentIcon.qml for why this is a simple brightness push
-        // rather than colorization/masking.
         layer.enabled: visible
         layer.effect: MultiEffect {
             brightness: ColorUtils.isDark(Looks.colors.fg) ? -1.0 : 1.0

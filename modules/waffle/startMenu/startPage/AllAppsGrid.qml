@@ -45,7 +45,7 @@ GridLayout {
         }
     }
 
-    columnSpacing: 27
+    columnSpacing: 16
     rowSpacing: 12
     component AppCategory: Item {
         id: categoryItem

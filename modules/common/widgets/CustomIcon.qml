@@ -26,8 +26,6 @@ Item {
         }
         implicitSize: root.height
 
-        // See FluentIcon.qml for why this is a simple brightness push
-        // rather than colorization/masking.
         layer.enabled: root.colorize
         layer.effect: MultiEffect {
             brightness: ColorUtils.isDark(root.color) ? -1.0 : 1.0

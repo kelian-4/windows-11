@@ -263,7 +263,7 @@ Rectangle {
                         required property DesktopEntry modelData
                         tryCustomIcon: false
                         iconName: modelData.icon
-                        implicitSize: 16
+                        implicitSize: 11
                     }
                 }
             }
@@ -294,7 +294,7 @@ Rectangle {
                 anchors.centerIn: parent
                 tryCustomIcon: false
                 iconName: smallGridAppButton.desktopEntry.icon
-                implicitSize: 34
+                implicitSize: 24
             }
         }
 
@@ -329,8 +329,8 @@ Rectangle {
 
     component SmallGridButton: WButton {
         id: root
-        implicitWidth: 68
-        implicitHeight: 68
+        implicitWidth: 46
+        implicitHeight: 46
 
         property real pressedScale: 5 / 6
 
