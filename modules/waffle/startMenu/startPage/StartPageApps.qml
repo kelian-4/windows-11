@@ -40,7 +40,7 @@ BodyRectangle {
             columns: 6
             desktopEntries: Config.options.launcher.pinnedApps
                 .map(appId => DesktopEntries.byId(appId))
-                .filter(entry => entry !== null && entry !== undefined) // default pinned IDs (Arch/Flatpak-style names) rarely match what's actually installed on NixOS — drop the misses instead of crashing the grid
+                .filter(entry => entry !== null && entry !== undefined)
         }
     }
 
@@ -51,8 +51,8 @@ BodyRectangle {
         AllAppsGrid {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.leftMargin: 32
-            Layout.rightMargin: 32
+            Layout.leftMargin: 0
+            Layout.rightMargin: 0
         }
     }
 
