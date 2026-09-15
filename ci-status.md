@@ -1341,3 +1341,4 @@ INCORRECT: ./panelFamilies/IllogicalImpulseFamily.qml
 /home/runner/work/_temp/54e69fe1-3036-4a36-8431-5cb5ef0f4c4e.sh: line 3: qmlformat: command not found
 INCORRECT: ./panelFamilies/WaffleFamily.qml
 ```
+Test avec PYTHONUNBUFFERED - Tue Sep 15 09:33:59 UTC 2026
