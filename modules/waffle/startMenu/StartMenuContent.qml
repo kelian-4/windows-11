@@ -15,7 +15,7 @@ import qs.modules.waffle.startMenu.searchPage
 WBarAttachedPanelContent {
     id: root
 
-    property bool searching: false
+    property bool searching: GlobalStates.searchOpenInSearchMode
     property string searchText: LauncherSearch.query
 
     StartMenuContext {

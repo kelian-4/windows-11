@@ -256,6 +256,7 @@ LockScreen {
             border.width: 2
             border.color: Looks.applyContentTransparency(Looks.darkColors.bg1Border)
             radius: Looks.radius.medium
+            clip: true
 
             Rectangle {
                 id: passwordInputBackground
@@ -343,16 +344,6 @@ LockScreen {
                 }
                 implicitHeight: 2
                 color: passwordInput.focus ? Looks.colors.accent : Looks.applyContentTransparency(Looks.darkColors.bg2Border)
-            }
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                maskEnabled: true
-                maskSource: Rectangle {
-                    width: passwordInputWrapper.width
-                    height: passwordInputWrapper.height
-                    radius: passwordInputWrapper.radius
-                }
             }
         }
 

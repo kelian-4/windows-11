@@ -29,20 +29,6 @@ BarButton {
         BackgroundAcrylicRectangle {
             id: mainBgRect
             anchors.fill: parent
-            layer.enabled: root.multiple
-            layer.effect: MultiEffect {
-            maskEnabled: true
-                maskInverted: true
-                maskSource: Item {
-                    width: mainBgRect.width
-                    height: mainBgRect.height
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.rightMargin: 3
-                        radius: mainBgRect.radius
-                    }
-                }
-            }
         }
         Loader {
             anchors.fill: parent

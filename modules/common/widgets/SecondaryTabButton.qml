@@ -96,16 +96,8 @@ TabButton {
         radius: Appearance?.rounding.normal
         implicitHeight: 42
         color: (root.hovered ? root.colBackgroundHover : root.colBackground)
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            maskEnabled: true
-            maskSource: Rectangle {
-                width: buttonBackground.width
-                height: buttonBackground.height
-                radius: buttonBackground.radius
-            }
-        }
-        
+        clip: true
+
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }

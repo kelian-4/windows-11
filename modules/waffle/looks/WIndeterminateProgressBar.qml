@@ -11,13 +11,5 @@ StyledIndeterminateProgressBar {
     id: progressBar
     implicitHeight: 3
     background: null
-    layer.enabled: true
-    layer.effect: MultiEffect {
-            maskEnabled: true
-        maskSource: Rectangle {
-            width: progressBar.width
-            height: progressBar.height
-            radius: progressBar.height / 2
-        }
-    }
+    clip: true
 }

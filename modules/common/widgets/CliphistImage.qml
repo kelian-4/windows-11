@@ -46,6 +46,7 @@ Rectangle {
     radius: Appearance.rounding.small
     implicitHeight: imageHeight * scale
     implicitWidth: imageWidth * scale
+    clip: true
 
     Component.onCompleted: {
         decodeImageProcess.running = true;
@@ -66,16 +67,6 @@ Rectangle {
 
     Component.onDestruction: {
         Quickshell.execDetached(["bash", "-c", `[ -f '${imageDecodeFilePath}' ] && rm -f '${imageDecodeFilePath}'`]);
-    }
-
-    layer.enabled: true
-    layer.effect: MultiEffect {
-        maskEnabled: true
-        maskSource: Rectangle {
-            width: image.width
-            height: image.height
-            radius: root.radius
-        }
     }
 
     StyledImage {

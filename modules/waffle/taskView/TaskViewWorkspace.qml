@@ -69,16 +69,8 @@ WMouseAreaButton {
             Layout.fillHeight: true
             Layout.fillWidth: true
             color: Looks.colors.bg1
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-            maskEnabled: true
-                maskSource: Rectangle {
-                    width: wsBg.width
-                    height: wsBg.height
-                    radius: Looks.radius.medium
-                }
-            }
+            radius: Looks.radius.medium
+            clip: true
 
             // Workspace content
             Loader {
