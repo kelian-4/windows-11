@@ -35,7 +35,7 @@ BodyRectangle {
     component PinnedApps: PageSection {
         title: Translation.tr("Pinned")
         showLink: true
-        linkText: (showAllApps ? Translation.tr("Show less") + "  ^" : Translation.tr("Show all") + "  >")
+        linkText: (showAllApps ? Translation.tr("Show less") + "  <" : Translation.tr("Show all") + "  >")
         onLinkClicked: showAllApps = !showAllApps
 
         property bool showAllApps: false
