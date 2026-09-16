@@ -42,7 +42,7 @@ Item {
         anchors.centerIn: parent
         z: 0
 
-        color: Looks.colors.bgPanelFooterBackground
+        color: Looks.colors.bgPanelBody
         radius: root.radius
         implicitWidth: contentItem.implicitWidth
         implicitHeight: contentItem.implicitHeight
