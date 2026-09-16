@@ -110,7 +110,7 @@ WBarAttachedPanelContent {
                 Loader {
                     id: pageContentLoader
                     anchors.fill: parent
-                    sourceComponent: root.searching ? searchPageComp : startPageComp
+                    sourceComponent: (root.searching || GlobalStates.searchOpenInSearchMode) ? searchPageComp : startPageComp
                 }
             }
         }

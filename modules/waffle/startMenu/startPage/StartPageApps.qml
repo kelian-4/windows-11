@@ -35,7 +35,7 @@ BodyRectangle {
     component PinnedApps: PageSection {
         title: Translation.tr("Pinned")
         showLink: true
-        linkText: Translation.tr("Show all") + "  >"
+        linkText: (showAllApps ? Translation.tr("Show less") + "  ^" : Translation.tr("Show all") + "  >")
         onLinkClicked: showAllApps = !showAllApps
 
         property bool showAllApps: false
@@ -43,7 +43,11 @@ BodyRectangle {
         BigAppGrid {
             Layout.fillWidth: true
             columns: 6
-            visible: !showAllApps
+            opacity: showAllApps ? 0 : 1
+            visible: opacity > 0
+            Behavior on opacity {
+                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+            }
             desktopEntries: Config.options.launcher.pinnedApps
                 .map(appId => DesktopEntries.byId(appId))
                 .filter(entry => entry !== null && entry !== undefined)
@@ -51,8 +55,12 @@ BodyRectangle {
 
         ColumnLayout {
             Layout.fillWidth: true
-            visible: showAllApps
+            opacity: showAllApps ? 1 : 0
+            visible: opacity > 0
             spacing: 0
+            Behavior on opacity {
+                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+            }
 
             Repeater {
                 model: [...DesktopEntries.applications.values].sort((a, b) => (a.name || "").localeCompare(b.name || ""))
@@ -75,14 +83,19 @@ BodyRectangle {
         }
 
         contentItem: RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 12
+            anchors.rightMargin: 12
             spacing: 12
-            anchors.leftMargin: 8
             WAppIcon {
+                Layout.alignment: Qt.AlignVCenter
                 iconName: listRow.desktopEntry.icon
                 implicitSize: 20
                 tryCustomIcon: false
             }
             WText {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
                 text: listRow.desktopEntry.name
                 elide: Text.ElideRight
             }
