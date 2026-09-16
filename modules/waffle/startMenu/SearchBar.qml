@@ -27,7 +27,7 @@ FooterRectangle {
     }
 
     focus: true
-    color: searching ? Looks.colors.bgPanelBody : Looks.colors.bgPanelFooter
+    color: Looks.colors.bgPanelBody
 
     Behavior on horizontalPadding {
         enabled: Config.options.waffles.tweaks.smootherSearchBar

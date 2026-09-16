@@ -13,9 +13,14 @@ AppButton {
     implicitWidth: expandedForm ? 148 : (height - topInset - bottomInset + leftInset + rightInset)
     iconName: "widgets"
 
-    checked: GlobalStates.sidebarLeftOpen
+    checked: false
     onClicked: {
-        GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen
+        // No "Widgets" panel exists in this Waffle port yet (not in
+        // panelFamilies/WaffleFamily.qml's PanelLoader list) — this used
+        // to incorrectly reuse GlobalStates.sidebarLeftOpen, which is
+        // actually Quick Settings' state (see SystemButton.qml), so
+        // clicking here opened Quick Settings under the wrong label.
+        // Left as a no-op until a real Widgets panel is built.
     }
     onDownChanged: {
         scaleAnim.duration = root.down ? 150 : 200

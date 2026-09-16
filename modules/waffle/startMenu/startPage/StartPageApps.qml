@@ -34,11 +34,16 @@ BodyRectangle {
 
     component PinnedApps: PageSection {
         title: Translation.tr("Pinned")
+        showLink: true
+        linkText: Translation.tr("Show all") + "  >"
+        onLinkClicked: showAllApps = !showAllApps
+
+        property bool showAllApps: false
 
         BigAppGrid {
             Layout.fillWidth: true
             columns: 6
-            desktopEntries: Config.options.launcher.pinnedApps
+            desktopEntries: showAllApps ? DesktopEntries.applications.values : Config.options.launcher.pinnedApps
                 .map(appId => DesktopEntries.byId(appId))
                 .filter(entry => entry !== null && entry !== undefined)
         }
@@ -59,15 +64,40 @@ BodyRectangle {
     component PageSection: ColumnLayout {
         id: pageSection
         required property string title
+        property bool showLink: false
+        property string linkText: ""
+        signal linkClicked
         default property alias pageData: pageSectionContentArea.data
 
         spacing: 16
 
-        WText {
+        RowLayout {
             Layout.leftMargin: 32
-            text: pageSection.title
-            font.pixelSize: Looks.font.pixelSize.large
-            font.weight: Looks.font.weight.stronger
+            Layout.rightMargin: 32
+            Layout.fillWidth: true
+
+            WText {
+                text: pageSection.title
+                font.pixelSize: Looks.font.pixelSize.large
+                font.weight: Looks.font.weight.stronger
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+
+            WText {
+                visible: pageSection.showLink
+                text: pageSection.linkText
+                color: Looks.colors.accentUnfocused
+                font.pixelSize: Looks.font.pixelSize.normal
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: pageSection.linkClicked()
+                }
+            }
         }
 
         ColumnLayout {
