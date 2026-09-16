@@ -87,16 +87,7 @@ PopupWindow {
             }
             color: Looks.colors.bg1Base
             radius: Looks.radius.large
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-            maskEnabled: true
-                maskSource: Rectangle {
-                    width: contentItem.width
-                    height: contentItem.height
-                    radius: contentItem.radius
-                }
-            }
+            clip: true
 
             // Testing
             implicitHeight: Math.min(158, windowsRow.implicitHeight)

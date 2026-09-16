@@ -135,20 +135,11 @@ Button {
         id: buttonBackground
         radius: root.buttonEffectiveRadius
         implicitHeight: 30
+        clip: true
 
         color: root.buttonColor
         Behavior on color {
             animation: Appearance?.animation.elementMoveFast.colorAnimation.createObject(this)
-        }
-
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            maskEnabled: true
-            maskSource: Rectangle {
-                width: buttonBackground.width
-                height: buttonBackground.height
-                radius: root.buttonEffectiveRadius
-            }
         }
 
         Item {

@@ -99,21 +99,6 @@ Rectangle {
             Layout.preferredHeight: trackInfo.implicitHeight
             source: MprisController.activeTrack?.artUrl || ""
             fillMode: Image.PreserveAspectFit
-
-            layer.enabled: true
-            layer.effect: MultiEffect {
-            maskEnabled: true
-                maskSource: Item {
-                    width: artImage.width
-                    height: artImage.height
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: artImage.paintedWidth
-                        height: artImage.paintedHeight
-                        radius: Looks.radius.medium
-                    }
-                }
-            }
         }
     }
 

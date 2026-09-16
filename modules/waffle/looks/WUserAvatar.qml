@@ -17,12 +17,4 @@ StyledImage {
     sourceSize: Qt.size(32, 32)
     source: Directories.userAvatarPathAccountsService
     fallbacks: [Directories.userAvatarPathRicersAndWeirdSystems, Directories.userAvatarPathRicersAndWeirdSystems2]
-
-    layer.enabled: true
-    layer.effect: MultiEffect {
-            maskEnabled: true
-        maskSource: Circle {
-            diameter: avatar.height
-        }
-    }
 }

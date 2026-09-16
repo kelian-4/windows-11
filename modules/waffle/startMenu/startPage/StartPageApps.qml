@@ -43,9 +43,49 @@ BodyRectangle {
         BigAppGrid {
             Layout.fillWidth: true
             columns: 6
-            desktopEntries: showAllApps ? DesktopEntries.applications.values : Config.options.launcher.pinnedApps
+            visible: !showAllApps
+            desktopEntries: Config.options.launcher.pinnedApps
                 .map(appId => DesktopEntries.byId(appId))
                 .filter(entry => entry !== null && entry !== undefined)
+        }
+
+        ColumnLayout {
+            Layout.fillWidth: true
+            visible: showAllApps
+            spacing: 0
+
+            Repeater {
+                model: [...DesktopEntries.applications.values].sort((a, b) => (a.name || "").localeCompare(b.name || ""))
+                delegate: StartAppListRow {
+                    required property DesktopEntry modelData
+                    Layout.fillWidth: true
+                    desktopEntry: modelData
+                }
+            }
+        }
+    }
+
+    component StartAppListRow: WButton {
+        id: listRow
+        required property DesktopEntry desktopEntry
+        implicitHeight: 40
+        onClicked: {
+            GlobalStates.searchOpen = false;
+            desktopEntry.execute();
+        }
+
+        contentItem: RowLayout {
+            spacing: 12
+            anchors.leftMargin: 8
+            WAppIcon {
+                iconName: listRow.desktopEntry.icon
+                implicitSize: 20
+                tryCustomIcon: false
+            }
+            WText {
+                text: listRow.desktopEntry.name
+                elide: Text.ElideRight
+            }
         }
     }
 
@@ -89,7 +129,7 @@ BodyRectangle {
             WText {
                 visible: pageSection.showLink
                 text: pageSection.linkText
-                color: Looks.colors.accentUnfocused
+                color: "white"
                 font.pixelSize: Looks.font.pixelSize.normal
 
                 MouseArea {

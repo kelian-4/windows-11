@@ -16,6 +16,8 @@ AppButton {
 
     checked: GlobalStates.searchOpen && LauncherSearch.query === ""
     onClicked: {
+        if (!GlobalStates.searchOpen)
+            GlobalStates.searchOpenInSearchMode = false;
         GlobalStates.searchOpen = !GlobalStates.searchOpen;
     }
 

@@ -36,22 +36,7 @@ WMouseAreaButton {
     property size size: scaleSize ? openedSize : fullSize
     implicitWidth: Math.max(Math.round(contentItem.implicitWidth), 138)
     implicitHeight: Math.round(contentItem.implicitHeight)
-
-    layer.enabled: true
-    layer.effect: MultiEffect {
-            maskEnabled: true
-        maskSource: Item {
-            width: root.background.width
-            height: root.background.height
-            Rectangle {
-                radius: root.background.radius
-                anchors {
-                    fill: parent
-                    topMargin: root.drag.active ? root.titleBarImplicitHeight : 0
-                }
-            }
-        }
-    }
+    clip: true
     property bool droppable: false
     scale: (root.pressedButtons & Qt.LeftButton || root.Drag.active) ? (droppable ? 0.4 : 0.95) : 1
     Behavior on scale {

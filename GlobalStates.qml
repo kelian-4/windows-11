@@ -21,6 +21,12 @@ Singleton {
     property bool overviewOpen: false
     property bool regionSelectorOpen: false
     property bool searchOpen: false
+    // Set right before opening searchOpen, so the Start Menu knows
+    // whether it should come up already in search mode (clicked the
+    // magnifying glass) or in the normal pinned/all-apps view (clicked
+    // Start) - both toggle the same searchOpen panel, this just picks
+    // which page it opens on.
+    property bool searchOpenInSearchMode: false
     property bool screenLocked: false
     property bool screenLockContainsCharacters: false
     property bool screenUnlockFailed: false
