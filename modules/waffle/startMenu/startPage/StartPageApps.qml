@@ -36,38 +36,45 @@ BodyRectangle {
         title: Translation.tr("Pinned")
         showLink: true
         linkText: (showAllApps ? Translation.tr("Show less") + "  <" : Translation.tr("Show all") + "  >")
-        onLinkClicked: showAllApps = !showAllApps
+        onLinkClicked: {
+            showAllApps = !showAllApps;
+            if (showAllApps)
+                pinnedStack.push(allAppsListComp);
+            else
+                pinnedStack.pop();
+        }
 
         property bool showAllApps: false
 
-        BigAppGrid {
+        WStackView {
+            id: pinnedStack
             Layout.fillWidth: true
-            columns: 6
-            opacity: showAllApps ? 0 : 1
-            visible: opacity > 0
-            Behavior on opacity {
-                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-            }
-            desktopEntries: Config.options.launcher.pinnedApps
-                .map(appId => DesktopEntries.byId(appId))
-                .filter(entry => entry !== null && entry !== undefined)
+            implicitHeight: currentItem ? currentItem.implicitHeight : 0
+            initialItem: pinnedGridComp
         }
 
-        ColumnLayout {
-            Layout.fillWidth: true
-            opacity: showAllApps ? 1 : 0
-            visible: opacity > 0
-            spacing: 0
-            Behavior on opacity {
-                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+        Component {
+            id: pinnedGridComp
+            BigAppGrid {
+                columns: 6
+                desktopEntries: Config.options.launcher.pinnedApps
+                    .map(appId => DesktopEntries.byId(appId))
+                    .filter(entry => entry !== null && entry !== undefined)
             }
+        }
 
-            Repeater {
-                model: [...DesktopEntries.applications.values].sort((a, b) => (a.name || "").localeCompare(b.name || ""))
-                delegate: StartAppListRow {
-                    required property DesktopEntry modelData
-                    Layout.fillWidth: true
-                    desktopEntry: modelData
+        Component {
+            id: allAppsListComp
+            ColumnLayout {
+                spacing: 0
+
+                Repeater {
+                    model: [...DesktopEntries.applications.values].sort((a, b) => (a.name || "").localeCompare(b.name || ""))
+                    delegate: StartAppListRow {
+                        required property DesktopEntry modelData
+                        Layout.fillWidth: true
+                        desktopEntry: modelData
+                    }
                 }
             }
         }
