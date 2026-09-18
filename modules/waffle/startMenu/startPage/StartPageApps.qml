@@ -34,78 +34,13 @@ BodyRectangle {
 
     component PinnedApps: PageSection {
         title: Translation.tr("Pinned")
-        showLink: true
-        linkText: (showAllApps ? Translation.tr("Show less") + "  <" : Translation.tr("Show all") + "  >")
-        onLinkClicked: {
-            showAllApps = !showAllApps;
-            if (showAllApps)
-                pinnedStack.push(allAppsListComp);
-            else
-                pinnedStack.pop();
-        }
 
-        property bool showAllApps: false
-
-        WStackView {
-            id: pinnedStack
+        BigAppGrid {
             Layout.fillWidth: true
-            implicitHeight: currentItem ? currentItem.implicitHeight : 0
-            initialItem: pinnedGridComp
-        }
-
-        Component {
-            id: pinnedGridComp
-            BigAppGrid {
-                columns: 6
-                desktopEntries: Config.options.launcher.pinnedApps
-                    .map(appId => DesktopEntries.byId(appId))
-                    .filter(entry => entry !== null && entry !== undefined)
-            }
-        }
-
-        Component {
-            id: allAppsListComp
-            ColumnLayout {
-                spacing: 0
-
-                Repeater {
-                    model: [...DesktopEntries.applications.values].sort((a, b) => (a.name || "").localeCompare(b.name || ""))
-                    delegate: StartAppListRow {
-                        required property DesktopEntry modelData
-                        Layout.fillWidth: true
-                        desktopEntry: modelData
-                    }
-                }
-            }
-        }
-    }
-
-    component StartAppListRow: WButton {
-        id: listRow
-        required property DesktopEntry desktopEntry
-        implicitHeight: 40
-        onClicked: {
-            GlobalStates.searchOpen = false;
-            desktopEntry.execute();
-        }
-
-        contentItem: RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 12
-            WAppIcon {
-                Layout.alignment: Qt.AlignVCenter
-                iconName: listRow.desktopEntry.icon
-                implicitSize: 20
-                tryCustomIcon: false
-            }
-            WText {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignVCenter
-                text: listRow.desktopEntry.name
-                elide: Text.ElideRight
-            }
+            desktopEntries: Config.options.launcher.pinnedApps
+                .map(appId => DesktopEntries.byId(appId))
+                .filter(entry => entry !== null && entry !== undefined)
+            columns: Math.max(1, Math.min(6, desktopEntries.length))
         }
     }
 
@@ -124,40 +59,15 @@ BodyRectangle {
     component PageSection: ColumnLayout {
         id: pageSection
         required property string title
-        property bool showLink: false
-        property string linkText: ""
-        signal linkClicked
         default property alias pageData: pageSectionContentArea.data
 
         spacing: 16
 
-        RowLayout {
+        WText {
             Layout.leftMargin: 32
-            Layout.rightMargin: 32
-            Layout.fillWidth: true
-
-            WText {
-                text: pageSection.title
-                font.pixelSize: Looks.font.pixelSize.large
-                font.weight: Looks.font.weight.stronger
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            WText {
-                visible: pageSection.showLink
-                text: pageSection.linkText
-                color: "white"
-                font.pixelSize: Looks.font.pixelSize.normal
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: pageSection.linkClicked()
-                }
-            }
+            text: pageSection.title
+            font.pixelSize: Looks.font.pixelSize.large
+            font.weight: Looks.font.weight.stronger
         }
 
         ColumnLayout {
