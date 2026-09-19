@@ -94,6 +94,9 @@ WMouseAreaButton {
                             height: hyprlandWindowData?.size[1] * root.windowScale
                             x: hyprlandWindowData?.at[0] * root.windowScale
                             y: hyprlandWindowData?.at[1] * root.windowScale
+
+                            onHasContentChanged: console.log("[DEBUG TaskViewWorkspace] hasContent:", hasContent, "for", modelData)
+                            Component.onCompleted: console.log("[DEBUG TaskViewWorkspace] created, captureSource:", modelData, "hasContent:", hasContent)
                         }
                     }
                 }

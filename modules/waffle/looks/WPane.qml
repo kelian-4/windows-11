@@ -43,6 +43,8 @@ Item {
         z: 0
 
         color: Looks.colors.bgPanelBody
+        onColorChanged: console.log("[DEBUG WPane] color changed to:", color, "transparencyEnabled:", Looks.transparencyEnabled)
+        Component.onCompleted: console.log("[DEBUG WPane] created, color:", color, "opacity:", opacity)
         radius: root.radius
         implicitWidth: contentItem.implicitWidth
         implicitHeight: contentItem.implicitHeight
