@@ -87,6 +87,10 @@ Button {
                 live: true
                 paintCursor: true
                 constraintSize: Qt.size(root.previewWidthConstraint, root.previewHeightConstraint)
+
+                onCaptureSourceChanged: console.log("[DEBUG WindowPreview] captureSource set:", captureSource, "toplevel:", root.toplevel)
+                onHasContentChanged: console.log("[DEBUG WindowPreview] hasContent:", hasContent, "sourceSize:", sourceSize, "for toplevel:", root.toplevel)
+                Component.onCompleted: console.log("[DEBUG WindowPreview] created, captureSource:", captureSource, "hasContent:", hasContent)
             }
         }
     }
