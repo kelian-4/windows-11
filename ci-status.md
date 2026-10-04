@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: 9e64e4a4e7ff5376d0a7447af6a73da15fc15ea9
+Commit: 96e2f198e56880f71ae30f112a74ac587325ba6d
 Branche: dev
-Date: 2026-09-19 01:31:15 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/35412898741
+Date: 2026-10-04 08:30:58 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/37189164866
 
 | Etape | Resultat |
 |---|---|
@@ -23,66 +23,6 @@ scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: invalid escape sequence 
 
 ## Log complet - ShellCheck
 ```
-
-In scripts/keyring/unlock.sh line 19:
-eval $(echo -n "${UNLOCK_PASSWORD}" \
-     ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/images/find-regions-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/images/text-color-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/images/least-busy-region-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/colors/random/random_konachan_wall.sh line 12:
-        pictures_path=$(source "$config_file" >/dev/null 2>&1; echo "$XDG_PICTURES_DIR")
-                               ^------------^ SC1090 (warning): ShellCheck can't follow non-constant source. Use a directive to specify location.
-
-
-In scripts/colors/random/random_konachan_wall.sh line 25:
-CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
-^--------^ SC2034 (warning): CONFIG_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/random/random_konachan_wall.sh line 26:
-CACHE_DIR="$XDG_CACHE_HOME/quickshell"
-^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/random/random_konachan_wall.sh line 27:
-STATE_DIR="$XDG_STATE_HOME/quickshell"
-^-------^ SC2034 (warning): STATE_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/random/random_osu_wall.sh line 12:
-        pictures_path=$(source "$config_file" >/dev/null 2>&1; echo "$XDG_PICTURES_DIR")
-                               ^------------^ SC1090 (warning): ShellCheck can't follow non-constant source. Use a directive to specify location.
-
-
-In scripts/colors/random/random_osu_wall.sh line 25:
-CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
-^--------^ SC2034 (warning): CONFIG_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/random/random_osu_wall.sh line 26:
-CACHE_DIR="$XDG_CACHE_HOME/quickshell"
-^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/random/random_osu_wall.sh line 27:
-STATE_DIR="$XDG_STATE_HOME/quickshell"
-^-------^ SC2034 (warning): STATE_DIR appears unused. Verify use (or export if used externally).
-
 
 In scripts/colors/applycolor.sh line 8:
 CACHE_DIR="$XDG_CACHE_HOME/quickshell"
@@ -147,6 +87,66 @@ In scripts/colors/switchwall.sh line 450:
 In scripts/colors/switchwall.sh line 451:
         local imgbase="$(basename "$imgpath")"
               ^-----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
+
+
+In scripts/colors/random/random_konachan_wall.sh line 12:
+        pictures_path=$(source "$config_file" >/dev/null 2>&1; echo "$XDG_PICTURES_DIR")
+                               ^------------^ SC1090 (warning): ShellCheck can't follow non-constant source. Use a directive to specify location.
+
+
+In scripts/colors/random/random_konachan_wall.sh line 25:
+CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
+^--------^ SC2034 (warning): CONFIG_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/random/random_konachan_wall.sh line 26:
+CACHE_DIR="$XDG_CACHE_HOME/quickshell"
+^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/random/random_konachan_wall.sh line 27:
+STATE_DIR="$XDG_STATE_HOME/quickshell"
+^-------^ SC2034 (warning): STATE_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/random/random_osu_wall.sh line 12:
+        pictures_path=$(source "$config_file" >/dev/null 2>&1; echo "$XDG_PICTURES_DIR")
+                               ^------------^ SC1090 (warning): ShellCheck can't follow non-constant source. Use a directive to specify location.
+
+
+In scripts/colors/random/random_osu_wall.sh line 25:
+CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
+^--------^ SC2034 (warning): CONFIG_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/random/random_osu_wall.sh line 26:
+CACHE_DIR="$XDG_CACHE_HOME/quickshell"
+^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/random/random_osu_wall.sh line 27:
+STATE_DIR="$XDG_STATE_HOME/quickshell"
+^-------^ SC2034 (warning): STATE_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/keyring/unlock.sh line 19:
+eval $(echo -n "${UNLOCK_PASSWORD}" \
+     ^-- SC2046 (warning): Quote this to prevent word splitting.
+
+
+In scripts/images/least-busy-region-venv.sh line 4:
+source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
+       ^-- SC2046 (warning): Quote this to prevent word splitting.
+
+
+In scripts/images/text-color-venv.sh line 4:
+source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
+       ^-- SC2046 (warning): Quote this to prevent word splitting.
+
+
+In scripts/images/find-regions-venv.sh line 4:
+source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
+       ^-- SC2046 (warning): Quote this to prevent word splitting.
 
 
 In scripts/thumbnails/thumbgen-venv.sh line 4:
