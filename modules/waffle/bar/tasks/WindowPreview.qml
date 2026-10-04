@@ -78,19 +78,16 @@ Button {
             Layout.margins: Looks.radius.large - root.padding
             Layout.topMargin: 0
             implicitWidth: Math.max(screencopyView.implicitWidth, 80)
-            implicitHeight: screencopyView.implicitHeight
+            implicitHeight: Math.max(screencopyView.implicitHeight, root.previewHeightConstraint)
 
             ScreencopyView {
                 id: screencopyView
                 anchors.centerIn: parent
+                width: root.previewWidthConstraint
+                height: root.previewHeightConstraint
                 captureSource: root.toplevel
                 live: true
-                paintCursor: true
                 constraintSize: Qt.size(root.previewWidthConstraint, root.previewHeightConstraint)
-
-                onCaptureSourceChanged: console.log("[DEBUG WindowPreview] captureSource set:", captureSource, "toplevel:", root.toplevel)
-                onHasContentChanged: console.log("[DEBUG WindowPreview] hasContent:", hasContent, "sourceSize:", sourceSize, "for toplevel:", root.toplevel)
-                Component.onCompleted: console.log("[DEBUG WindowPreview] created, captureSource:", captureSource, "hasContent:", hasContent)
             }
         }
     }
