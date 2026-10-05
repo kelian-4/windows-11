@@ -116,10 +116,6 @@ WMouseAreaButton {
 
             captureSource: root.toplevel ?? null
             live: true
-
-            onCaptureSourceChanged: console.log("[DEBUG TaskViewWindow] captureSource set:", captureSource, "toplevel:", root.toplevel)
-            onHasContentChanged: console.log("[DEBUG TaskViewWindow] hasContent:", hasContent, "sourceSize:", sourceSize, "for toplevel:", root.toplevel)
-            Component.onCompleted: console.log("[DEBUG TaskViewWindow] created, captureSource:", captureSource, "hasContent:", hasContent)
         }
     }
 

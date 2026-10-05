@@ -92,13 +92,17 @@ RowLayout {
         // We can't use a ScriptModel here because it would mess up sections
         model: {
             const allResults = LauncherSearch.results;
+            const showingEverything = LauncherSearch.query === "";
+            const perCategoryLimit = showingEverything ? Infinity : root.maxResultsPerCategory;
+            const totalLimit = showingEverything ? Infinity : root.resultLimit;
+
             // Find categories
             var categories = new Set();
             for (let i = 0; i < allResults.length; i++) {
                 categories.add(allResults[i].type);
             }
 
-            // Collect max 4 per category
+            // Collect max 4 per category (no cap when showing everything with no query typed)
             var categorizedResults = [];
             let categoriesArray = Array.from(categories);
             let totalCount = 0;
@@ -107,22 +111,22 @@ RowLayout {
                 let count = 0;
                 for (let i = 0; i < allResults.length; i++) {
                     if (allResults[i].type === category) {
-                        if (totalCount >= root.resultLimit) {
+                        if (totalCount >= totalLimit) {
                             break;
                         }
                         const entry = allResults[i];
                         const tweakedEntry = searchResultComp.createObject(null, Object.assign({}, entry));
-                        tweakedEntry.category = categorizedResults.length === 0 ? Translation.tr("Best match") : entry.type;
+                        tweakedEntry.category = (!showingEverything && categorizedResults.length === 0) ? Translation.tr("Best match") : entry.type;
 
                         categorizedResults.push(tweakedEntry); // Section header
                         count++;
                         totalCount++;
-                        if (count >= root.maxResultsPerCategory) {
+                        if (count >= perCategoryLimit) {
                             break;
                         }
                     }
                 }
-                if (totalCount >= root.resultLimit) {
+                if (totalCount >= totalLimit) {
                     break;
                 }
             }

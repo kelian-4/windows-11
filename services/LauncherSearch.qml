@@ -166,9 +166,59 @@ Singleton {
 
     property list<var> results: {
         // Search results are handled here
-        ////////////////// Skip? //////////////////
-        if (root.query == "")
-            return [];
+        ////////////// Nothing typed yet //////////////
+        // Show everything, alphabetically: apps first, then actions
+        if (root.query == "") {
+            const allAppObjects = [...AppSearch.list].sort((a, b) => a.name.localeCompare(b.name)).map(entry => {
+                return resultComp.createObject(null, {
+                    type: Translation.tr("App"),
+                    id: entry.id,
+                    name: entry.name,
+                    iconName: entry.icon,
+                    iconType: LauncherSearchResult.IconType.System,
+                    verb: Translation.tr("Open"),
+                    execute: () => {
+                        if (!entry.runInTerminal)
+                            entry.execute();
+                        else {
+                            Quickshell.execDetached(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(entry.command.join(' '))}'`]);
+                        }
+                    },
+                    comment: entry.comment,
+                    runInTerminal: entry.runInTerminal,
+                    genericName: entry.genericName,
+                    keywords: entry.keywords,
+                    actions: entry.actions.map(action => {
+                        return resultComp.createObject(null, {
+                            name: action.name,
+                            iconName: action.icon,
+                            iconType: LauncherSearchResult.IconType.System,
+                            execute: () => {
+                                if (!action.runInTerminal)
+                                    action.execute();
+                                else {
+                                    Quickshell.execDetached(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(action.command.join(' '))}'`]);
+                                }
+                            }
+                        });
+                    })
+                });
+            });
+            const allActionObjects = [...root.allActions].sort((a, b) => a.action.localeCompare(b.action)).map(action => {
+                const actionString = `${Config.options.search.prefix.action}${action.action}`;
+                return resultComp.createObject(null, {
+                    name: actionString,
+                    verb: Translation.tr("Run"),
+                    type: Translation.tr("Action"),
+                    iconName: 'settings_suggest',
+                    iconType: LauncherSearchResult.IconType.Material,
+                    execute: () => {
+                        action.execute("");
+                    }
+                });
+            });
+            return allAppObjects.concat(allActionObjects);
+        }
 
         ///////////// Special cases ///////////////
         if (root.query.startsWith(Config.options.search.prefix.clipboard)) {
