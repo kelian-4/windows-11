@@ -79,8 +79,10 @@ Rectangle {
         property point originPoint: categoryOpenButtonLoader.mapToItem(root, categoryOpenButtonLoader.width / 2, categoryOpenButtonLoader.height / 2)
         property point windowCenterPoint: {
             const rootContentItem = root.windowRootItem;
+            const sectionItem = root.parent?.parent?.parent;
+            if (!rootContentItem || !sectionItem)
+                return Qt.point(0, 0);
             const canvasPosInRoot = root.mapFromItem(rootContentItem, rootContentItem.width / 2, rootContentItem.height / 2);
-            const sectionItem = root.parent.parent.parent;
             const positionInSection = sectionItem.mapFromItem(categoryOpenButtonLoader, categoryOpenButtonLoader.x, categoryOpenButtonLoader.y);
             const targetY = Math.max(-positionInSection.y + 212, canvasPosInRoot.y);
             return Qt.point(canvasPosInRoot.x, targetY);

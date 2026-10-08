@@ -77,7 +77,7 @@ Scope {
     }
 
     IpcHandler {
-        target: "search"
+        target: "taskview"
 
         function toggle() {
             GlobalStates.overviewOpen = !GlobalStates.overviewOpen;

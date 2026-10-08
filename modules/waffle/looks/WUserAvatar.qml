@@ -11,10 +11,25 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.modules.waffle.looks
 
-StyledImage {
-    id: avatar
+Item {
+    id: root
     Layout.alignment: Qt.AlignTop
-    sourceSize: Qt.size(32, 32)
-    source: Directories.userAvatarPathAccountsService
-    fallbacks: [Directories.userAvatarPathRicersAndWeirdSystems, Directories.userAvatarPathRicersAndWeirdSystems2]
+    property alias sourceSize: avatar.sourceSize
+    implicitWidth: sourceSize.width
+    implicitHeight: sourceSize.height
+
+    Rectangle {
+        anchors.fill: parent
+        radius: width / 2
+        clip: true
+        color: "transparent"
+
+        StyledImage {
+            id: avatar
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectCrop
+            source: Directories.userAvatarPathAccountsService
+            fallbacks: [Directories.userAvatarPathRicersAndWeirdSystems, Directories.userAvatarPathRicersAndWeirdSystems2]
+        }
+    }
 }

@@ -29,7 +29,7 @@ Item {
         source: {
             if (root.icon === "")
                 return "";
-            if (root._useFallback)
+            if (root._useFallback || !FluentIconManifest.has(root.icon))
                 return Quickshell.iconPath(root.icon, "image-missing");
             return `${Looks.iconsPath}/${root.icon}${root.filled ? "-filled" : ""}.svg`;
         }
