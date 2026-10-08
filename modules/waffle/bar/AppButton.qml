@@ -40,7 +40,7 @@ BarButton {
 
     contentItem: Item {
         id: contentItem
-        anchors.centerIn: root.background
+        anchors.centerIn: parent
 
         implicitHeight: iconWidget.implicitHeight
         implicitWidth: iconWidget.implicitWidth
