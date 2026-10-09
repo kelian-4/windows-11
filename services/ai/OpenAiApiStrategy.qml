@@ -100,7 +100,6 @@ ApiStrategy {
             }
             
         } catch (e) {
-            console.log("[AI] OpenAI: Could not parse line: ", e);
             message.rawContent += line;
             message.content += line;
         }

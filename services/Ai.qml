@@ -381,7 +381,6 @@ Singleton {
                     root.modelList = Object.keys(root.models);
 
                 } catch (e) {
-                    console.log("Could not fetch Ollama models:", e);
                 }
             }
         }
@@ -694,7 +693,6 @@ Singleton {
                     }
                     
                 } catch (e) {
-                    console.log("[AI] Could not parse response: ", e);
                     requester.message.rawContent += data;
                     requester.message.content += data;
                 }
@@ -909,7 +907,6 @@ Singleton {
                 });
             }
         } catch (e) {
-            console.log("[AI] Could not load chat: ", e);
         } finally {
             getSavedChats.running = true;
         }

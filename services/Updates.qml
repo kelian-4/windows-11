@@ -22,7 +22,6 @@ Singleton {
     function load() {}
     function refresh() {
         if (!available) return;
-        print("[Updates] Checking for system updates")
         checkUpdatesProc.running = true;
     }
 
@@ -31,7 +30,6 @@ Singleton {
         repeat: true
         running: Config.ready && Config.options.updates.enableCheck
         onTriggered: {
-            print("[Updates] Periodic update check due")
             root.refresh();
         }
     }

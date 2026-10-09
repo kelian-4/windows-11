@@ -41,13 +41,13 @@ Singleton {
     FileView {
         id: persistentStatesFileView
         path: root.filePath
+        printErrors: false
 
         watchChanges: true
         onFileChanged: fileReloadTimer.restart()
         onAdapterUpdated: fileWriteTimer.restart()
         onLoaded: root.ready = true
         onLoadFailed: error => {
-            console.log("Failed to load persistent states file:", error);
             if (error == FileViewError.FileNotFound) {
                 fileWriteTimer.restart();
             }

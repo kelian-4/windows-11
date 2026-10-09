@@ -66,7 +66,6 @@ Singleton {
         onTriggered: () => {
             const index = root.list.findIndex((notif) => notif.notificationId === notificationId);
             const notifObject = root.list[index];
-            print("[Notifications] Notification timer triggered for ID: " + notificationId + ", transient: " + notifObject?.isTransient);
             if (notifObject.isTransient) root.discardNotification(notificationId);
             else root.timeoutNotification(notificationId);
             destroy()
@@ -190,7 +189,6 @@ Singleton {
     }
 
     function discardNotification(id) {
-        console.log("[Notifications] Discarding notification with ID: " + id);
         const index = root.list.findIndex((notif) => notif.notificationId === id);
         const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
         if (index !== -1) {
@@ -237,17 +235,12 @@ Singleton {
     }
 
     function attemptInvokeAction(id, notifIdentifier) {
-        console.log("[Notifications] Attempting to invoke action with identifier: " + notifIdentifier + " for notification ID: " + id);
         const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
-        console.log("Notification server index: " + notifServerIndex);
         if (notifServerIndex !== -1) {
             const notifServerNotif = notifServer.trackedNotifications.values[notifServerIndex];
             const action = notifServerNotif.actions.find((action) => action.identifier === notifIdentifier);
             // console.log("Action found: " + JSON.stringify(action));
             action.invoke()
-        } 
-        else {
-            console.log("Notification not found in server: " + id)
         }
         root.discardNotification(id);
     }
@@ -267,6 +260,7 @@ Singleton {
     FileView {
         id: notifFileView
         path: Qt.resolvedUrl(filePath)
+        printErrors: false
         onLoaded: {
             const fileContents = notifFileView.text()
             root.list = JSON.parse(fileContents).map((notif) => {
@@ -288,17 +282,13 @@ Singleton {
                 maxId = Math.max(maxId, notif.notificationId)
             })
 
-            console.log("[Notifications] File loaded")
             root.idOffset = maxId
             root.initDone()
         }
         onLoadFailed: (error) => {
             if(error == FileViewError.FileNotFound) {
-                console.log("[Notifications] File not found, creating new file.")
                 root.list = []
                 notifFileView.setText(stringifyList(root.list));
-            } else {
-                console.log("[Notifications] Error loading file: " + error)
             }
         }
     }

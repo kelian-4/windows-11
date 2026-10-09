@@ -22,9 +22,6 @@ Singleton {
         root.dismissed();
     }
 
-    Component.onCompleted: {
-        console.log("[GlobalFocusGrab] Initialized");
-    }
 
     function addPersistent(window) {
         if (root.persistent.indexOf(window) === -1) {

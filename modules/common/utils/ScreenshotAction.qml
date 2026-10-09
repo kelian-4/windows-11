@@ -74,7 +74,6 @@ Singleton {
                 return ["bash", "-c", `${Directories.recordScriptPath} --region '${slurpRegion}' --sound`]
                 break;
             default:
-                console.warn("[Region Selector] Unknown snip action, skipping snip.");
                 return;
         }
     }

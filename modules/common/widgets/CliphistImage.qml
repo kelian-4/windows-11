@@ -59,7 +59,6 @@ Rectangle {
             if (exitCode === 0) {
                 root.source = imageDecodeFilePath;
             } else {
-                console.error("[CliphistImage] Failed to decode image for entry:", root.entry);
                 root.source = "";
             }
         }

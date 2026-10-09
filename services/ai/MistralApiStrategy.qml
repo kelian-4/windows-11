@@ -125,7 +125,6 @@ ApiStrategy {
             }
             
         } catch (e) {
-            console.log("[AI] Mistral: Could not parse line: ", e);
             message.rawContent += line;
             message.content += line;
         }

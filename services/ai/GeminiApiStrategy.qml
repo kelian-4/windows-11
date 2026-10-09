@@ -179,7 +179,6 @@ ApiStrategy {
             }
             
         } catch (e) {
-            console.log("[AI] Gemini: Could not parse buffer: ", e);
             message.rawContent += buffer;
             message.content += buffer;
         } finally {
