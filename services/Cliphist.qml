@@ -130,7 +130,7 @@ Singleton {
         id: readProc
         property list<string> buffer: []
 
-        command: [root.cliphistBinary, "list"]
+        command: ["sh", "-c", "command -v \"$0\" >/dev/null 2>&1 && exec \"$0\" \"$@\"", root.cliphistBinary, "list"]
 
         stdout: SplitParser {
             onRead: (line) => {
@@ -141,8 +141,6 @@ Singleton {
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
                 root.entries = readProc.buffer
-            } else {
-                console.error("[Cliphist] Failed to refresh with code", exitCode, "and status", exitStatus)
             }
         }
     }

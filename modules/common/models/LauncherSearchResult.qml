@@ -15,7 +15,6 @@ QtObject {
     property string verb: ""
     property bool blurImage: false
     property var execute: () => {
-        print("Not implemented");
     }
     property var actions: []
     

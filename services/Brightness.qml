@@ -71,7 +71,7 @@ Singleton {
     Process {
         id: ddcProc
 
-        command: ["ddcutil", "detect", "--brief"]
+        command: ["sh", "-c", "command -v ddcutil >/dev/null 2>&1 && exec ddcutil \"$@\"", "sh", "detect", "--brief"]
         stdout: SplitParser {
             splitMarker: "\n\n"
             onRead: data => {
@@ -135,8 +135,11 @@ Singleton {
             stdout: SplitParser {
                 onRead: data => {
                     const [, , , current, max] = data.split(" ");
-                    monitor.rawMaxBrightness = parseInt(max);
-                    monitor.brightness = parseInt(current) / monitor.rawMaxBrightness;
+                    const rawCurrent = parseInt(current);
+                    const rawMax = parseInt(max);
+                    if (!isFinite(rawCurrent) || !isFinite(rawMax) || rawMax <= 0) return;
+                    monitor.rawMaxBrightness = rawMax;
+                    monitor.brightness = rawCurrent / rawMax;
                     monitor.ready = true;
                 }
             }
@@ -155,6 +158,7 @@ Singleton {
         }
 
         function syncBrightness() {
+            if (!monitor.ready || !isFinite(monitor.multipliedBrightness)) return;
             const brightnessValue = Math.max(monitor.multipliedBrightness, 0);
             if (isDdc) {
                 const rawValueRounded = Math.max(Math.floor(brightnessValue * monitor.rawMaxBrightness), 1);

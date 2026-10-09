@@ -143,7 +143,7 @@ Singleton {
 
     Process {
         id: rescanProcess
-        command: ["nmcli", "dev", "wifi", "list", "--rescan", "yes"]
+        command: ["sh", "-c", "command -v nmcli >/dev/null 2>&1 && exec nmcli \"$@\"", "sh", "dev", "wifi", "list", "--rescan", "yes"]
         stdout: SplitParser {
             onRead: {
                 wifiScanning = false;
@@ -163,7 +163,7 @@ Singleton {
     Process {
         id: subscriber
         running: true
-        command: ["nmcli", "monitor"]
+        command: ["sh", "-c", "command -v nmcli >/dev/null 2>&1 && exec nmcli \"$@\"", "sh", "monitor"]
         stdout: SplitParser {
             onRead: root.update()
         }
@@ -243,7 +243,7 @@ Singleton {
 
     Process {
         id: wifiStatusProcess
-        command: ["nmcli", "radio", "wifi"]
+        command: ["sh", "-c", "command -v nmcli >/dev/null 2>&1 && exec nmcli \"$@\"", "sh", "radio", "wifi"]
         Component.onCompleted: running = true
         environment: ({
             LANG: "C",
@@ -259,7 +259,7 @@ Singleton {
     Process {
         id: getNetworks
         running: true
-        command: ["nmcli", "-g", "ACTIVE,SIGNAL,FREQ,SSID,BSSID,SECURITY", "d", "w"]
+        command: ["sh", "-c", "command -v nmcli >/dev/null 2>&1 && exec nmcli \"$@\"", "sh", "-g", "ACTIVE,SIGNAL,FREQ,SSID,BSSID,SECURITY", "d", "w"]
         environment: ({
             LANG: "C",
             LC_ALL: "C"

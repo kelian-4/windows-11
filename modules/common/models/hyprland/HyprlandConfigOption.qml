@@ -55,7 +55,6 @@ NestableObject {
                             root.value = obj[key];
                     }
                 } catch (e) {
-                    console.log(`[HyprlandConfigOption] Failed to fetch option "${root.key}":\n  - Output: ${text.trim()}\n  - Error: ${e}`);
                 }
             }
         }

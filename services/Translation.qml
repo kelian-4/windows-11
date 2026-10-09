@@ -48,7 +48,6 @@ Singleton {
     }
 
     onLanguageCodeChanged: {
-        print("[Translation] Language changed to", root.languageCode);
         translationFileView.languageCode = root.languageCode;
         generatedTranslationFileView.languageCode = root.languageCode;
         translationFileView.reread();
@@ -127,6 +126,7 @@ Singleton {
             translationReader.reload();
         }
         path: ""
+        printErrors: false
 
         onLoaded: {
             var textContent = "";
@@ -135,7 +135,6 @@ Singleton {
                 var jsonData = JSON.parse(textContent);
                 translationReader.contentLoaded(jsonData);
             } catch (e) {
-                console.log("[Translation] Failed to load translations:", e);
                 translationReader.contentLoaded({});
             }
         }

@@ -64,6 +64,7 @@ Singleton {
     FileView {
         id: configFileView
         path: root.filePath
+        printErrors: false
         watchChanges: true
         blockWrites: root.blockWrites
         onFileChanged: fileReloadTimer.restart()

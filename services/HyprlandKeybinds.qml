@@ -46,7 +46,6 @@ Singleton {
                     }
                     root.keybindCategories = groups
                 } catch (e) {
-                    console.error("[CheatsheetKeybinds] Error parsing keybinds:", e)
                 }
             }
         }

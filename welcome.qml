@@ -47,7 +47,6 @@ ApplicationWindow {
         command: ["bash", "-c", Quickshell.shellPath("scripts/colors/random/random_konachan_wall.sh")]
         stdout: SplitParser {
             onRead: data => {
-                console.log(`Konachan wall proc output: ${data}`);
                 konachanWallProc.status = data.trim();
             }
         }
@@ -288,7 +287,6 @@ ApplicationWindow {
                             materialIcon: "ifl"
                             mainText: konachanWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: Konachan")
                             onClicked: {
-                                console.log(konachanWallProc.command.join(" "));
                                 konachanWallProc.running = true;
                             }
                             StyledToolTip {

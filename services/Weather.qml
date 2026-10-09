@@ -113,7 +113,6 @@ Singleton {
                     root.refineData(parsedData);
                     // console.info(`[ data: ${JSON.stringify(parsedData)}`);
                 } catch (e) {
-                    console.error(`[WeatherService] ${e.message}`);
                 }
             }
         }

@@ -15,7 +15,6 @@ NestableObject {
     function initializeWithData(apiOutputData: var): void {
         // Null check
         if (!apiOutputData) {
-            print("[GCloudVisionResult] Data is null/undefined")
             return;
         }
 

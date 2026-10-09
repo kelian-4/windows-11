@@ -71,7 +71,6 @@ Singleton {
         if (folderModel.count === 0) return;
         const randomIndex = Math.floor(Math.random() * folderModel.count);
         const filePath = folderModel.get(randomIndex, "filePath");
-        print("Randomly selected wallpaper:", filePath);
         root.select(filePath, darkMode);
     }
 

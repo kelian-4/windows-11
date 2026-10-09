@@ -61,6 +61,7 @@ Singleton {
 	FileView { 
         id: themeFileView
         path: Qt.resolvedUrl(root.filePath)
+        printErrors: false
         watchChanges: true
         onFileChanged: {
             this.reload()

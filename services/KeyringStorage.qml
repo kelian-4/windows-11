@@ -104,7 +104,6 @@ Singleton {
                     root.keyringData = JSON.parse(data);
                     // console.log("[KeyringStorage] Keyring data fetched:", JSON.stringify(root.keyringData));
                 } catch (e) {
-                    console.error("[KeyringStorage] Failed to get keyring data, reinitializing.");
                     root.keyringData = {};
                     saveKeyringData()
                 }
@@ -113,7 +112,6 @@ Singleton {
         onExited: (exitCode, exitStatus) => {
             // console.log("[KeyringStorage] Keyring data fetch process exited with code:", exitCode);
             if (exitCode === 1) {
-                console.error("[KeyringStorage] Entry not found, initializing.");
                 root.keyringData = {};
                 saveKeyringData()
             }
