@@ -1,7 +1,6 @@
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
-import qs.modules.waffle.looks
 import QtQuick.Effects
 import QtQuick
 import QtQuick.Controls
@@ -14,20 +13,20 @@ Button {
     property bool toggled
     property string buttonText
     property bool pointingHandCursor: true
-    property real buttonRadius: Looks.radius.medium
+    property real buttonRadius: Appearance?.rounding?.small ?? 4
     property real buttonRadiusPressed: buttonRadius
     property real buttonEffectiveRadius: root.down ? root.buttonRadiusPressed : root.buttonRadius
     property int rippleDuration: 1200
-    property bool rippleEnabled: false
+    property bool rippleEnabled: true
     property var downAction // When left clicking (down)
     property var releaseAction // When left clicking (release)
     property var altAction // When right clicking
     property var middleClickAction // When middle clicking
 
-    property color colBackground: Looks.colors.bg2Base
-    property color colBackgroundHover: Looks.colors.bg2Hover
-    property color colBackgroundToggled: Looks.colors.accent
-    property color colBackgroundToggledHover: Looks.colors.accentHover
+    property color colBackground: ColorUtils.transparentize(Appearance?.colors.colLayer1Hover, 1) || "transparent"
+    property color colBackgroundHover: Appearance?.colors.colLayer1Hover ?? "#E5DFED"
+    property color colBackgroundToggled: Appearance?.colors.colPrimary ?? "#65558F"
+    property color colBackgroundToggledHover: Appearance?.colors.colPrimaryHover ?? "#77699C"
     property color colRipple: Appearance?.colors.colLayer1Active ?? "#D6CEE2"
     property color colRippleToggled: Appearance?.colors.colPrimaryActive ?? "#D6CEE2"
 

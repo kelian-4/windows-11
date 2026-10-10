@@ -21,7 +21,11 @@ RippleButton {
     implicitHeight: 34
     horizontalPadding: 14
     buttonRadius: Looks.radius.medium
+    rippleEnabled: false
     colBackground: Looks.colors.bg2Base
+    colBackgroundHover: Looks.colors.bg2Hover
+    colBackgroundToggled: Looks.colors.accent
+    colBackgroundToggledHover: Looks.colors.accentHover
 
     contentItem: RowLayout {
         spacing: 8

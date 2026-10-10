@@ -32,7 +32,12 @@ ContentPage {
         padding: 5
         Layout.fillWidth: true
         toggled: Appearance.m3colors.darkmode === dark
+        buttonRadius: Looks.radius.medium
+        rippleEnabled: false
         colBackground: Looks.colors.bg2Base
+        colBackgroundHover: Looks.colors.bg2Hover
+        colBackgroundToggled: Looks.colors.accent
+        colBackgroundToggledHover: Looks.colors.accentHover
         onClicked: {
             Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
         }
