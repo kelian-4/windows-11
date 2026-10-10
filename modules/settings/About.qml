@@ -33,7 +33,7 @@ ContentPage {
                 }
                 WText {
                     font.pixelSize: Looks.font.pixelSize.large
-                    text: `<a href="${SystemInfo.homeUrl}">${SystemInfo.homeUrl}</a>`
+                    text: `<a href="${SystemInfo.homeUrl}"><span style="color:${Looks.colors.accent}">${SystemInfo.homeUrl}</span></a>`
                     textFormat: Text.RichText
                     linkColor: Looks.colors.accent
                     onLinkActivated: (link) => {
@@ -92,7 +92,7 @@ ContentPage {
             Layout.bottomMargin: 10
             IconImage {
                 implicitSize: 80
-                source: `${Directories.assetsPath}/icons/fluent/start-here.svg`
+                source: `file://${Directories.assetsPath}/icons/fluent/start-here.svg`
             }
             ColumnLayout {
                 Layout.alignment: Qt.AlignVCenter
@@ -103,7 +103,7 @@ ContentPage {
                     font.weight: Looks.font.weight.strong
                 }
                 WText {
-                    text: "<a href=\"https://github.com/end-4/dots-hyprland\">https://github.com/end-4/dots-hyprland</a>"
+                    text: `<a href="https://github.com/end-4/dots-hyprland"><span style="color:${Looks.colors.accent}">https://github.com/end-4/dots-hyprland</span></a>`
                     font.pixelSize: Looks.font.pixelSize.large
                     textFormat: Text.RichText
                     linkColor: Looks.colors.accent
