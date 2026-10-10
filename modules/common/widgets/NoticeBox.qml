@@ -1,50 +1,60 @@
-import qs.modules.common
-import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
+import qs.modules.common
+import qs.modules.waffle.looks
+import qs.modules.waffle.settings
 
 Rectangle {
     id: root
-    property alias materialIcon: icon.text
-    property alias text: noticeText.text
-    default property alias boxData: buttonRow.data
+    property string materialIcon: "info"
+    property string text: "Notice message"
+    default property alias contentData: contentColumn.data
 
-    radius: Appearance.rounding.normal
-    color: Appearance.colors.colPrimaryContainer
-    implicitWidth: mainRowLayout.implicitWidth + mainRowLayout.anchors.margins * 2
-    implicitHeight: mainRowLayout.implicitHeight + mainRowLayout.anchors.margins * 2
+    radius: Looks.radius.medium
+    color: Looks.colors.bg2Base
+    border.width: 1
+    border.color: Looks.colors.bg2Border
+    Layout.fillWidth: true
+    implicitWidth: rowLayout.implicitWidth + 28
+    implicitHeight: rowLayout.implicitHeight + 24
 
     RowLayout {
-        id: mainRowLayout
-        anchors.fill: parent
-        anchors.margins: 8
-        spacing: 8
+        id: rowLayout
+        anchors {
+            fill: parent
+            leftMargin: 14
+            rightMargin: 14
+            topMargin: 12
+            bottomMargin: 12
+        }
+        spacing: 12
 
-        MaterialSymbol {
-            id: icon
-            Layout.fillWidth: false
+        Rectangle {
             Layout.alignment: Qt.AlignTop
-            text: "info"
-            iconSize: Appearance.font.pixelSize.huge
-            color: Appearance.colors.colOnPrimaryContainer
+            Layout.preferredWidth: 18
+            Layout.preferredHeight: 18
+            radius: 9
+            color: Looks.colors.accent
+
+            WText {
+                anchors.centerIn: parent
+                text: "i"
+                color: Looks.colors.accentFg
+                font.pixelSize: Looks.font.pixelSize.normal
+                font.weight: Looks.font.weight.strong
+            }
         }
 
         ColumnLayout {
+            id: contentColumn
             Layout.fillWidth: true
             spacing: 4
 
-            StyledText {
-                id: noticeText
+            WText {
                 Layout.fillWidth: true
-                text: "Notice message"
-                color: Appearance.colors.colOnPrimaryContainer
+                text: root.text
                 wrapMode: Text.WordWrap
-            }
-
-            RowLayout {
-                id: buttonRow
-                visible: children.length > 0
-                Layout.fillWidth: true 
+                font.pixelSize: Looks.font.pixelSize.large
             }
         }
     }

@@ -8,7 +8,7 @@ SettingsPage {
     property var results: []
     property string query: ""
 
-    title: "Search results"
+    signal resultClicked(int index)
 
     WText {
         visible: root.results.length === 0
@@ -25,7 +25,8 @@ SettingsPage {
             icon: modelData.icon
             iconTint: modelData.tint
             title: modelData.title
-            subtitle: `${modelData.page}  ·  ${modelData.subtitle}`
+            subtitle: modelData.subtitle
+            onClicked: root.resultClicked(modelData.index)
         }
     }
 }

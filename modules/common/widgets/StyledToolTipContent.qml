@@ -3,6 +3,7 @@ import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import qs.modules.waffle.looks
 
 Item {
     id: root
@@ -22,8 +23,10 @@ Item {
             bottom: root.bottom
             horizontalCenter: root.horizontalCenter
         }
-        color: Appearance?.colors.colTooltip ?? "#3C4043"
-        radius: Appearance?.rounding.verysmall ?? 7
+        color: Looks.colors.bg1Base
+        border.width: 1
+        border.color: Looks.colors.bg2Border
+        radius: Looks.radius.medium
         opacity: shown ? 1 : 0
         implicitWidth: shown ? (tooltipTextObject.implicitWidth + 2 * root.horizontalPadding) : 0
         implicitHeight: shown ? (tooltipTextObject.implicitHeight + 2 * root.verticalPadding) : 0
@@ -43,9 +46,9 @@ Item {
             id: tooltipTextObject
             anchors.centerIn: parent
             text: root.text
-            font.pixelSize: Appearance?.font.pixelSize.smaller ?? 14
+            font.pixelSize: Looks.font.pixelSize.normal
             font.hintingPreference: Font.PreferNoHinting // Prevent shaky text
-            color: Appearance?.colors.colOnTooltip ?? "#FFFFFF"
+            color: Looks.colors.fg
             wrapMode: Text.Wrap
         }
     }   

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.waffle.looks
 
 ContentPage {
     forceWidth: true
@@ -329,10 +330,10 @@ ContentPage {
         }
 
         RowLayout {
-            StyledText {
+            WText {
                 Layout.leftMargin: 10
-                color: Appearance.colors.colSubtext
-                font.pixelSize: Appearance.font.pixelSize.smallie
+                color: Looks.colors.fg1
+                font.pixelSize: Looks.font.pixelSize.normal
                 text: Translation.tr("Press Super+G to open the overlay and pin the crosshair")
             }
             Item {
@@ -340,7 +341,7 @@ ContentPage {
             }
             RippleButtonWithIcon {
                 id: editorButton
-                buttonRadius: Appearance.rounding.full
+                buttonRadius: Looks.radius.medium
                 materialIcon: "open_in_new"
                 mainText: Translation.tr("Open editor")
                 onClicked: {

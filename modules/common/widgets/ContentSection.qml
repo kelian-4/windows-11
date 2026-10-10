@@ -2,7 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules.waffle.looks
+import qs.modules.waffle.settings
 
 ColumnLayout {
     id: root
@@ -11,19 +12,23 @@ ColumnLayout {
     default property alias contentData: sectionContent.data
 
     Layout.fillWidth: true
-    spacing: 6
+    spacing: 8
 
     RowLayout {
-        spacing: 6
-        OptionalMaterialSymbol {
-            icon: root.icon
-            iconSize: Appearance.font.pixelSize.hugeass
+        Layout.leftMargin: 2
+        spacing: 10
+
+        SettingsIcon {
+            visible: icon.length > 0
+            icon: MaterialIconMap.fluent(root.icon)
+            size: 18
+            Layout.alignment: Qt.AlignVCenter
         }
-        StyledText {
+
+        WText {
             text: root.title
-            font.pixelSize: Appearance.font.pixelSize.larger
-            font.weight: Font.Medium
-            color: Appearance.colors.colOnSecondaryContainer
+            font.pixelSize: Looks.font.pixelSize.larger
+            font.weight: Looks.font.weight.strong
         }
     }
 
@@ -31,6 +36,5 @@ ColumnLayout {
         id: sectionContent
         Layout.fillWidth: true
         spacing: 4
-
     }
 }

@@ -1,43 +1,47 @@
-import qs.modules.common
 import QtQuick
+import QtQuick.Layouts
+import qs.modules.common
+import qs.modules.waffle.looks
 
-Rectangle {
+Item {
     id: root
     property string key
-
-    property real horizontalPadding: 6
-    property real verticalPadding: 1
+    property real pixelSize: Looks.font.pixelSize.large
     property real borderWidth: 1
     property real extraBottomBorderWidth: 2
-    property color borderColor: Appearance.colors.colOnLayer0
-    property real borderRadius: 5
-    property real pixelSize: Appearance.font.pixelSize.smaller
-    property color keyColor: Appearance.m3colors.m3surfaceContainerLow
+    property color borderColor: Looks.colors.bg2Border
+    property real borderRadius: Looks.radius.medium
+    property color keyColor: Looks.colors.bg2Base
+
     implicitWidth: keyFace.implicitWidth + borderWidth * 2
     implicitHeight: keyFace.implicitHeight + borderWidth * 2 + extraBottomBorderWidth
-    radius: borderRadius
-    color: borderColor
 
     Rectangle {
-        id: keyFace
-        anchors {
-            fill: parent
-            topMargin: borderWidth
-            leftMargin: borderWidth
-            rightMargin: borderWidth
-            bottomMargin: extraBottomBorderWidth + borderWidth
-        }
-        implicitWidth: keyText.implicitWidth + horizontalPadding * 2
-        implicitHeight: keyText.implicitHeight + verticalPadding * 2
-        color: keyColor
-        radius: borderRadius - borderWidth
+        id: borderRect
+        anchors.fill: parent
+        color: root.borderColor
+        radius: root.borderRadius
 
-        StyledText {
-            id: keyText
-            anchors.centerIn: parent
-            font.family: Appearance.font.family.monospace
-            font.pixelSize: root.pixelSize
-            text: key
+        Rectangle {
+            id: keyFace
+            anchors {
+                fill: parent
+                topMargin: root.borderWidth
+                leftMargin: root.borderWidth
+                rightMargin: root.borderWidth
+                bottomMargin: root.borderWidth + root.extraBottomBorderWidth
+            }
+            implicitWidth: keyText.implicitWidth + 12
+            implicitHeight: keyText.implicitHeight + 4
+            color: root.keyColor
+            radius: root.borderRadius - root.borderWidth
+
+            WText {
+                id: keyText
+                anchors.centerIn: parent
+                font.pixelSize: root.pixelSize
+                text: root.key
+            }
         }
     }
 }
