@@ -7,6 +7,8 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
+import qs.modules.waffle.looks
+import qs.modules.waffle.settings
 
 ContentPage {
     forceWidth: true
@@ -26,11 +28,11 @@ ContentPage {
     component SmallLightDarkPreferenceButton: RippleButton {
         id: smallLightDarkPreferenceButton
         required property bool dark
-        property color colText: toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2
+        property color colText: toggled ? Looks.colors.accentFg : Looks.colors.fg
         padding: 5
         Layout.fillWidth: true
         toggled: Appearance.m3colors.darkmode === dark
-        colBackground: Appearance.colors.colLayer2
+        colBackground: Looks.colors.bg2Base
         onClicked: {
             Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
         }
@@ -39,16 +41,16 @@ ContentPage {
             ColumnLayout {
                 anchors.centerIn: parent
                 spacing: 0
-                MaterialSymbol {
+                SettingsIcon {
                     Layout.alignment: Qt.AlignHCenter
-                    iconSize: 30
-                    text: dark ? "dark_mode" : "light_mode"
-                    color: smallLightDarkPreferenceButton.colText
+                    size: 30
+                    icon: dark ? "dark-theme" : "weather-sunny"
+                    tint: smallLightDarkPreferenceButton.colText
                 }
-                StyledText {
+                WText {
                     Layout.alignment: Qt.AlignHCenter
                     text: dark ? Translation.tr("Dark") : Translation.tr("Light")
-                    font.pixelSize: Appearance.font.pixelSize.smaller
+                    font.pixelSize: Looks.font.pixelSize.normal
                     color: smallLightDarkPreferenceButton.colText
                 }
             }
@@ -80,7 +82,7 @@ ContentPage {
                         maskSource: Rectangle {
                             width: 360
                             height: 200
-                            radius: Appearance.rounding.normal
+                            radius: Looks.radius.large
                         }
                     }
                 }
@@ -91,7 +93,7 @@ ContentPage {
                     enabled: !randomWallProc.running
                     visible: Config.options.policies.weeb === 1
                     Layout.fillWidth: true
-                    buttonRadius: Appearance.rounding.small
+                    buttonRadius: Looks.radius.medium
                     materialIcon: "ifl"
                     mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: Konachan")
                     onClicked: {
@@ -106,7 +108,7 @@ ContentPage {
                     enabled: !randomWallProc.running
                     visible: Config.options.policies.weeb === 1
                     Layout.fillWidth: true
-                    buttonRadius: Appearance.rounding.small
+                    buttonRadius: Looks.radius.medium
                     materialIcon: "ifl"
                     mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: osu! seasonal")
                     onClicked: {
@@ -129,10 +131,9 @@ ContentPage {
                     mainContentComponent: Component {
                         RowLayout {
                             spacing: 10
-                            StyledText {
-                                font.pixelSize: Appearance.font.pixelSize.small
+                            WText {
+                                font.pixelSize: Looks.font.pixelSize.large
                                 text: Translation.tr("Choose file")
-                                color: Appearance.colors.colOnSecondaryContainer
                             }
                             RowLayout {
                                 spacing: 3
@@ -142,7 +143,7 @@ ContentPage {
                                 KeyboardKey {
                                     key: Config.options.cheatsheet.superKey ?? "󰖳"
                                 }
-                                StyledText {
+                                WText {
                                     Layout.alignment: Qt.AlignVCenter
                                     text: "+"
                                 }
@@ -336,7 +337,7 @@ ContentPage {
             id: copyPathButton
             property bool justCopied: false
             Layout.fillWidth: false
-            buttonRadius: Appearance.rounding.small
+            buttonRadius: Looks.radius.medium
             materialIcon: justCopied ? "check" : "content_copy"
             mainText: justCopied ? Translation.tr("Path copied") : Translation.tr("Copy path")
             onClicked: {
@@ -344,9 +345,6 @@ ContentPage {
                 Quickshell.clipboardText = FileUtils.trimFileProtocol(`${Directories.config}/illogical-impulse/config.json`);
                 revertTextTimer.restart();
             }
-            colBackground: ColorUtils.transparentize(Appearance.colors.colPrimaryContainer)
-            colBackgroundHover: Appearance.colors.colPrimaryContainerHover
-            colRipple: Appearance.colors.colPrimaryContainerActive
 
             Timer {
                 id: revertTextTimer

@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.waffle.looks
+import qs.modules.waffle.settings
 
 RippleButton {
     id: buttonWithIconRoot
@@ -10,45 +12,46 @@ RippleButton {
     property bool materialIconFill: true
     property string mainText: "Button text"
     property Component mainContentComponent: Component {
-        StyledText {
+        WText {
             visible: text !== ""
             text: buttonWithIconRoot.mainText
-            font.pixelSize: Appearance.font.pixelSize.small
-            color: Appearance.colors.colOnSecondaryContainer
+            font.pixelSize: Looks.font.pixelSize.large
         }
     }
-    implicitHeight: 35
-    horizontalPadding: 10
-    buttonRadius: Appearance.rounding.small
-    colBackground: Appearance.colors.colLayer2
+    implicitHeight: 34
+    horizontalPadding: 14
+    buttonRadius: Looks.radius.medium
+    colBackground: Looks.colors.bg2Base
 
     contentItem: RowLayout {
+        spacing: 8
+
         Item {
             Layout.fillWidth: false
-            implicitWidth: Math.max(materialIconLoader.implicitWidth, nerdIconLoader.implicitWidth)
-            Loader {
-                id: materialIconLoader
+            visible: nerdIconLoader.active || fluentIcon.visible
+            implicitWidth: Math.max(fluentIcon.visible ? 16 : 0, nerdIconLoader.implicitWidth)
+            implicitHeight: 16
+
+            SettingsIcon {
+                id: fluentIcon
                 anchors.centerIn: parent
-                active: !nerdIcon
-                sourceComponent: MaterialSymbol {
-                    text: buttonWithIconRoot.materialIcon
-                    iconSize: Appearance.font.pixelSize.larger
-                    color: Appearance.colors.colOnSecondaryContainer
-                    fill: buttonWithIconRoot.materialIconFill ? 1 : 0
-                }
+                visible: !buttonWithIconRoot.nerdIcon && icon.length > 0
+                icon: MaterialIconMap.fluent(buttonWithIconRoot.materialIcon)
+                size: 16
             }
+
             Loader {
                 id: nerdIconLoader
                 anchors.centerIn: parent
-                active: nerdIcon
-                sourceComponent: StyledText {
+                active: !!buttonWithIconRoot.nerdIcon
+                sourceComponent: WText {
                     text: buttonWithIconRoot.nerdIcon
-                    font.pixelSize: Appearance.font.pixelSize.larger
+                    font.pixelSize: Looks.font.pixelSize.larger
                     font.family: Appearance.font.family.iconNerd
-                    color: Appearance.colors.colOnSecondaryContainer
                 }
             }
         }
+
         Loader {
             Layout.fillWidth: true
             sourceComponent: buttonWithIconRoot.mainContentComponent

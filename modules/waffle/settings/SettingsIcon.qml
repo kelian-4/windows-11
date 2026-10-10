@@ -19,7 +19,7 @@ Item {
         smooth: true
         asynchronous: true
         sourceSize: Qt.size(root.size * 2, root.size * 2)
-        source: FluentIconManifest.has(root.icon) ? `${Looks.iconsPath}/${root.icon}.svg` : Quickshell.iconPath(root.icon, "image-missing")
+        source: root.icon.length === 0 ? "" : (FluentIconManifest.has(root.icon) ? `${Looks.iconsPath}/${root.icon}.svg` : Quickshell.iconPath(root.icon, "image-missing"))
 
         layer.enabled: true
         layer.effect: MultiEffect {

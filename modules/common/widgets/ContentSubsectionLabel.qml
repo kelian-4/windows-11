@@ -1,10 +1,10 @@
 import QtQuick
 import QtQuick.Layouts
-import qs.modules.common
-import qs.modules.common.widgets
+import qs.modules.waffle.looks
 
-StyledText {
+WText {
     text: "Subsection"
-    color: Appearance.colors.colSubtext
+    color: Looks.colors.fg1
+    font.pixelSize: Looks.font.pixelSize.large
     Layout.leftMargin: 2
 }

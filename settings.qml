@@ -17,24 +17,34 @@ import qs.modules.waffle.settings
 ApplicationWindow {
     id: root
 
-    property int currentIndex: 0
-    readonly property var currentPage: SettingsPages.pages[currentIndex]
+    property int currentPage: 0
+    readonly property var pages: SettingsPages.pages
     readonly property bool searching: sidebar.query.trim().length > 0
 
     visible: true
-    title: "Settings"
+    title: Translation.tr("Settings")
     flags: Qt.Window | Qt.FramelessWindowHint
     onClosing: Qt.quit()
 
-    width: 1000
-    height: 700
-    minimumWidth: 640
-    minimumHeight: 480
+    width: 1100
+    height: 750
+    minimumWidth: 750
+    minimumHeight: 500
     color: Looks.colors.bg0Base
 
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme();
         Config.readWriteDelay = 0;
+    }
+
+    Shortcut {
+        sequences: ["Ctrl+PgDown", "Ctrl+Tab"]
+        onActivated: root.currentPage = (root.currentPage + 1) % root.pages.length
+    }
+
+    Shortcut {
+        sequences: ["Ctrl+PgUp", "Ctrl+Shift+Tab"]
+        onActivated: root.currentPage = (root.currentPage - 1 + root.pages.length) % root.pages.length
     }
 
     Item {
@@ -60,60 +70,78 @@ ApplicationWindow {
                 bottom: parent.bottom
                 left: parent.left
             }
-            pages: SettingsPages.pages
-            currentIndex: root.currentIndex
+            pages: root.pages
+            currentIndex: root.currentPage
             onPageSelected: index => {
                 sidebar.query = "";
-                root.currentIndex = index;
+                root.currentPage = index;
             }
         }
 
-        Loader {
-            id: pageLoader
+        Item {
+            id: content
             anchors {
                 top: titleBar.bottom
                 bottom: parent.bottom
                 left: sidebar.right
                 right: parent.right
             }
-            sourceComponent: {
-                if (root.searching) return searchComponent;
-                if (root.currentPage.id === "system") return systemComponent;
-                if (root.currentPage.id === "personalization") return personalizationComponent;
-                return genericComponent;
+
+            WText {
+                id: pageTitle
+                x: 64
+                y: 10
+                text: root.searching ? Translation.tr("Search results") : root.pages[root.currentPage].name
+                font.pixelSize: 28
+                font.weight: Looks.font.weight.strong
+            }
+
+            Loader {
+                id: pageLoader
+                anchors {
+                    top: pageTitle.bottom
+                    topMargin: 16
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                visible: !root.searching
+                active: Config.ready
+                source: root.pages[root.currentPage].source
+
+                onLoaded: {
+                    if (item && item.heroComponent !== undefined)
+                        item.heroComponent = root.pages[root.currentPage].hero ? heroComponent : null;
+                    fadeIn.restart();
+                }
+
+                NumberAnimation {
+                    id: fadeIn
+                    target: pageLoader
+                    property: "opacity"
+                    from: 0
+                    to: 1
+                    duration: 160
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            SearchResultsPage {
+                anchors.fill: pageLoader
+                visible: root.searching
+                query: sidebar.query.trim()
+                results: SettingsPages.search(sidebar.query)
+                onResultClicked: index => {
+                    sidebar.query = "";
+                    root.currentPage = index;
+                }
             }
         }
     }
 
     Component {
-        id: systemComponent
-        SystemPage {
-            title: root.currentPage.name
-            cards: root.currentPage.cards
-        }
-    }
-
-    Component {
-        id: personalizationComponent
-        PersonalizationPage {
-            title: root.currentPage.name
-        }
-    }
-
-    Component {
-        id: genericComponent
-        GenericPage {
-            title: root.currentPage.name
-            cards: root.currentPage.cards
-        }
-    }
-
-    Component {
-        id: searchComponent
-        SearchResultsPage {
-            query: sidebar.query.trim()
-            results: SettingsPages.search(sidebar.query)
-        }
+        id: heroComponent
+        SettingsHero {}
     }
 
     component ResizeEdge: MouseArea {

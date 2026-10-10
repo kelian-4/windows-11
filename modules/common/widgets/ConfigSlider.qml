@@ -1,47 +1,67 @@
-import qs.modules.common.widgets
-import qs.modules.common
 import QtQuick
 import QtQuick.Layouts
-import qs.services
+import qs.modules.common
+import qs.modules.waffle.looks
+import qs.modules.waffle.settings
 
-RowLayout {
+Rectangle {
     id: root
-    spacing: 10
-    Layout.leftMargin: 8
-    Layout.rightMargin: 8
 
     property string text: ""
     property string buttonIcon: ""
     property alias value: slider.value
-    property alias stopIndicatorValues: slider.stopIndicatorValues
+    property var stopIndicatorValues: []
     property bool usePercentTooltip: true
-    property real from: slider.from
-    property real to: slider.to
-    property real textWidth: 120
+    property alias from: slider.from
+    property alias to: slider.to
+    property real textWidth: 140
+
+    Layout.fillWidth: true
+    implicitHeight: 56
+    radius: Looks.radius.medium
+    color: Looks.colors.bg1Base
+    border.width: 1
+    border.color: Looks.colors.bgPanelSeparator
 
     RowLayout {
-        id: row
-        spacing: 10
+        anchors {
+            fill: parent
+            leftMargin: 18
+            rightMargin: 18
+        }
+        spacing: 16
 
-        OptionalMaterialSymbol {
-            id: iconWidget
-            icon: root.buttonIcon
-            iconSize: Appearance.font.pixelSize.larger
+        SettingsIcon {
+            visible: icon.length > 0
+            icon: MaterialIconMap.fluent(root.buttonIcon)
+            size: 20
+            Layout.alignment: Qt.AlignVCenter
         }
-        StyledText {
-            id: labelWidget
+
+        WText {
             Layout.preferredWidth: root.textWidth
+            Layout.alignment: Qt.AlignVCenter
             text: root.text
-            color: Appearance.colors.colOnSecondaryContainer
+            elide: Text.ElideRight
+            font.pixelSize: Looks.font.pixelSize.large
         }
-    }
-    
-    StyledSlider {
-        id: slider
-        configuration: StyledSlider.Configuration.XS
-        usePercentTooltip: root.usePercentTooltip
-        value: root.value
-        from: root.from
-        to: root.to
+
+        WSlider {
+            id: slider
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter
+            stepSize: root.usePercentTooltip ? 0.01 : 1
+            scrollable: false
+            tooltipContent: root.usePercentTooltip ? `${Math.round(slider.value * 100)}%` : `${Math.round(slider.value)}`
+        }
+
+        WText {
+            Layout.preferredWidth: 44
+            horizontalAlignment: Text.AlignRight
+            Layout.alignment: Qt.AlignVCenter
+            text: root.usePercentTooltip ? `${Math.round(slider.value * 100)}%` : `${Math.round(slider.value)}`
+            color: Looks.colors.fg1
+            font.pixelSize: Looks.font.pixelSize.large
+        }
     }
 }

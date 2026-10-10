@@ -5,6 +5,7 @@ import Quickshell.Widgets
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.waffle.looks
 
 ContentPage {
     forceWidth: true
@@ -14,7 +15,7 @@ ContentPage {
         title: Translation.tr("Distro")
         
         RowLayout {
-            Layout.alignment: Qt.AlignHCenter
+            Layout.alignment: Qt.AlignLeft
             spacing: 20
             Layout.topMargin: 10
             Layout.bottomMargin: 10
@@ -25,14 +26,16 @@ ContentPage {
             ColumnLayout {
                 Layout.alignment: Qt.AlignVCenter
                 // spacing: 10
-                StyledText {
+                WText {
                     text: SystemInfo.distroName
-                    font.pixelSize: Appearance.font.pixelSize.title
+                    font.pixelSize: Looks.font.pixelSize.xlarger + 3
+                    font.weight: Looks.font.weight.strong
                 }
-                StyledText {
-                    font.pixelSize: Appearance.font.pixelSize.normal
-                    text: SystemInfo.homeUrl
-                    textFormat: Text.MarkdownText
+                WText {
+                    font.pixelSize: Looks.font.pixelSize.large
+                    text: `<a href="${SystemInfo.homeUrl}">${SystemInfo.homeUrl}</a>`
+                    textFormat: Text.RichText
+                    linkColor: Looks.colors.accent
                     onLinkActivated: (link) => {
                         Qt.openUrlExternally(link)
                     }
@@ -83,25 +86,27 @@ ContentPage {
         title: Translation.tr("Dotfiles")
 
         RowLayout {
-            Layout.alignment: Qt.AlignHCenter
+            Layout.alignment: Qt.AlignLeft
             spacing: 20
             Layout.topMargin: 10
             Layout.bottomMargin: 10
             IconImage {
                 implicitSize: 80
-                source: Quickshell.iconPath("illogical-impulse")
+                source: `${Directories.assetsPath}/icons/fluent/start-here.svg`
             }
             ColumnLayout {
                 Layout.alignment: Qt.AlignVCenter
                 // spacing: 10
-                StyledText {
+                WText {
                     text: Translation.tr("illogical-impulse")
-                    font.pixelSize: Appearance.font.pixelSize.title
+                    font.pixelSize: Looks.font.pixelSize.xlarger + 3
+                    font.weight: Looks.font.weight.strong
                 }
-                StyledText {
-                    text: "https://github.com/end-4/dots-hyprland"
-                    font.pixelSize: Appearance.font.pixelSize.normal
-                    textFormat: Text.MarkdownText
+                WText {
+                    text: "<a href=\"https://github.com/end-4/dots-hyprland\">https://github.com/end-4/dots-hyprland</a>"
+                    font.pixelSize: Looks.font.pixelSize.large
+                    textFormat: Text.RichText
+                    linkColor: Looks.colors.accent
                     onLinkActivated: (link) => {
                         Qt.openUrlExternally(link)
                     }
