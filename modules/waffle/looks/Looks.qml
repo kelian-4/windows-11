@@ -127,9 +127,10 @@ Singleton {
         property color dangerActive: "#B62D1F"
         property color warning: "#FF9900"
         // Accent
-        property color accent: Appearance.colors.colPrimary
-        property color accentHover: Appearance.colors.colPrimaryHover
-        property color accentActive: Appearance.colors.colPrimaryActive
+        readonly property string accentOverride: Config.options.appearance.palette.accentColor
+        property color accent: accentOverride.length > 0 ? accentOverride : Appearance.colors.colPrimary
+        property color accentHover: accentOverride.length > 0 ? ColorUtils.mix(accentOverride, root.dark ? "#FFFFFF" : "#000000", 0.88) : Appearance.colors.colPrimaryHover
+        property color accentActive: accentOverride.length > 0 ? ColorUtils.mix(accentOverride, root.dark ? "#FFFFFF" : "#000000", 0.76) : Appearance.colors.colPrimaryActive
         property color accentUnfocused: root.dark ? root.darkColors.accentUnfocused : root.lightColors.accentUnfocused
         property color accentFg: ColorUtils.isDark(accent) ? "#FFFFFF" : "#000000"
         property color selection: Appearance.colors.colPrimaryContainer

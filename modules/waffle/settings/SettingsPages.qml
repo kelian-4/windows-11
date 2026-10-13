@@ -11,7 +11,6 @@ Singleton {
         { name: Translation.tr("System"), icon: "desktop", tint: "#4CC2FF", source: "modules/settings/GeneralConfig.qml", hero: true },
         { name: Translation.tr("Personalization"), icon: "wand", tint: "#FF9F3D", source: "modules/settings/QuickConfig.qml", hero: false },
         { name: Translation.tr("Taskbar"), icon: "start-here", tint: "#4CA3FF", source: "modules/settings/BarConfig.qml", hero: false },
-        { name: Translation.tr("Desktop"), icon: "image", tint: "#3DC98B", source: "modules/settings/BackgroundConfig.qml", hero: false },
         { name: Translation.tr("Interface"), icon: "apps", tint: "#5DA9F2", source: "modules/settings/InterfaceConfig.qml", hero: false },
         { name: Translation.tr("Services"), icon: "server", tint: "#3CC8E6", source: "modules/settings/ServicesConfig.qml", hero: false },
         { name: Translation.tr("Advanced"), icon: "settings-cog-multiple", tint: "#A0A7B4", source: "modules/settings/AdvancedConfig.qml", hero: false },
