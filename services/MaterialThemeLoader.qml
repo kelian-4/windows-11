@@ -74,9 +74,28 @@ Singleton {
         onLoadFailed: root.resetFilePathNextTime();
     }
 
+    function setDarkMode(dark) {
+        Config.options.appearance.darkMode = dark;
+        Appearance.m3colors.darkmode = dark;
+        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", dark ? "dark" : "light", "--noswitch"]);
+    }
+
     function toggleLightDark() {
-        const currentlyDark = Appearance.m3colors.darkmode;
-        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", currentlyDark ? "light" : "dark", "--noswitch"]);
+        root.setDarkMode(!Appearance.m3colors.darkmode);
+    }
+
+    Connections {
+        target: Config.options?.appearance ?? null
+        function onDarkModeChanged() {
+            Appearance.m3colors.darkmode = Config.options.appearance.darkMode;
+        }
+    }
+
+    Connections {
+        target: Config
+        function onReadyChanged() {
+            if (Config.ready) Appearance.m3colors.darkmode = Config.options.appearance.darkMode;
+        }
     }
 
     GlobalShortcut {

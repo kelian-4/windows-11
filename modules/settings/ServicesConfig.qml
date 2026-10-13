@@ -234,14 +234,6 @@ ContentPage {
         title: Translation.tr("Weather")
         ConfigRow {
             ConfigSwitch {
-                buttonIcon: "assistant_navigation"
-                text: Translation.tr("Enable GPS based location")
-                checked: Config.options.bar.weather.enableGPS
-                onCheckedChanged: {
-                    Config.options.bar.weather.enableGPS = checked;
-                }
-            }
-            ConfigSwitch {
                 buttonIcon: "thermometer"
                 text: Translation.tr("Fahrenheit unit")
                 checked: Config.options.bar.weather.useUSCS

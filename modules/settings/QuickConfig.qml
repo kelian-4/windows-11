@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Effects
+import QtQuick.Dialogs
+import QtQuick.Shapes
 import Quickshell
 import Quickshell.Io
 import qs.services
@@ -11,6 +12,7 @@ import qs.modules.waffle.looks
 import qs.modules.waffle.settings
 
 ContentPage {
+    id: root
     forceWidth: true
 
     Process {
@@ -20,9 +22,28 @@ ContentPage {
         command: ["bash", "-c", FileUtils.trimFileProtocol(randomWallProc.scriptPath)]
         stdout: SplitParser {
             onRead: data => {
-                randomWallProc.status = data.trim();
+                const line = data.trim();
+                randomWallProc.status = line;
+                if (line.startsWith("WALLPAPER_PATH="))
+                    Config.options.background.wallpaperPath = line.substring("WALLPAPER_PATH=".length);
             }
         }
+    }
+
+    property bool matugenAvailable: false
+
+    Process {
+        running: true
+        command: ["sh", "-c", "command -v matugen"]
+        onExited: (exitCode, exitStatus) => root.matugenAvailable = exitCode === 0
+    }
+
+    FileDialog {
+        id: wallpaperDialog
+        title: Translation.tr("Choose wallpaper")
+        currentFolder: `${Directories.pictures}`
+        nameFilters: [Translation.tr("Images") + " (*.png *.jpg *.jpeg *.webp *.avif *.bmp *.svg)"]
+        onAccepted: Wallpapers.apply(FileUtils.trimFileProtocol(selectedFile.toString()))
     }
 
     component SmallLightDarkPreferenceButton: RippleButton {
@@ -38,9 +59,7 @@ ContentPage {
         colBackgroundHover: Looks.colors.bg2Hover
         colBackgroundToggled: Looks.colors.accent
         colBackgroundToggledHover: Looks.colors.accentHover
-        onClicked: {
-            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
-        }
+        onClicked: MaterialThemeLoader.setDarkMode(dark)
         contentItem: Item {
             anchors.centerIn: parent
             ColumnLayout {
@@ -74,19 +93,30 @@ ContentPage {
             Item {
                 implicitWidth: 340
                 implicitHeight: 200
-                
+
                 StyledImage {
                     id: wallpaperPreview
-                    anchors.fill: parent
+                    width: parent.width
+                    height: parent.height
+                    visible: false
                     fillMode: Image.PreserveAspectCrop
                     source: Config.options.background.wallpaperPath
                     cache: false
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-            maskEnabled: true
-                        maskSource: Rectangle {
-                            width: 360
-                            height: 200
+                }
+
+                Shape {
+                    anchors.fill: parent
+                    preferredRendererType: Shape.CurveRenderer
+
+                    ShapePath {
+                        strokeWidth: -1
+                        fillItem: wallpaperPreview
+
+                        PathRectangle {
+                            x: 0
+                            y: 0
+                            width: wallpaperPreview.width
+                            height: wallpaperPreview.height
                             radius: Looks.radius.large
                         }
                     }
@@ -130,9 +160,7 @@ ContentPage {
                     StyledToolTip {
                         text: Translation.tr("Pick wallpaper image on your system")
                     }
-                    onClicked: {
-                        Quickshell.execDetached(`${Directories.wallpaperSwitchScriptPath}`);
-                    }
+                    onClicked: wallpaperDialog.open()
                     mainContentComponent: Component {
                         RowLayout {
                             spacing: 10
@@ -177,7 +205,61 @@ ContentPage {
             }
         }
 
+        ContentSubsection {
+            title: Translation.tr("Accent color")
+
+            Flow {
+                Layout.fillWidth: true
+                spacing: 4
+
+                Repeater {
+                    model: ["", "#FFB900", "#FF8C00", "#F7630C", "#CA5010", "#DA3B01", "#EF6950", "#D13438", "#FF4343", "#E74856", "#E81123", "#EA005E", "#C30052", "#E3008C", "#BF0077", "#C239B3", "#9A0089", "#0078D4", "#0063B1", "#8E8CD8", "#6B69D6", "#8764B8", "#744DA9", "#B146C2", "#881798", "#0099BC", "#2D7D9A", "#00B7C3", "#038387", "#00B294", "#018574", "#00CC6A", "#10893E", "#7A7574", "#5D5A58", "#68768A", "#515C6B", "#567C73", "#486860", "#498205", "#107C10", "#767676", "#4C4A48", "#69797E", "#4A5459", "#647C64", "#525E54", "#847545", "#7E735F"]
+
+                    delegate: Rectangle {
+                        id: swatch
+                        required property string modelData
+                        readonly property bool selected: Config.options.appearance.palette.accentColor.toLowerCase() === modelData.toLowerCase()
+                        width: 36
+                        height: 36
+                        radius: Looks.radius.medium
+                        color: modelData.length > 0 ? modelData : Looks.colors.bg2Base
+                        border.width: selected ? 2 : 1
+                        border.color: selected ? Looks.colors.fg : Looks.colors.bg2Border
+
+                        WText {
+                            anchors.centerIn: parent
+                            visible: swatch.modelData.length === 0
+                            text: "A"
+                            font.pixelSize: Looks.font.pixelSize.larger
+                        }
+
+                        FluentIcon {
+                            anchors.centerIn: parent
+                            visible: swatch.selected && swatch.modelData.length > 0
+                            icon: "checkmark"
+                            implicitSize: 16
+                            color: ColorUtils.isDark(swatch.color) ? "#FFFFFF" : "#000000"
+                        }
+
+                        MouseArea {
+                            id: swatchMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onClicked: Config.options.appearance.palette.accentColor = swatch.modelData
+
+                            StyledToolTip {
+                                extraVisibleCondition: false
+                                alternativeVisibleCondition: swatchMouse.containsMouse
+                                text: swatch.modelData.length === 0 ? Translation.tr("Automatic") : swatch.modelData
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         ConfigSelectionArray {
+            visible: root.matugenAvailable
             currentValue: Config.options.appearance.palette.type
             onSelected: newValue => {
                 Config.options.appearance.palette.type = newValue;
@@ -230,104 +312,6 @@ ContentPage {
             onCheckedChanged: {
                 Config.options.appearance.transparency.enable = checked;
             }
-        }
-    }
-
-    ContentSection {
-        icon: "screenshot_monitor"
-        title: Translation.tr("Bar & screen")
-
-        ConfigRow {
-            ContentSubsection {
-                title: Translation.tr("Bar position")
-                ConfigSelectionArray {
-                    currentValue: (Config.options.bar.bottom ? 1 : 0) | (Config.options.bar.vertical ? 2 : 0)
-                    onSelected: newValue => {
-                        Config.options.bar.bottom = (newValue & 1) !== 0;
-                        Config.options.bar.vertical = (newValue & 2) !== 0;
-                    }
-                    options: [
-                        {
-                            displayName: Translation.tr("Top"),
-                            icon: "arrow_upward",
-                            value: 0 // bottom: false, vertical: false
-                        },
-                        {
-                            displayName: Translation.tr("Left"),
-                            icon: "arrow_back",
-                            value: 2 // bottom: false, vertical: true
-                        },
-                        {
-                            displayName: Translation.tr("Bottom"),
-                            icon: "arrow_downward",
-                            value: 1 // bottom: true, vertical: false
-                        },
-                        {
-                            displayName: Translation.tr("Right"),
-                            icon: "arrow_forward",
-                            value: 3 // bottom: true, vertical: true
-                        }
-                    ]
-                }
-            }
-            ContentSubsection {
-                title: Translation.tr("Bar style")
-
-                ConfigSelectionArray {
-                    currentValue: Config.options.bar.cornerStyle
-                    onSelected: newValue => {
-                        Config.options.bar.cornerStyle = newValue; // Update local copy
-                    }
-                    options: [
-                        {
-                            displayName: Translation.tr("Hug"),
-                            icon: "line_curve",
-                            value: 0
-                        },
-                        {
-                            displayName: Translation.tr("Float"),
-                            icon: "page_header",
-                            value: 1
-                        },
-                        {
-                            displayName: Translation.tr("Rect"),
-                            icon: "toolbar",
-                            value: 2
-                        }
-                    ]
-                }
-            }
-        }
-
-        ConfigRow {
-            ContentSubsection {
-                title: Translation.tr("Screen round corner")
-
-                ConfigSelectionArray {
-                    currentValue: Config.options.appearance.fakeScreenRounding
-                    onSelected: newValue => {
-                        Config.options.appearance.fakeScreenRounding = newValue;
-                    }
-                    options: [
-                        {
-                            displayName: Translation.tr("No"),
-                            icon: "close",
-                            value: 0
-                        },
-                        {
-                            displayName: Translation.tr("Yes"),
-                            icon: "check",
-                            value: 1
-                        },
-                        {
-                            displayName: Translation.tr("When not fullscreen"),
-                            icon: "fullscreen_exit",
-                            value: 2
-                        }
-                    ]
-                }
-            }
-            
         }
     }
 
