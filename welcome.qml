@@ -9,6 +9,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick.Window
 import Quickshell
 import Quickshell.Io
@@ -28,7 +29,7 @@ ApplicationWindow {
         Quickshell.execDetached(["notify-send", Translation.tr("Welcome app"), Translation.tr("Enjoy! You can reopen the welcome app any time with <tt>Super+Shift+Alt+/</tt>. To open the settings app, hit <tt>Super+I</tt>"), "-a", "Shell"]);
         Qt.quit();
     }
-    title: Translation.tr("illogical-impulse Welcome")
+    title: Translation.tr("Welcome")
 
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme();
@@ -41,15 +42,12 @@ ApplicationWindow {
     height: 650
     color: Appearance.m3colors.m3background
 
-    Process {
-        id: konachanWallProc
-        property string status: ""
-        command: ["bash", "-c", Quickshell.shellPath("scripts/colors/random/random_konachan_wall.sh")]
-        stdout: SplitParser {
-            onRead: data => {
-                konachanWallProc.status = data.trim();
-            }
-        }
+    FileDialog {
+        id: wallpaperDialog
+        title: Translation.tr("Choose wallpaper")
+        currentFolder: `${Directories.pictures}`
+        nameFilters: [Translation.tr("Images") + " (*.png *.jpg *.jpeg *.webp *.avif *.bmp *.svg)"]
+        onAccepted: Wallpapers.apply(FileUtils.trimFileProtocol(selectedFile.toString()))
     }
 
     Process {
@@ -280,27 +278,11 @@ ApplicationWindow {
                     RowLayout {
                         Layout.alignment: Qt.AlignHCenter
                         RippleButtonWithIcon {
-                            id: rndWallBtn
-                            visible: Config.options.policies.weeb === 1
-                            Layout.alignment: Qt.AlignHCenter
-                            buttonRadius: Appearance.rounding.small
-                            materialIcon: "ifl"
-                            mainText: konachanWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: Konachan")
-                            onClicked: {
-                                konachanWallProc.running = true;
-                            }
-                            StyledToolTip {
-                                text: Translation.tr("Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers")
-                            }
-                        }
-                        RippleButtonWithIcon {
                             materialIcon: "wallpaper"
                             StyledToolTip {
                                 text: Translation.tr("Pick wallpaper image on your system")
                             }
-                            onClicked: {
-                                Quickshell.execDetached([`${Directories.wallpaperSwitchScriptPath}`]);
-                            }
+                            onClicked: wallpaperDialog.open()
                             mainContentComponent: Component {
                                 RowLayout {
                                     spacing: 10
@@ -443,14 +425,14 @@ ApplicationWindow {
                             materialIcon: "help"
                             mainText: Translation.tr("Usage")
                             onClicked: {
-                                Qt.openUrlExternally("https://end-4.github.io/dots-hyprland-wiki/en/ii-qs/02usage/");
+                                Qt.openUrlExternally("https://github.com/kelian-4/windows-11");
                             }
                         }
                         RippleButtonWithIcon {
                             materialIcon: "construction"
                             mainText: Translation.tr("Configuration")
                             onClicked: {
-                                Qt.openUrlExternally("https://end-4.github.io/dots-hyprland-wiki/en/ii-qs/03config/");
+                                Qt.openUrlExternally("https://github.com/kelian-4/windows-11");
                             }
                         }
                     }
@@ -468,14 +450,7 @@ ApplicationWindow {
                             nerdIcon: "󰊤"
                             mainText: Translation.tr("GitHub")
                             onClicked: {
-                                Qt.openUrlExternally("https://github.com/end-4/dots-hyprland");
-                            }
-                        }
-                        RippleButtonWithIcon {
-                            materialIcon: "favorite"
-                            mainText: "Funny number"
-                            onClicked: {
-                                Qt.openUrlExternally("https://github.com/sponsors/end-4");
+                                Qt.openUrlExternally("https://github.com/kelian-4/windows-11");
                             }
                         }
                     }

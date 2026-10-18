@@ -70,6 +70,7 @@ Item {
         id: categoryFileView
         path: Config.ready ? Directories.generatedWallpaperCategoryPath : ""
         watchChanges: true
+        printErrors: false
         onFileChanged: reload()
         onLoaded: {
             root.setClockPreset(categoryFileView.text().trim())

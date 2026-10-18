@@ -71,19 +71,13 @@ Singleton {
         {
             action: "dark",
             execute: () => {
-                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]);
-            }
-        },
-        {
-            action: "konachanwallpaper",
-            execute: () => {
-                Quickshell.execDetached([Quickshell.shellPath("scripts/colors/random/random_konachan_wall.sh")]);
+                MaterialThemeLoader.setDarkMode(true);
             }
         },
         {
             action: "light",
             execute: () => {
-                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]);
+                MaterialThemeLoader.setDarkMode(false);
             }
         },
         {

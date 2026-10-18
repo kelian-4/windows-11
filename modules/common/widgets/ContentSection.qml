@@ -9,6 +9,7 @@ ColumnLayout {
     id: root
     property string title
     property string icon: ""
+    property bool comingSoon: false
     default property alias contentData: sectionContent.data
 
     Layout.fillWidth: true
@@ -30,11 +31,18 @@ ColumnLayout {
             font.pixelSize: Looks.font.pixelSize.larger
             font.weight: Looks.font.weight.strong
         }
+
+        ComingSoonBadge {
+            visible: root.comingSoon
+            Layout.alignment: Qt.AlignVCenter
+        }
     }
 
     ColumnLayout {
         id: sectionContent
         Layout.fillWidth: true
         spacing: 4
+        enabled: !root.comingSoon
+        opacity: root.comingSoon ? 0.5 : 1
     }
 }

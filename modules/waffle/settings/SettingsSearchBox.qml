@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.services
 import qs.modules.waffle.looks
 
 Rectangle {
     id: root
 
     property alias text: input.text
-    property string placeholder: "Find a setting"
+    property string placeholder: Translation.tr("Find a setting")
 
     implicitHeight: 32
     radius: Looks.radius.medium

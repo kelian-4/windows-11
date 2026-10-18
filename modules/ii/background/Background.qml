@@ -99,27 +99,31 @@ Variants {
 
         // Wallpaper zoom scale
         function updateZoomScale() {
-            getWallpaperSizeProc.path = bgRoot.wallpaperPath;
-            getWallpaperSizeProc.running = true;
+            sizeProbe.active = false;
+            sizeProbe.active = bgRoot.wallpaperPath.length > 0;
         }
-        Process {
-            id: getWallpaperSizeProc
-            property string path: bgRoot.wallpaperPath
-            command: ["magick", "identify", "-format", "%w %h", path]
-            stdout: StdioCollector {
-                id: wallpaperSizeOutputCollector
-                onStreamFinished: {
-                    const output = wallpaperSizeOutputCollector.text;
-                    const [width, height] = output.split(" ").map(Number);
+        Component.onCompleted: updateZoomScale()
+
+        Loader {
+            id: sizeProbe
+            active: false
+            sourceComponent: Image {
+                source: bgRoot.wallpaperPath
+                cache: false
+                asynchronous: true
+                visible: false
+                onStatusChanged: {
+                    if (status !== Image.Ready || implicitWidth <= 0 || implicitHeight <= 0) return;
                     const [screenWidth, screenHeight] = [bgRoot.screen.width, bgRoot.screen.height];
-                    bgRoot.wallpaperWidth = width;
-                    bgRoot.wallpaperHeight = height;
+                    bgRoot.wallpaperWidth = implicitWidth;
+                    bgRoot.wallpaperHeight = implicitHeight;
 
                     // Perfect image; scale = 1
                     // Small picture; scale > 1; will zoom in the picture
                     // Big picture; scale < 1; will zoom out the picture
                     // Choose max number so every side will fit
-                    bgRoot.minSuitableScale = Math.max(screenWidth / width, screenHeight / height);
+                    bgRoot.minSuitableScale = Math.max(screenWidth / implicitWidth, screenHeight / implicitHeight);
+                    Qt.callLater(() => sizeProbe.active = false);
                 }
             }
         }

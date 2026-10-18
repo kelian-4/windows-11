@@ -1,5 +1,6 @@
 pragma Singleton
 import Quickshell
+import qs
 import qs.services
 import qs.modules.common
 
@@ -17,7 +18,11 @@ Singleton {
     }
 
     function lock() {
-        Quickshell.execDetached(["loginctl", "lock-session"]);
+        if (Config.options.lock.useHyprlock) {
+            Quickshell.execDetached(["bash", "-c", "pidof hyprlock || hyprlock"]);
+            return;
+        }
+        GlobalStates.screenLocked = true;
     }
 
     function suspend() {

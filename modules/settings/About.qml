@@ -83,7 +83,7 @@ ContentPage {
     }
     ContentSection {
         icon: "folder_managed"
-        title: Translation.tr("Dotfiles")
+        title: Translation.tr("Project")
 
         RowLayout {
             Layout.alignment: Qt.AlignLeft
@@ -96,17 +96,15 @@ ContentPage {
             }
             ColumnLayout {
                 Layout.alignment: Qt.AlignVCenter
-                // spacing: 10
                 WText {
-                    text: Translation.tr("illogical-impulse")
+                    text: "windows-11"
                     font.pixelSize: Looks.font.pixelSize.xlarger + 3
                     font.weight: Looks.font.weight.strong
                 }
                 WText {
-                    text: `<a href="https://github.com/end-4/dots-hyprland"><span style="color:${Looks.colors.accent}">https://github.com/end-4/dots-hyprland</span></a>`
+                    text: `<a href="https://github.com/kelian-4/windows-11"><span style="color:${Looks.colors.accent}">https://github.com/kelian-4/windows-11</span></a>`
                     font.pixelSize: Looks.font.pixelSize.large
                     textFormat: Text.RichText
-                    linkColor: Looks.colors.accent
                     onLinkActivated: (link) => {
                         Qt.openUrlExternally(link)
                     }
@@ -120,10 +118,10 @@ ContentPage {
             spacing: 5
 
             RippleButtonWithIcon {
-                materialIcon: "auto_stories"
-                mainText: Translation.tr("Documentation")
+                materialIcon: "open_in_new"
+                mainText: Translation.tr("Repository")
                 onClicked: {
-                    Qt.openUrlExternally("https://end-4.github.io/dots-hyprland-wiki/en/ii-qs/02usage/")
+                    Qt.openUrlExternally("https://github.com/kelian-4/windows-11")
                 }
             }
             RippleButtonWithIcon {
@@ -131,25 +129,21 @@ ContentPage {
                 materialIconFill: false
                 mainText: Translation.tr("Issues")
                 onClicked: {
-                    Qt.openUrlExternally("https://github.com/end-4/dots-hyprland/issues")
+                    Qt.openUrlExternally("https://github.com/kelian-4/windows-11/issues")
                 }
             }
-            RippleButtonWithIcon {
-                materialIcon: "forum"
-                mainText: Translation.tr("Discussions")
-                onClicked: {
-                    Qt.openUrlExternally("https://github.com/end-4/dots-hyprland/discussions")
-                }
-            }
-            RippleButtonWithIcon {
-                materialIcon: "favorite"
-                mainText: Translation.tr("Donate")
-                onClicked: {
-                    Qt.openUrlExternally("https://github.com/sponsors/end-4")
-                }
-            }
+        }
 
-            
+        WText {
+            Layout.topMargin: 6
+            text: `${Translation.tr("Based on")} <a href="https://github.com/end-4/dots-hyprland"><span style="color:${Looks.colors.accent}">dots-hyprland</span></a> ${Translation.tr("by end-4")}`
+            color: Looks.colors.fg1
+            font.pixelSize: Looks.font.pixelSize.normal
+            textFormat: Text.RichText
+            onLinkActivated: (link) => {
+                Qt.openUrlExternally(link)
+            }
+            PointingHandLinkHover {}
         }
     }
 }
