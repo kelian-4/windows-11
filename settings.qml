@@ -18,8 +18,28 @@ ApplicationWindow {
     id: root
 
     property int currentPage: 0
+    property int currentSub: -1
     readonly property var pages: SettingsPages.pages
+    readonly property var page: pages[currentPage]
+    readonly property var sub: (currentSub >= 0 && currentSub < page.subs.length) ? page.subs[currentSub] : null
     readonly property bool searching: sidebar.query.trim().length > 0
+    readonly property bool inSub: !searching && sub !== null
+    readonly property bool showHub: !searching && !inSub && page.kind === "hub"
+    readonly property bool showSoon: !searching && !inSub && page.kind === "soon"
+    readonly property bool showFile: !searching && (inSub || (page.kind === "page" && !!page.source))
+    readonly property string fileSource: inSub ? (sub.source ?? "") : (page.source ?? "")
+
+    function openPage(pageIndex, subIndex) {
+        sidebar.query = "";
+        root.currentSub = -1;
+        root.currentPage = pageIndex;
+        root.currentSub = subIndex;
+    }
+
+    function goBack() {
+        if (root.searching) sidebar.query = "";
+        else if (root.currentSub >= 0) root.currentSub = -1;
+    }
 
     visible: true
     title: Translation.tr("Settings")
@@ -39,12 +59,12 @@ ApplicationWindow {
 
     Shortcut {
         sequences: ["Ctrl+PgDown", "Ctrl+Tab"]
-        onActivated: root.currentPage = (root.currentPage + 1) % root.pages.length
+        onActivated: root.openPage((root.currentPage + 1) % root.pages.length, -1)
     }
 
     Shortcut {
         sequences: ["Ctrl+PgUp", "Ctrl+Shift+Tab"]
-        onActivated: root.currentPage = (root.currentPage - 1 + root.pages.length) % root.pages.length
+        onActivated: root.openPage((root.currentPage - 1 + root.pages.length) % root.pages.length, -1)
     }
 
     Item {
@@ -59,8 +79,8 @@ ApplicationWindow {
                 left: parent.left
                 right: parent.right
             }
-            canGoBack: root.searching
-            onBackRequested: sidebar.query = ""
+            canGoBack: root.searching || root.currentSub >= 0
+            onBackRequested: root.goBack()
         }
 
         SettingsSidebar {
@@ -72,10 +92,7 @@ ApplicationWindow {
             }
             pages: root.pages
             currentIndex: root.currentPage
-            onPageSelected: index => {
-                sidebar.query = "";
-                root.currentPage = index;
-            }
+            onPageSelected: index => root.openPage(index, -1)
         }
 
         Item {
@@ -87,13 +104,41 @@ ApplicationWindow {
                 right: parent.right
             }
 
-            WText {
+            Row {
                 id: pageTitle
                 x: 64
                 y: 10
-                text: root.searching ? Translation.tr("Search results") : root.pages[root.currentPage].name
-                font.pixelSize: 28
-                font.weight: Looks.font.weight.strong
+                spacing: 14
+
+                WText {
+                    visible: root.searching || root.inSub
+                    text: root.searching ? Translation.tr("Search results") : root.page.name
+                    color: root.searching ? Looks.colors.fg : Looks.colors.fg1
+                    font.pixelSize: 28
+                    font.weight: Looks.font.weight.strong
+
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: root.inSub
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.goBack()
+                    }
+                }
+
+                FluentIcon {
+                    visible: root.inSub
+                    anchors.verticalCenter: parent.verticalCenter
+                    icon: "chevron-right"
+                    implicitSize: 16
+                    color: Looks.colors.fg1
+                }
+
+                WText {
+                    visible: !root.searching
+                    text: root.inSub && root.sub ? root.sub.title : root.page.name
+                    font.pixelSize: 28
+                    font.weight: Looks.font.weight.strong
+                }
             }
 
             Loader {
@@ -105,13 +150,16 @@ ApplicationWindow {
                     right: parent.right
                     bottom: parent.bottom
                 }
-                visible: !root.searching
-                active: Config.ready
-                source: root.pages[root.currentPage].source
+                visible: root.showFile
+                active: Config.ready && root.showFile
+                source: root.showFile ? root.fileSource : ""
 
                 onLoaded: {
-                    if (item && item.heroComponent !== undefined)
-                        item.heroComponent = root.pages[root.currentPage].hero ? heroComponent : null;
+                    if (!item) return;
+                    if (item.heroComponent !== undefined)
+                        item.heroComponent = (!root.inSub && root.page.hero) ? heroComponent : null;
+                    if (item.footerComponent !== undefined)
+                        item.footerComponent = (!root.inSub && root.page.subs.length > 0) ? footerComponent : null;
                     fadeIn.restart();
                 }
 
@@ -126,15 +174,25 @@ ApplicationWindow {
                 }
             }
 
+            SettingsHubPage {
+                anchors.fill: pageLoader
+                visible: root.showHub
+                subs: root.page.subs
+                tint: root.page.tint
+                onOpened: index => root.openPage(root.currentPage, index)
+            }
+
+            SoonPage {
+                anchors.fill: pageLoader
+                visible: root.showSoon
+            }
+
             SearchResultsPage {
                 anchors.fill: pageLoader
                 visible: root.searching
                 query: sidebar.query.trim()
                 results: SettingsPages.search(sidebar.query)
-                onResultClicked: index => {
-                    sidebar.query = "";
-                    root.currentPage = index;
-                }
+                onResultClicked: (pageIndex, subIndex) => root.openPage(pageIndex, subIndex)
             }
         }
     }
@@ -142,6 +200,26 @@ ApplicationWindow {
     Component {
         id: heroComponent
         SettingsHero {}
+    }
+
+    Component {
+        id: footerComponent
+        ColumnLayout {
+            spacing: 4
+
+            Repeater {
+                model: root.page.subs
+                delegate: SettingsCard {
+                    required property var modelData
+                    required property int index
+                    icon: modelData.icon
+                    iconTint: root.page.tint
+                    title: modelData.title
+                    subtitle: modelData.subtitle
+                    onClicked: root.openPage(root.currentPage, index)
+                }
+            }
+        }
     }
 
     component ResizeEdge: MouseArea {

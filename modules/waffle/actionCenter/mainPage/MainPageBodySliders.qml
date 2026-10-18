@@ -16,6 +16,7 @@ ColumnLayout {
     spacing: 12
 
     RowLayout {
+        visible: Config.options.sidebar.quickSliders.showBrightness
         spacing: 4
 
         WPanelIconButton {
@@ -45,6 +46,7 @@ ColumnLayout {
     }
     
     RowLayout {
+        visible: Config.options.sidebar.quickSliders.showVolume
         spacing: 4
 
         WPanelIconButton {
@@ -89,4 +91,26 @@ ColumnLayout {
         }
     }
 
+    RowLayout {
+        visible: Config.options.sidebar.quickSliders.showMic
+        spacing: 4
+
+        WPanelIconButton {
+            iconName: Audio.source?.audio?.muted ? "mic-off" : "mic"
+            onClicked: Audio.toggleMicMute()
+        }
+
+        WSlider {
+            Layout.fillWidth: true
+            value: Audio.source?.audio?.volume ?? 0
+            scrollable: true
+            onMoved: {
+                Audio.source.audio.volume = value;
+            }
+        }
+
+        WPanelIconButton {
+            opacity: 0
+        }
+    }
 }

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.services
 import qs.modules.waffle.looks
 
 SettingsPage {
@@ -8,11 +9,11 @@ SettingsPage {
     property var results: []
     property string query: ""
 
-    signal resultClicked(int index)
+    signal resultClicked(int page, int sub)
 
     WText {
         visible: root.results.length === 0
-        text: `No results found for "${root.query}"`
+        text: Translation.tr("No results found for \"%1\"").arg(root.query)
         color: Looks.colors.fg1
         font.pixelSize: Looks.font.pixelSize.large
         Layout.topMargin: 8
@@ -26,7 +27,7 @@ SettingsPage {
             iconTint: modelData.tint
             title: modelData.title
             subtitle: modelData.subtitle
-            onClicked: root.resultClicked(modelData.index)
+            onClicked: root.resultClicked(modelData.page, modelData.sub)
         }
     }
 }

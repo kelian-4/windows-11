@@ -62,10 +62,10 @@ LockScreen {
             z: 1
             anchors.fill: bg
             source: bg
-            blurEnabled: true
+            blurEnabled: Config.options.lock.blur.enable
             blur: 1.0
             blurMax: 64
-            scale: root.passwordView ? 1.1 : 1
+            scale: root.passwordView ? Config.options.lock.blur.extraZoom : 1
             opacity: root.passwordView ? 1 : 0
 
             Behavior on opacity {
@@ -128,7 +128,9 @@ LockScreen {
             visible: !root.passwordView
             ClockTextGroup {
                 anchors {
-                    horizontalCenter: parent.horizontalCenter
+                    horizontalCenter: Config.options.lock.centerClock ? parent.horizontalCenter : undefined
+                    left: Config.options.lock.centerClock ? undefined : parent.left
+                    leftMargin: 80
                     top: parent.top
                     topMargin: interactablesComponent.height * 0.1
                 }
@@ -174,6 +176,7 @@ LockScreen {
                 }
                 SessionScreen.PowerButton {
                     id: powerButton
+                    visible: !Config.options.lock.security.requirePasswordToPower
                 }
             }
         }
@@ -223,6 +226,14 @@ LockScreen {
             font.pixelSize: 28
             font.weight: Looks.font.weight.strong
             text: DateTime.collapsedCalendarFormat
+        }
+
+        WText {
+            visible: Config.options.lock.showLockedText
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: Looks.darkColors.fg
+            font.pixelSize: 20
+            text: Translation.tr("Locked")
         }
     }
 

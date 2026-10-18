@@ -172,6 +172,7 @@ ContentPage {
                 MaterialTextArea {
                     id: localeInput
                     Layout.fillWidth: true
+                    Layout.minimumWidth: 160
                     placeholderText: Translation.tr("Locale code, e.g. fr_FR, de_DE, zh_CN...")
                     text: Config.options.language.ui === "auto" ? Qt.locale().name : Config.options.language.ui
                 }
@@ -345,6 +346,14 @@ ContentPage {
             checked: Config.options.workSafety.enable.clipboard
             onCheckedChanged: {
                 Config.options.workSafety.enable.clipboard = checked;
+            }
+        }
+        ConfigSwitch {
+            buttonIcon: "wallpaper"
+            text: Translation.tr("Hide sussy/anime wallpapers")
+            checked: Config.options.workSafety.enable.wallpaper
+            onCheckedChanged: {
+                Config.options.workSafety.enable.wallpaper = checked;
             }
         }
     }

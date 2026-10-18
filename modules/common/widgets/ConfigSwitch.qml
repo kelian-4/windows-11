@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import qs.services
 import qs.modules.common
 import qs.modules.waffle.looks
 import qs.modules.waffle.settings
@@ -52,12 +53,12 @@ Button {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
             text: root.text
-            wrapMode: Text.WordWrap
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             font: root.font
         }
 
         WText {
-            text: switchWidget.checked ? "On" : "Off"
+            text: switchWidget.checked ? Translation.tr("On") : Translation.tr("Off")
             Layout.alignment: Qt.AlignVCenter
             font.pixelSize: Looks.font.pixelSize.large
         }

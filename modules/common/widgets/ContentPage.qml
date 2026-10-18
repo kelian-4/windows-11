@@ -10,13 +10,14 @@ Flickable {
     property bool forceWidth: false
     property real bottomContentPadding: 60
     property Component heroComponent: null
+    property Component footerComponent: null
 
     default property alias contentData: contentColumn.data
 
     clip: true
     boundsBehavior: Flickable.StopAtBounds
     contentWidth: width
-    contentHeight: contentColumn.implicitHeight + root.bottomContentPadding
+    contentHeight: contentColumn.implicitHeight + (footerLoader.active ? footerLoader.implicitHeight + 24 : 0) + root.bottomContentPadding
     implicitWidth: contentColumn.implicitWidth
 
     ScrollBar.vertical: WScrollBar {
@@ -36,5 +37,14 @@ Flickable {
             visible: active
             sourceComponent: root.heroComponent
         }
+    }
+
+    Loader {
+        id: footerLoader
+        x: 21
+        y: contentColumn.y + contentColumn.implicitHeight + 24
+        width: contentColumn.width
+        active: root.footerComponent !== null
+        sourceComponent: root.footerComponent
     }
 }

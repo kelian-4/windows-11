@@ -8,6 +8,7 @@ ColumnLayout {
     id: root
     property string title: ""
     property string tooltip: ""
+    property bool comingSoon: false
     default property alias contentData: sectionContent.data
 
     Layout.fillWidth: true
@@ -51,6 +52,10 @@ ColumnLayout {
             }
         }
 
+        ComingSoonBadge {
+            visible: root.comingSoon
+        }
+
         Item {
             Layout.fillWidth: true
         }
@@ -60,5 +65,7 @@ ColumnLayout {
         id: sectionContent
         Layout.fillWidth: true
         spacing: 4
+        enabled: !root.comingSoon
+        opacity: root.comingSoon ? 0.5 : 1
     }
 }

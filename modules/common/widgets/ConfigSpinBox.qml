@@ -26,10 +26,10 @@ Rectangle {
         id: rowLayout
         anchors {
             fill: parent
-            leftMargin: 18
-            rightMargin: 18
+            leftMargin: 14
+            rightMargin: 14
         }
-        spacing: 16
+        spacing: 12
         opacity: root.enabled ? 1 : 0.4
 
         SettingsIcon {
@@ -43,14 +43,14 @@ Rectangle {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
             text: root.text
-            wrapMode: Text.WordWrap
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             font.pixelSize: Looks.font.pixelSize.large
         }
 
         SpinBox {
             id: spinBoxWidget
             Layout.alignment: Qt.AlignVCenter
-            implicitWidth: 120
+            implicitWidth: 108
             implicitHeight: 32
             editable: true
             value: root.value

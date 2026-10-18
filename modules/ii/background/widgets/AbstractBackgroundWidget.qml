@@ -61,42 +61,20 @@ AbstractWidget {
     function refreshPlacementIfNeeded() {
         if (!Config.ready) return;
         if (root.placementStrategy === "free" && !root.needsColText) return;
-        leastBusyRegionProc.wallpaperPath = root.wallpaperPath;
-        leastBusyRegionProc.running = false;
-        leastBusyRegionProc.running = true;
+        leastBusyRegion.source = root.wallpaperPath;
+        leastBusyRegion.screenWidth = Math.round(root.scaledScreenWidth);
+        leastBusyRegion.screenHeight = Math.round(root.scaledScreenHeight);
+        leastBusyRegion.busiest = root.placementStrategy === "mostBusy";
+        leastBusyRegion.run();
     }
-    Process {
-        id: leastBusyRegionProc
-        property string wallpaperPath: root.wallpaperPath
-        // TODO: make these less arbitrary
-        property int contentWidth: 300
-        property int contentHeight: 300
-        property int horizontalPadding: 200
-        property int verticalPadding: 200
-        command: [Quickshell.shellPath("scripts/images/least-busy-region-venv.sh") // Comments to force the formatter to break lines
-            , "--screen-width", Math.round(root.scaledScreenWidth) //
-            , "--screen-height", Math.round(root.scaledScreenHeight) //
-            , "--width", contentWidth //
-            , "--height", contentHeight //
-            , "--horizontal-padding", horizontalPadding //
-            , "--vertical-padding", verticalPadding //
-            , wallpaperPath //
-            , ...(root.placementStrategy === "mostBusy" ? ["--busiest"] : [])
-            // "--visual-output",
-        ]
-        stdout: StdioCollector {
-            id: leastBusyRegionOutputCollector
-            onStreamFinished: {
-                const output = leastBusyRegionOutputCollector.text;
-                // console.log("[Background] Least busy region output:", output)
-                if (output.length === 0) return;
-                const parsedContent = JSON.parse(output);
-                root.dominantColor = parsedContent.dominant_color || Appearance.colors.colPrimary;
-                if (root.placementStrategy === "free") return;
-                root.targetX = parsedContent.center_x * root.wallpaperScale - root.width / 2;
-                root.targetY  = parsedContent.center_y * root.wallpaperScale - root.height / 2;
-            }
+
+    LeastBusyRegion {
+        id: leastBusyRegion
+        onFound: (centerX, centerY, dominantColor) => {
+            root.dominantColor = dominantColor || Appearance.colors.colPrimary;
+            if (root.placementStrategy === "free") return;
+            root.targetX = centerX * root.wallpaperScale - root.width / 2;
+            root.targetY = centerY * root.wallpaperScale - root.height / 2;
         }
     }
 }
-
