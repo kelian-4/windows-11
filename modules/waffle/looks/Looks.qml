@@ -18,10 +18,11 @@ Singleton {
     property bool dark: Appearance.m3colors.darkmode
 
     readonly property bool transparencyEnabled: Config.options.appearance.transparency.enable
-    property real backgroundTransparency: transparencyEnabled ? Config.options.appearance.transparency.backgroundTransparency : 0
-    property real panelBackgroundTransparency: transparencyEnabled ? Config.options.appearance.transparency.backgroundTransparency : 0
-    property real panelLayerTransparency: transparencyEnabled ? Config.options.appearance.transparency.contentTransparency : 0
-    property real contentTransparency: transparencyEnabled ? Config.options.appearance.transparency.contentTransparency : 0
+    readonly property real transparencyLevel: Config.options.appearance.transparency.level
+    property real backgroundTransparency: transparencyEnabled ? transparencyLevel : 0
+    property real panelBackgroundTransparency: transparencyEnabled ? transparencyLevel : 0
+    property real panelLayerTransparency: transparencyEnabled ? transparencyLevel / 2 : 0
+    property real contentTransparency: transparencyEnabled ? transparencyLevel / 2 : 0
     function applyBackgroundTransparency(col) {
         return ColorUtils.applyAlpha(col, 1 - root.backgroundTransparency)
     }

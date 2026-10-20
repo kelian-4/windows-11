@@ -16,6 +16,13 @@ Button {
     required property var toplevel
     property real previewWidthConstraint: 200
     property real previewHeightConstraint: 110
+    readonly property var client: HyprlandData.clientForToplevel(root.toplevel)
+    readonly property real aspectRatio: {
+        const size = root.client?.size;
+        return (size && size[0] > 0 && size[1] > 0) ? size[0] / size[1] : root.previewWidthConstraint / root.previewHeightConstraint;
+    }
+    readonly property real fitWidth: Math.min(root.previewWidthConstraint, root.previewHeightConstraint * root.aspectRatio)
+    readonly property real fitHeight: root.fitWidth / root.aspectRatio
     padding: 5
     Layout.fillHeight: true
 
@@ -77,17 +84,17 @@ Button {
             Layout.fillHeight: true
             Layout.margins: Looks.radius.large - root.padding
             Layout.topMargin: 0
-            implicitWidth: Math.max(screencopyView.implicitWidth, 80)
-            implicitHeight: Math.max(screencopyView.implicitHeight, root.previewHeightConstraint)
+            implicitWidth: Math.max(root.fitWidth, 150)
+            implicitHeight: Math.max(root.fitHeight, 60)
 
             ScreencopyView {
                 id: screencopyView
                 anchors.centerIn: parent
-                width: root.previewWidthConstraint
-                height: root.previewHeightConstraint
+                width: root.fitWidth
+                height: root.fitHeight
                 captureSource: root.toplevel
                 live: true
-                constraintSize: Qt.size(root.previewWidthConstraint, root.previewHeightConstraint)
+                constraintSize: Qt.size(root.fitWidth, root.fitHeight)
             }
         }
     }

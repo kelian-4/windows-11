@@ -18,7 +18,6 @@ import qs.modules.waffle.taskView
 // Fallbacks
 import qs.modules.ii.background
 import qs.modules.ii.cheatsheet
-import qs.modules.ii.dock
 import qs.modules.ii.onScreenKeyboard
 import qs.modules.ii.overlay
 import qs.modules.ii.screenTranslator
@@ -40,7 +39,6 @@ Scope {
 
     PanelLoader { component: Background {} }
     PanelLoader { component: Cheatsheet {} }
-    PanelLoader { extraCondition: Config.options.dock.enable; component: Dock {} }
     PanelLoader { component: OnScreenKeyboard {} }
     PanelLoader { component: Overlay {} }
     PanelLoader { component: ScreenTranslator {} }
