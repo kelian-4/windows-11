@@ -268,6 +268,18 @@ ContentPage {
                 Config.options.appearance.transparency.enable = checked;
             }
         }
+
+        ConfigSlider {
+            enabled: Config.options.appearance.transparency.enable
+            buttonIcon: "ev_shadow"
+            text: Translation.tr("Transparency level")
+            from: 0
+            to: 0.6
+            value: Config.options.appearance.transparency.level
+            onValueChanged: {
+                Config.options.appearance.transparency.level = value;
+            }
+        }
     }
 
     NoticeBox {
