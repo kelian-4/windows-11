@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: 9427b42adb6f4bb41ba304b4e5d57ad9847f0bd8
+Commit: 7ab42409fbe73dabdb785214e0d0c5e07e3c97cd
 Branche: dev
-Date: 2026-10-18 12:20:33 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/39126869503
+Date: 2026-10-20 19:49:58 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/39486773461
 
 | Etape | Resultat |
 |---|---|
@@ -23,26 +23,6 @@ scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: invalid escape sequence 
 
 ## Log complet - ShellCheck
 ```
-
-In scripts/colors/applycolor.sh line 8:
-CACHE_DIR="$XDG_CACHE_HOME/quickshell"
-^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/applycolor.sh line 27:
-colorlist=($colornames)     # Array of color names
-           ^---------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
-
-
-In scripts/colors/applycolor.sh line 28:
-colorvalues=($colorstrings) # Array of color values
-             ^-----------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
-
-
-In scripts/colors/applycolor.sh line 48:
-  kill -SIGUSR1 $(pidof kitty)
-                ^------------^ SC2046 (warning): Quote this to prevent word splitting.
-
 
 In scripts/colors/switchwall.sh line 7:
 CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
@@ -89,6 +69,31 @@ In scripts/colors/switchwall.sh line 451:
               ^-----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
 
 
+In scripts/colors/applycolor.sh line 8:
+CACHE_DIR="$XDG_CACHE_HOME/quickshell"
+^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/applycolor.sh line 27:
+colorlist=($colornames)     # Array of color names
+           ^---------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
+
+
+In scripts/colors/applycolor.sh line 28:
+colorvalues=($colorstrings) # Array of color values
+             ^-----------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
+
+
+In scripts/colors/applycolor.sh line 48:
+  kill -SIGUSR1 $(pidof kitty)
+                ^------------^ SC2046 (warning): Quote this to prevent word splitting.
+
+
+In scripts/thumbnails/thumbgen-venv.sh line 4:
+source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
+       ^-- SC2046 (warning): Quote this to prevent word splitting.
+
+
 In scripts/keyring/unlock.sh line 19:
 eval $(echo -n "${UNLOCK_PASSWORD}" \
      ^-- SC2046 (warning): Quote this to prevent word splitting.
@@ -100,11 +105,6 @@ source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
 
 
 In scripts/images/find-regions-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/thumbnails/thumbgen-venv.sh line 4:
 source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
        ^-- SC2046 (warning): Quote this to prevent word splitting.
 
