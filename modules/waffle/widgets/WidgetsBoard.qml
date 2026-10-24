@@ -100,6 +100,21 @@ Item {
                             text: Translation.tr("To Do")
                             onTriggered: root.addWidget("todo")
                         }
+                        Action {
+                            enabled: !Config.options.waffles.widgets.order.includes("stocks")
+                            text: Translation.tr("Stocks")
+                            onTriggered: root.addWidget("stocks")
+                        }
+                        Action {
+                            enabled: !Config.options.waffles.widgets.order.includes("sports")
+                            text: Translation.tr("Sports")
+                            onTriggered: root.addWidget("sports")
+                        }
+                        Action {
+                            enabled: !Config.options.waffles.widgets.order.includes("photos")
+                            text: Translation.tr("Photos")
+                            onTriggered: root.addWidget("photos")
+                        }
                     }
                 }
 
@@ -150,6 +165,12 @@ Item {
                                         return calendarComponent;
                                     case "todo":
                                         return todoComponent;
+                                    case "stocks":
+                                        return stocksComponent;
+                                    case "sports":
+                                        return sportsComponent;
+                                    case "photos":
+                                        return photosComponent;
                                     default:
                                         return null;
                                     }
@@ -175,5 +196,20 @@ Item {
     Component {
         id: todoComponent
         TodoWidget {}
+    }
+
+    Component {
+        id: stocksComponent
+        StocksWidget {}
+    }
+
+    Component {
+        id: sportsComponent
+        SportsWidget {}
+    }
+
+    Component {
+        id: photosComponent
+        PhotosWidget {}
     }
 }

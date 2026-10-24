@@ -626,7 +626,7 @@ Singleton {
                     property bool force2CharDayOfWeek: true
                 }
                 property JsonObject widgets: JsonObject {
-                    property list<string> order: ["weather", "calendar", "todo"]
+                    property list<string> order: ["weather", "calendar", "todo", "stocks", "sports", "photos"]
                     property JsonObject weather: JsonObject {
                         property string size: "medium"
                     }
@@ -635,6 +635,18 @@ Singleton {
                     }
                     property JsonObject todo: JsonObject {
                         property string size: "medium"
+                    }
+                    property JsonObject stocks: JsonObject {
+                        property string size: "small"
+                        property string symbol: "MSFT"
+                    }
+                    property JsonObject sports: JsonObject {
+                        property string size: "small"
+                        property string league: "basketball/nba"
+                    }
+                    property JsonObject photos: JsonObject {
+                        property string size: "medium"
+                        property string folder: ""
                     }
                 }
             }
