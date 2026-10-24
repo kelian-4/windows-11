@@ -43,6 +43,10 @@ Singleton {
         temp: 0,
         tempFeelsLike: 0,
         lastRefresh: 0,
+        desc: "",
+        high: "",
+        low: "",
+        hourly: [],
     })
 
     function refineData(data) {
@@ -75,6 +79,25 @@ Singleton {
             temp.temp += "°C";
             temp.tempFeelsLike += "°C";
         }
+        temp.desc = data?.current?.weatherDesc?.[0]?.value || "";
+        const today = data?.days?.[0];
+        temp.high = (root.useUSCS ? today?.maxtempF : today?.maxtempC) || "";
+        temp.low = (root.useUSCS ? today?.mintempF : today?.mintempC) || "";
+        const slots = [];
+        (data?.days || []).forEach((day, dayIndex) => {
+            (day.hourly || []).forEach(h => {
+                slots.push({
+                    dayIndex: dayIndex,
+                    hour: Math.floor(parseInt(h.time) / 100),
+                    temp: (root.useUSCS ? h.tempF : h.tempC) + "°",
+                    wCode: h.weatherCode,
+                    rain: (h.chanceofrain || 0) + "%"
+                });
+            });
+        });
+        const nowHour = new Date().getHours();
+        const first = Math.max(0, slots.findIndex(slot => slot.dayIndex === 0 && slot.hour + 3 > nowHour));
+        temp.hourly = slots.slice(first, first + 5);
         temp.lastRefresh = DateTime.time + " • " + DateTime.date;
         root.data = temp;
     }
@@ -92,7 +115,7 @@ Singleton {
         command += "?format=j1";
         command += " | ";
         // only take the current weather, location, asytronmy data
-        command += "jq '{current: .current_condition[0], location: .nearest_area[0], astronomy: .weather[0].astronomy[0]}'";
+        command += "jq '{current: .current_condition[0], location: .nearest_area[0], astronomy: .weather[0].astronomy[0], days: [.weather[0:2][] | {maxtempC, maxtempF, mintempC, mintempF, hourly: [.hourly[] | {time, tempC, tempF, weatherCode, chanceofrain}]}]}'";
         fetcher.command[2] = command;
         fetcher.running = true;
     }

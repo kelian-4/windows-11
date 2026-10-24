@@ -9,11 +9,12 @@ import qs.modules.waffle.looks
 WidgetCard {
     id: root
 
-    widgetId: "calendar"
-    title: Qt.locale(Config.options.calendar.locale).toString(calendarView.focusedDate, "MMMM yyyy")
-    allowedSizes: ["large"]
+    readonly property var calendarLocale: Qt.locale(Config.options.calendar.locale)
+    readonly property real gridWidth: 7 * calendarView.buttonSize + 6 * calendarView.buttonSpacing
 
-    readonly property var locale: Qt.locale(Config.options.calendar.locale)
+    widgetId: "calendar"
+    showHeader: false
+    allowedSizes: ["large"]
 
     ColumnLayout {
         anchors.fill: parent
@@ -21,40 +22,45 @@ WidgetCard {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 4
+            spacing: 2
 
-            Item {
+            WText {
                 Layout.fillWidth: true
+                text: root.calendarLocale.toString(calendarView.focusedDate, "MMMM yyyy")
+                font.pixelSize: Looks.font.pixelSize.large
+                font.weight: Looks.font.weight.strong
             }
 
             WBorderlessButton {
-                implicitWidth: 28
-                implicitHeight: 28
+                implicitWidth: 32
+                implicitHeight: 32
                 onClicked: calendarView.scrollMonthsAndSnap(-1)
                 contentItem: FluentIcon {
-                    icon: "caret-up"
-                    filled: true
-                    implicitSize: 12
+                    icon: "chevron-up"
+                    implicitSize: 16
                 }
             }
 
             WBorderlessButton {
-                implicitWidth: 28
-                implicitHeight: 28
+                implicitWidth: 32
+                implicitHeight: 32
                 onClicked: calendarView.scrollMonthsAndSnap(1)
                 contentItem: FluentIcon {
-                    icon: "caret-down"
-                    filled: true
-                    implicitSize: 12
+                    icon: "chevron-down"
+                    implicitSize: 16
                 }
+            }
+
+            Item {
+                implicitWidth: 24
             }
         }
 
         DayOfWeekRow {
-            Layout.fillWidth: true
-            locale: root.locale
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: root.gridWidth
+            locale: root.calendarLocale
             spacing: calendarView.buttonSpacing
-            implicitHeight: calendarView.buttonSize
             delegate: Item {
                 id: dayOfWeekItem
                 required property var model
@@ -70,34 +76,20 @@ WidgetCard {
 
         CalendarView {
             id: calendarView
-            Layout.fillWidth: true
-            locale: root.locale
-            buttonSize: 30
-            buttonSpacing: 6
-            buttonVerticalSpacing: 1
-            delegate: DayButton {}
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: root.gridWidth
+            locale: root.calendarLocale
+            buttonSize: 36
+            buttonSpacing: 8
+            buttonVerticalSpacing: 2
+            delegate: CalendarDayButton {
+                focusedMonth: calendarView.focusedMonth
+                size: calendarView.buttonSize
+            }
         }
 
         Item {
             Layout.fillHeight: true
-        }
-    }
-
-    component DayButton: WButton {
-        id: dayButton
-        required property var model
-        checked: model.today
-        enabled: hovered || checked || model.month === calendarView.focusedMonth
-        implicitWidth: calendarView.buttonSize
-        implicitHeight: calendarView.buttonSize
-        radius: height / 2
-
-        contentItem: Item {
-            WText {
-                anchors.centerIn: parent
-                text: dayButton.model.day
-                color: dayButton.fgColor
-            }
         }
     }
 }

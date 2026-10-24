@@ -626,12 +626,15 @@ Singleton {
                     property bool force2CharDayOfWeek: true
                 }
                 property JsonObject widgets: JsonObject {
-                    property list<string> order: ["weather", "calendar"]
+                    property list<string> order: ["weather", "calendar", "todo"]
                     property JsonObject weather: JsonObject {
                         property string size: "medium"
                     }
                     property JsonObject calendar: JsonObject {
                         property string size: "large"
+                    }
+                    property JsonObject todo: JsonObject {
+                        property string size: "medium"
                     }
                 }
             }
