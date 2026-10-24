@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: a351b2ac343b90e608d10806308953466c6b8e56
+Commit: de57f69909f70c8839e8c2a2327598683d38fb4f
 Branche: dev
-Date: 2026-10-24 12:50:25 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/40095582417
+Date: 2026-10-24 15:32:50 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/40107462297
 
 | Etape | Resultat |
 |---|---|
