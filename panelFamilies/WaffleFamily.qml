@@ -6,6 +6,7 @@ import qs.modules.waffle.actionCenter
 import qs.modules.waffle.bar
 import qs.modules.waffle.lock
 import qs.modules.waffle.notificationCenter
+import qs.modules.waffle.widgets
 import qs.modules.waffle.notificationPopup
 import qs.modules.waffle.onScreenDisplay
 // import qs.modules.waffle.overlay
@@ -28,6 +29,7 @@ Scope {
     PanelLoader { component: WaffleBar {} }
     PanelLoader { component: WaffleLock {} }
     PanelLoader { component: WaffleNotificationCenter {} }
+    PanelLoader { component: WaffleWidgets {} }
     PanelLoader { component: WaffleNotificationPopup {} }
     PanelLoader { component: WaffleOSD {} }
     // PanelLoader { component: WaffleOverlay {} }
