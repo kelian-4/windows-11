@@ -53,7 +53,7 @@ Button {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
             text: root.text
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            wrapMode: Text.WordWrap
             font: root.font
         }
 

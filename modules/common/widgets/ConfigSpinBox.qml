@@ -40,11 +40,19 @@ Rectangle {
         }
 
         WText {
+            id: label
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
+            Layout.minimumWidth: longestWord.width
             text: root.text
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            wrapMode: Text.WordWrap
             font.pixelSize: Looks.font.pixelSize.large
+
+            TextMetrics {
+                id: longestWord
+                font: label.font
+                text: root.text.split(/\s+/).reduce((a, b) => b.length > a.length ? b : a, "")
+            }
         }
 
         SpinBox {

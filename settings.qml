@@ -48,8 +48,8 @@ ApplicationWindow {
 
     width: 1100
     height: 750
-    minimumWidth: 750
-    minimumHeight: 500
+    minimumWidth: 1010
+    minimumHeight: 590
     color: Looks.colors.bg0Base
 
     Component.onCompleted: {
@@ -104,17 +104,20 @@ ApplicationWindow {
                 right: parent.right
             }
 
-            Row {
+            RowLayout {
                 id: pageTitle
                 x: 64
                 y: 10
-                spacing: 14
+                width: content.width - 64 - 24
+                spacing: 12
 
                 WText {
                     visible: root.searching || root.inSub
+                    Layout.maximumWidth: pageTitle.width * 0.5
                     text: root.searching ? Translation.tr("Search results") : root.page.name
+                    elide: Text.ElideRight
                     color: root.searching ? Looks.colors.fg : Looks.colors.fg1
-                    font.pixelSize: 28
+                    font.pixelSize: root.inSub ? 24 : 28
                     font.weight: Looks.font.weight.strong
 
                     MouseArea {
@@ -127,7 +130,7 @@ ApplicationWindow {
 
                 FluentIcon {
                     visible: root.inSub
-                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.alignment: Qt.AlignVCenter
                     icon: "chevron-right"
                     implicitSize: 16
                     color: Looks.colors.fg1
@@ -135,8 +138,10 @@ ApplicationWindow {
 
                 WText {
                     visible: !root.searching
+                    Layout.fillWidth: true
                     text: root.inSub && root.sub ? root.sub.title : root.page.name
-                    font.pixelSize: 28
+                    elide: Text.ElideRight
+                    font.pixelSize: root.inSub ? 24 : 28
                     font.weight: Looks.font.weight.strong
                 }
             }
@@ -160,17 +165,6 @@ ApplicationWindow {
                         item.heroComponent = (!root.inSub && root.page.hero) ? heroComponent : null;
                     if (item.footerComponent !== undefined)
                         item.footerComponent = (!root.inSub && root.page.subs.length > 0) ? footerComponent : null;
-                    fadeIn.restart();
-                }
-
-                NumberAnimation {
-                    id: fadeIn
-                    target: pageLoader
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                    duration: 160
-                    easing.type: Easing.OutCubic
                 }
             }
 
