@@ -8,7 +8,7 @@ import qs.modules.waffle.looks
 WidgetCard {
     id: root
 
-    readonly property int maxTasks: size === "large" ? 9 : 4
+    readonly property int maxTasks: size === "large" ? 9 : (size === "medium" ? 5 : 2)
     readonly property var pendingTasks: Todo.list.map((task, index) => ({
                 content: task.content,
                 done: task.done,
@@ -17,7 +17,7 @@ WidgetCard {
 
     widgetId: "todo"
     title: Translation.tr("To Do")
-    allowedSizes: ["medium", "large"]
+    allowedSizes: ["small", "medium", "large"]
 
     ColumnLayout {
         anchors.fill: parent

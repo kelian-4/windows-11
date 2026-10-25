@@ -634,7 +634,7 @@ Singleton {
                         property string size: "large"
                     }
                     property JsonObject todo: JsonObject {
-                        property string size: "medium"
+                        property string size: "small"
                     }
                     property JsonObject stocks: JsonObject {
                         property string size: "small"

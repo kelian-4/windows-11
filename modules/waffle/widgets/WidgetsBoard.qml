@@ -10,7 +10,6 @@ Item {
     id: root
 
     readonly property real cellWidth: 172
-    readonly property real rowUnit: 96
     readonly property real gap: 8
     readonly property int columnCount: 3
     readonly property string greeting: {
@@ -30,61 +29,67 @@ Item {
     }
 
     readonly property var knownWidgets: ["weather", "calendar", "todo", "stocks", "sports", "photos"]
+    readonly property var heightBySize: ({
+            small: 90,
+            medium: 188,
+            large: 288
+        })
     readonly property var placements: {
-        const spans = {
-            small: {
-                columns: 1,
-                rows: 1
-            },
-            medium: {
-                columns: 1,
-                rows: 2
-            },
-            large: {
-                columns: 2,
-                rows: 4
+        const heights = new Array(root.columnCount).fill(0);
+        const pending = Config.options.waffles.widgets.order.filter(id => root.knownWidgets.includes(id)).map(id => {
+            const size = Config.options.waffles.widgets[id]?.size ?? "medium";
+            return {
+                id: id,
+                columns: size === "large" ? 2 : 1,
+                height: root.heightBySize[size] ?? root.heightBySize.medium
+            };
+        });
+        const bestPair = () => {
+            let best = null;
+            for (let column = 0; column + 1 < root.columnCount; column++) {
+                const y = Math.max(heights[column], heights[column + 1]);
+                const waste = Math.abs(heights[column] - heights[column + 1]);
+                if (best === null || waste < best.waste || (waste === best.waste && y < best.y))
+                    best = {
+                        column: column,
+                        y: y,
+                        waste: waste
+                    };
             }
+            return best;
         };
-        const occupied = [];
-        const isFree = (row, column, columns, rows) => {
-            for (let r = row; r < row + rows; r++) {
-                for (let c = column; c < column + columns; c++) {
-                    if (occupied[r]?.[c])
-                        return false;
-                }
-            }
-            return true;
-        };
-        const pending = Config.options.waffles.widgets.order.filter(id => root.knownWidgets.includes(id)).map(id => ({
-                    id: id,
-                    span: spans[Config.options.waffles.widgets[id]?.size] ?? spans.medium
-                }));
         const result = [];
-        for (let row = 0; pending.length > 0; row++) {
-            for (let column = 0; column < root.columnCount && pending.length > 0; column++) {
-                if (occupied[row]?.[column])
-                    continue;
-                const index = pending.findIndex(item => column + item.span.columns <= root.columnCount && isFree(row, column, item.span.columns, item.span.rows));
-                if (index < 0)
-                    continue;
-                const item = pending.splice(index, 1)[0];
-                for (let r = row; r < row + item.span.rows; r++) {
-                    occupied[r] = occupied[r] ?? [];
-                    for (let c = column; c < column + item.span.columns; c++)
-                        occupied[r][c] = true;
-                }
+        while (pending.length > 0) {
+            const narrowIndex = pending.findIndex(item => item.columns === 1);
+            const wideIndex = pending.findIndex(item => item.columns === 2);
+            const pair = wideIndex >= 0 ? bestPair() : null;
+            if (wideIndex >= 0 && (narrowIndex < 0 || pair.waste <= root.gap)) {
+                const item = pending.splice(wideIndex, 1)[0];
                 result.push({
                     id: item.id,
-                    row: row,
-                    column: column,
-                    columnSpan: item.span.columns,
-                    rowSpan: item.span.rows
+                    column: pair.column,
+                    columns: 2,
+                    y: pair.y,
+                    height: item.height
                 });
+                heights[pair.column] = pair.y + item.height + root.gap;
+                heights[pair.column + 1] = heights[pair.column];
+            } else {
+                const item = pending.splice(narrowIndex, 1)[0];
+                const column = heights.indexOf(Math.min(...heights));
+                result.push({
+                    id: item.id,
+                    column: column,
+                    columns: 1,
+                    y: heights[column],
+                    height: item.height
+                });
+                heights[column] += item.height + root.gap;
             }
         }
         return result;
     }
-    readonly property int rowCount: placements.reduce((max, item) => Math.max(max, item.row + item.rowSpan), 0)
+    readonly property real boardHeight: placements.reduce((max, item) => Math.max(max, item.y + item.height), 0)
 
     implicitWidth: columnCount * cellWidth + (columnCount - 1) * gap + 24
 
@@ -183,7 +188,7 @@ Item {
                 id: board
 
                 width: parent.width
-                height: Math.max(0, root.rowCount * (root.rowUnit + root.gap) - root.gap)
+                height: root.boardHeight
 
                 Repeater {
                     model: root.placements
@@ -194,9 +199,9 @@ Item {
                         required property var modelData
 
                         x: modelData.column * (root.cellWidth + root.gap)
-                        y: modelData.row * (root.rowUnit + root.gap)
-                        width: root.cellWidth * modelData.columnSpan + root.gap * (modelData.columnSpan - 1)
-                        height: root.rowUnit * modelData.rowSpan + root.gap * (modelData.rowSpan - 1)
+                        y: modelData.y
+                        width: root.cellWidth * modelData.columns + root.gap * (modelData.columns - 1)
+                        height: modelData.height
 
                         Loader {
                             anchors.fill: parent

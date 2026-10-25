@@ -79,7 +79,7 @@ WidgetCard {
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: root.gridWidth
             locale: root.calendarLocale
-            buttonSize: 36
+            buttonSize: 30
             buttonSpacing: 8
             buttonVerticalSpacing: 2
             delegate: CalendarDayButton {

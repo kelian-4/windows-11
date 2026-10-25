@@ -12,6 +12,7 @@ WidgetCard {
     readonly property int nowHour: new Date().getHours()
 
     widgetId: "weather"
+    contentMargin: 12
     allowedSizes: ["small", "medium"]
     title: loaded ? Weather.data.city : Translation.tr("Weather")
     textColor: "#1B1B1B"
@@ -98,7 +99,7 @@ WidgetCard {
                         Layout.fillHeight: true
                         Layout.preferredWidth: 0
                         Layout.minimumWidth: 0
-                        spacing: 4
+                        spacing: 2
 
                         WText {
                             Layout.alignment: Qt.AlignHCenter
@@ -110,7 +111,7 @@ WidgetCard {
                         FluentIcon {
                             Layout.alignment: Qt.AlignHCenter
                             icon: WeatherIcons.iconFor(slot.modelData.wCode, slot.modelData.hour)
-                            implicitSize: 18
+                            implicitSize: 16
                             color: root.textColor
                         }
 
