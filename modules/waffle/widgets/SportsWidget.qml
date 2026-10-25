@@ -26,18 +26,24 @@ WidgetCard {
 
         ColumnLayout {
             Layout.fillWidth: true
+            Layout.preferredWidth: 0
+            Layout.minimumWidth: 0
             spacing: 0
 
             WText {
-                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
                 text: root.centerText
+                elide: Text.ElideRight
                 font.pixelSize: Looks.font.pixelSize.large
                 font.weight: Looks.font.weight.strong
             }
 
             WText {
-                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
                 text: Sports.data.detail
+                elide: Text.ElideRight
                 color: Looks.colors.subfg
                 font.pixelSize: 10
             }
@@ -57,6 +63,8 @@ WidgetCard {
     component TeamBadge: ColumnLayout {
         required property var team
 
+        Layout.preferredWidth: 32
+        Layout.maximumWidth: 32
         spacing: 2
 
         Image {
