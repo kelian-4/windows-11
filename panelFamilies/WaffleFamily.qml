@@ -4,6 +4,7 @@ import Quickshell
 import qs.modules.common
 import qs.modules.waffle.actionCenter
 import qs.modules.waffle.bar
+import qs.modules.waffle.desktop
 import qs.modules.waffle.lock
 import qs.modules.waffle.notificationCenter
 import qs.modules.waffle.widgets
@@ -40,6 +41,7 @@ Scope {
     PanelLoader { extraCondition: Config.options.overview.enable; component: WaffleTaskView {} }
 
     PanelLoader { component: Background {} }
+    PanelLoader { extraCondition: Config.options.waffles.desktop.enable; component: WaffleDesktop {} }
     PanelLoader { component: Cheatsheet {} }
     PanelLoader { component: OnScreenKeyboard {} }
     PanelLoader { component: Overlay {} }
