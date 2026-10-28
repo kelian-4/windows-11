@@ -16,7 +16,7 @@ Scope {
             exclusiveZone: 0
             WlrLayershell.namespace: "quickshell:wDesktop"
             WlrLayershell.layer: WlrLayer.Bottom
-            WlrLayershell.keyboardFocus: content.renaming ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
             anchors {
                 top: true

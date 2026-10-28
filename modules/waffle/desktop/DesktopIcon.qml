@@ -15,10 +15,13 @@ Item {
     required property url fileUrl
     required property bool fileIsDir
     required property string fileSuffix
+    required property var fileSize
+    required property var fileModified
     required property real cellX
     required property real cellY
     required property real cellWidth
     required property real cellHeight
+    property real iconSize: 48
     property bool selected: false
     property bool renaming: false
 
@@ -50,6 +53,52 @@ Item {
             return Quickshell.iconPath(name.length > 0 ? name : "application-x-executable", "application-x-executable");
         }
         return Quickshell.iconPath(root.mimeIcon(fileSuffix.toLowerCase()), "text-x-generic");
+    }
+
+    readonly property string typeLabel: {
+        if (fileIsDir)
+            return Translation.tr("File folder");
+        if (isLauncher)
+            return Translation.tr("Desktop entry");
+        if (fileSuffix.length > 0)
+            return `${fileSuffix.toUpperCase()} ${Translation.tr("File")}`;
+        return Translation.tr("File");
+    }
+
+    function formatSize(bytes) {
+        const units = ["B", "KB", "MB", "GB", "TB"];
+        let value = bytes;
+        let unit = 0;
+        while (value >= 1024 && unit < units.length - 1) {
+            value /= 1024;
+            unit++;
+        }
+        return unit === 0 ? `${bytes} B` : `${value.toFixed(1)} ${units[unit]} (${bytes.toLocaleString()} B)`;
+    }
+
+    function propertiesInfo() {
+        return {
+            name: displayName,
+            icon: iconSource,
+            rows: [
+                {
+                    label: Translation.tr("Type"),
+                    value: typeLabel
+                },
+                {
+                    label: Translation.tr("Location"),
+                    value: DesktopIcons.desktopPath
+                },
+                {
+                    label: Translation.tr("Size"),
+                    value: fileIsDir ? "—" : formatSize(fileSize)
+                },
+                {
+                    label: Translation.tr("Modified"),
+                    value: new Date(fileModified).toLocaleString()
+                }
+            ]
+        };
     }
 
     function mimeIcon(suffix) {
@@ -89,6 +138,7 @@ Item {
     y: cellY
     width: cellWidth
     height: cellHeight
+    opacity: DesktopIcons.clipboardCut && DesktopIcons.clipboardPaths.includes(filePath) ? 0.5 : 1
 
     Behavior on x {
         enabled: !area.drag.active
@@ -136,10 +186,10 @@ Item {
 
         Image {
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 48
-            Layout.preferredHeight: 48
+            Layout.preferredWidth: root.iconSize
+            Layout.preferredHeight: root.iconSize
             source: root.iconSource
-            sourceSize: Qt.size(96, 96)
+            sourceSize: Qt.size(root.iconSize * 2, root.iconSize * 2)
             fillMode: Image.PreserveAspectFit
             asynchronous: true
         }
