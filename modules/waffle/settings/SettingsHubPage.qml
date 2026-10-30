@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import qs.modules.common.widgets
 
 SettingsPage {
     id: root
@@ -18,7 +19,14 @@ SettingsPage {
             iconTint: root.tint
             title: modelData.title
             subtitle: modelData.subtitle
+            chevron: !modelData.soon
+            clickable: !modelData.soon
+            opacity: modelData.soon ? 0.6 : 1
             onClicked: root.opened(index)
+
+            ComingSoonBadge {
+                visible: modelData.soon === true
+            }
         }
     }
 }

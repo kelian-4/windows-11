@@ -26,30 +26,9 @@ Item {
             Layout.bottomMargin: 22
             spacing: 14
 
-            Item {
-                Layout.preferredWidth: 60
-                Layout.preferredHeight: 60
+            SettingsAvatar {
+                size: 60
                 Layout.alignment: Qt.AlignVCenter
-
-                Rectangle {
-                    anchors.fill: parent
-                    radius: width / 2
-                    color: Looks.colors.bg2Base
-                    border.width: 1
-                    border.color: Looks.colors.bg2Border
-
-                    SettingsIcon {
-                        anchors.centerIn: parent
-                        icon: "people"
-                        size: 30
-                        tint: Looks.colors.fg1
-                    }
-                }
-
-                WUserAvatar {
-                    anchors.fill: parent
-                    sourceSize: Qt.size(60, 60)
-                }
             }
 
             ColumnLayout {

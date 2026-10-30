@@ -16,6 +16,7 @@ ColumnLayout {
     spacing: 8
 
     RowLayout {
+        visible: root.title.length > 0
         Layout.leftMargin: 2
         spacing: 10
 
