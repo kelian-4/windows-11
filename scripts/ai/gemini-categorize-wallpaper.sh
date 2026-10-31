@@ -7,6 +7,8 @@ if [[ -z "$1" ]]; then
 fi
 
 # Variables
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/env.sh"
 SOURCE_IMG_PATH="$1"
 MODEL="${2:-${GEMINI_WALLPAPER_MODEL:-gemini-2.5-flash}}" # We use the flash variant so it's fast
 WALLPAPER_NAME="$(basename "$SOURCE_IMG_PATH")"
@@ -18,7 +20,7 @@ mkdir -p "$(dirname "$RESIZED_IMG_PATH")"
 magick "$SOURCE_IMG_PATH" -resize 200x -quality 50 "$RESIZED_IMG_PATH"
 
 # Get API key
-API_KEY=$(secret-tool lookup 'application' 'illogical-impulse' | jq -r '.apiKeys.gemini')
+API_KEY=$(secret-tool lookup 'application' "$KEYRING_APPLICATION" | jq -r '.apiKeys.gemini')
 
 # Encode image to base64
 if [[ "$(base64 --version 2>&1)" = *"FreeBSD"* ]]; then

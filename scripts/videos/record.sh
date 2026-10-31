@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-CONFIG_FILE="$HOME/.config/illogical-impulse/config.json"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/env.sh"
 JSON_PATH=".screenRecord.savePath"
 
-CUSTOM_PATH=$(jq -r "$JSON_PATH" "$CONFIG_FILE" 2>/dev/null)
+CUSTOM_PATH=$(jq -r "$JSON_PATH" "$SHELL_CONFIG_FILE" 2>/dev/null)
 
 RECORDING_DIR=""
 

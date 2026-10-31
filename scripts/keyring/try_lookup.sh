@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/env.sh"
 
-data=$(secret-tool lookup 'application' 'illogical-impulse')
+data=$(secret-tool lookup 'application' "$KEYRING_APPLICATION")
 if [[ -z "$data" ]]; then
     if "${SCRIPT_DIR}/is_unlocked.sh"; then
         echo 'not found'
