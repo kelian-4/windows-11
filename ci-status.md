@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: c02ef0c73410d14b62a45ac570cf4bf58051d9a2
+Commit: 94bbc210d636c5ad0f11a23f2721c77ad0453675
 Branche: dev
-Date: 2026-10-30 00:58:24 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/40982984525
+Date: 2026-10-31 14:19:59 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/41209615556
 
 | Etape | Resultat |
 |---|---|
@@ -24,84 +24,64 @@ scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: invalid escape sequence 
 ## Log complet - ShellCheck
 ```
 
-In scripts/images/find-regions-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/images/text-color-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/colors/switchwall.sh line 7:
-CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
-^--------^ SC2034 (warning): CONFIG_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/switchwall.sh line 12:
+In scripts/colors/switchwall.sh line 10:
 MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
 ^---------^ SC2034 (warning): MATUGEN_DIR appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 54:
+In scripts/colors/switchwall.sh line 52:
     local screen_width="$1"
           ^----------^ SC2034 (warning): screen_width appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 55:
+In scripts/colors/switchwall.sh line 53:
     local screen_height="$2"
           ^-----------^ SC2034 (warning): screen_height appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 56:
+In scripts/colors/switchwall.sh line 54:
     local wallpaper_path="$3"
           ^------------^ SC2034 (warning): wallpaper_path appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 182:
+In scripts/colors/switchwall.sh line 180:
     cursorposy_inverted=$((screensizey - cursorposy))
     ^-----------------^ SC2034 (warning): cursorposy_inverted appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 363:
+In scripts/colors/switchwall.sh line 361:
                     set_accent_color $(hyprpicker --no-fancy)
                                      ^----------------------^ SC2046 (warning): Quote this to prevent word splitting.
 
 
-In scripts/colors/switchwall.sh line 450:
+In scripts/colors/switchwall.sh line 448:
         local imgdir="$(dirname "$imgpath")"
               ^----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
 
 
-In scripts/colors/switchwall.sh line 451:
+In scripts/colors/switchwall.sh line 449:
         local imgbase="$(basename "$imgpath")"
               ^-----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
 
 
-In scripts/colors/applycolor.sh line 8:
+In scripts/colors/applycolor.sh line 6:
 CACHE_DIR="$XDG_CACHE_HOME/quickshell"
 ^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/applycolor.sh line 27:
+In scripts/colors/applycolor.sh line 25:
 colorlist=($colornames)     # Array of color names
            ^---------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
 
 
-In scripts/colors/applycolor.sh line 28:
+In scripts/colors/applycolor.sh line 26:
 colorvalues=($colorstrings) # Array of color values
              ^-----------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
 
 
-In scripts/colors/applycolor.sh line 48:
+In scripts/colors/applycolor.sh line 46:
   kill -SIGUSR1 $(pidof kitty)
                 ^------------^ SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/thumbnails/thumbgen-venv.sh line 4:
-source $(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate
-       ^-- SC2046 (warning): Quote this to prevent word splitting.
 
 
 In scripts/keyring/unlock.sh line 19:
