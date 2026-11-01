@@ -146,7 +146,15 @@ Scope {
         target: "osd"
 
         function trigger() {
-            root.trigger();
+            root.triggerVolumeOSD();
+        }
+
+        function volume() {
+            root.triggerVolumeOSD();
+        }
+
+        function brightness() {
+            root.triggerBrightnessOsd();
         }
     }
 
@@ -154,6 +162,6 @@ Scope {
         name: "osdTrigger"
         description: "Triggers OSD display"
 
-        onPressed: root.trigger()
+        onPressed: root.triggerVolumeOSD()
     }
 }

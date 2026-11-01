@@ -139,7 +139,7 @@ Singleton {
         case "settings_suggest":
             return "wand";
         case "terminal":
-            return "app-generic";
+            return "window-dev-tools";
         case "travel_explore":
             return "globe-search";
         case "keep":

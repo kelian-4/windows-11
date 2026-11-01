@@ -92,10 +92,10 @@ Scope { // Scope
                         OskControlButton { // Pin button
                             toggled: root.pinned
                             downAction: () => root.pinned = !root.pinned
-                            contentItem: MaterialSymbol {
-                                text: "keep"
-                                horizontalAlignment: Text.AlignHCenter
-                                iconSize: Appearance.font.pixelSize.larger
+                            contentItem: OskIcon {
+                                material: "keep"
+                                fluent: root.pinned ? "pin" : "pin-off"
+                                size: Appearance.font.pixelSize.larger
                                 color: root.pinned ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer0
                             }
                         }
@@ -103,10 +103,10 @@ Scope { // Scope
                             onClicked: () => {
                                 oskRoot.hide()
                             }
-                            contentItem: MaterialSymbol {
-                                horizontalAlignment: Text.AlignHCenter
-                                text: "keyboard_hide"
-                                iconSize: Appearance.font.pixelSize.larger
+                            contentItem: OskIcon {
+                                material: "keyboard_hide"
+                                fluent: "chevron-down"
+                                size: Appearance.font.pixelSize.larger
                             }
                         }
                     }

@@ -9,7 +9,7 @@ import Quickshell.Io
 QuickToggleModel {
     id: root
     name: Translation.tr("Cloudflare WARP")
-
+    available: false
     toggled: false
     icon: "cloud_lock"
     

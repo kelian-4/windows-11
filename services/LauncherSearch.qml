@@ -257,7 +257,7 @@ Singleton {
                 const emoji = entry.match(/^\s*(\S+)/)?.[1] || "";
                 return resultComp.createObject(null, {
                     rawValue: entry,
-                    name: entry.replace(/^\s*\S+\s+/, ""),
+                    name: entry.replace(/^\s*\S+\s+/, "").split(" | ")[0],
                     iconName: emoji,
                     iconType: LauncherSearchResult.IconType.Text,
                     verb: Translation.tr("Copy"),

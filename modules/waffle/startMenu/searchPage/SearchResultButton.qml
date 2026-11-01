@@ -27,8 +27,8 @@ WChoiceButton {
     }
 
     function execute() {
-        GlobalStates.searchOpen = false;
         root.entry.execute();
+        GlobalStates.searchOpen = false;
     }
 
     horizontalPadding: 0

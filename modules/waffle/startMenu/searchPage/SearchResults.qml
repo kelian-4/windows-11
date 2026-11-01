@@ -93,7 +93,9 @@ RowLayout {
         model: {
             const allResults = LauncherSearch.results;
             const showingEverything = LauncherSearch.query === "";
-            const perCategoryLimit = showingEverything ? Infinity : root.maxResultsPerCategory;
+            const listPrefixes = [Config.options.search.prefix.emojis, Config.options.search.prefix.clipboard];
+            const showingList = listPrefixes.some(prefix => LauncherSearch.query.startsWith(prefix));
+            const perCategoryLimit = showingEverything ? Infinity : (showingList ? root.resultLimit : root.maxResultsPerCategory);
             const totalLimit = showingEverything ? Infinity : root.resultLimit;
 
             // Find categories

@@ -113,9 +113,18 @@ RippleButton {
             Appearance.font.pixelSize.large
         horizontalAlignment: Text.AlignHCenter
         color: root.toggled ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer1
-        text: root.isBackspace ? "backspace" : root.isEnter ? "subdirectory_arrow_left" :
+        text: (root.isBackspace || root.isEnter) ? (osk.waffle ? "" : (root.isBackspace ? "backspace" : "subdirectory_arrow_left")) :
             Ydotool.shiftMode == 2 ? (root.keyData.labelCaps || root.keyData.labelShift || root.keyData.label) :
             Ydotool.shiftMode == 1 ? (root.keyData.labelShift || root.keyData.label) : 
             root.keyData.label
+
+        OskIcon {
+            id: osk
+            anchors.centerIn: parent
+            visible: waffle && (root.isBackspace || root.isEnter)
+            fluent: root.isBackspace ? "backspace" : "arrow-enter-left"
+            size: Appearance.font.pixelSize.huge
+            color: keyText.color
+        }
     }
 }

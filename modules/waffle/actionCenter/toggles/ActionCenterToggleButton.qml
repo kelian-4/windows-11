@@ -36,6 +36,7 @@ ColumnLayout {
     property color colForeground: toggled ? Looks.colors.accentFg : Looks.colors.fg1
 
     spacing: 0
+    visible: root.available
     property real wholeToggleWidth: 96
 
     AcrylicRectangle {

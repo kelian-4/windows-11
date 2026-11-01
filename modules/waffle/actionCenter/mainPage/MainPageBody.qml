@@ -23,14 +23,14 @@ BodyRectangle {
         }
 
         Rectangle {
-            visible: Config.options.sidebar.quickSliders.enable
+            visible: (Config.options.sidebar.quickSliders.showVolume || Config.options.sidebar.quickSliders.showBrightness || Config.options.sidebar.quickSliders.showMic)
             implicitHeight: 1
             Layout.fillWidth: true
             color: Looks.colors.bg1Border
         }
 
         MainPageBodySliders {
-            visible: Config.options.sidebar.quickSliders.enable
+            visible: (Config.options.sidebar.quickSliders.showVolume || Config.options.sidebar.quickSliders.showBrightness || Config.options.sidebar.quickSliders.showMic)
             Layout.margins: 12
             Layout.topMargin: 18
             Layout.bottomMargin: 14
