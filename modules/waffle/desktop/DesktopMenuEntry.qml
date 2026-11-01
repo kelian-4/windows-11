@@ -88,13 +88,26 @@ Item {
         contentItem: RowLayout {
             spacing: 12
 
-            FluentIcon {
+            Item {
                 visible: root.menu.hasIcons
                 Layout.preferredWidth: 16
                 Layout.preferredHeight: 16
-                icon: root.entry.icon ?? ""
-                implicitSize: 16
-                color: button.fgColor
+
+                FluentIcon {
+                    anchors.centerIn: parent
+                    visible: (root.entry.icon ?? "").length > 0
+                    icon: root.entry.icon ?? ""
+                    implicitSize: 16
+                    color: button.fgColor
+                }
+
+                Image {
+                    anchors.fill: parent
+                    visible: (root.entry.iconSource ?? "").length > 0
+                    source: root.entry.iconSource ?? ""
+                    sourceSize: Qt.size(32, 32)
+                    fillMode: Image.PreserveAspectFit
+                }
             }
 
             WText {

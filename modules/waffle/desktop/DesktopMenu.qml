@@ -12,7 +12,7 @@ Popup {
     property var parentMenu: null
     property var subMenu: null
 
-    readonly property bool hasIcons: model.some(entry => (entry.icon ?? "").length > 0)
+    readonly property bool hasIcons: model.some(entry => (entry.icon ?? "").length > 0 || (entry.iconSource ?? "").length > 0)
     readonly property bool dynamicInstance: parentMenu !== null
 
     function clampX(value) {

@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Qt.labs.folderlistmodel
+import Quickshell
 import qs.services
 import qs.modules.common
 import qs.modules.waffle.looks
@@ -39,8 +40,17 @@ Item {
         })
 
     property var cells: ({})
-    property string selectedName: ""
+    property var selectedNames: []
+    property string anchorName: ""
     property string renamingName: ""
+    property string dragPrimary: ""
+    property real dragDeltaX: 0
+    property real dragDeltaY: 0
+    property bool bandActive: false
+    property real bandX: 0
+    property real bandY: 0
+    property real bandWidth: 0
+    property real bandHeight: 0
     property bool reloading: false
     property var lastMenu: null
 
@@ -62,8 +72,85 @@ Item {
         return null;
     }
 
-    function selectedIcon() {
-        return root.iconByName(root.selectedName);
+    function selectedIcons() {
+        return root.selectedNames.map(name => root.iconByName(name)).filter(icon => icon !== null);
+    }
+
+    function isSelected(name) {
+        return root.selectedNames.includes(name);
+    }
+
+    function selectOnly(name) {
+        root.selectedNames = [name];
+        root.anchorName = name;
+    }
+
+    function clearSelection() {
+        root.selectedNames = [];
+        root.anchorName = "";
+    }
+
+    function toggleSelected(name) {
+        root.selectedNames = root.isSelected(name) ? root.selectedNames.filter(other => other !== name) : root.selectedNames.concat([name]);
+        root.anchorName = name;
+    }
+
+    function selectRange(name) {
+        const names = root.fileNames();
+        const from = names.indexOf(root.anchorName);
+        const to = names.indexOf(name);
+        if (from < 0 || to < 0) {
+            root.selectOnly(name);
+            return;
+        }
+        root.selectedNames = names.slice(Math.min(from, to), Math.max(from, to) + 1);
+    }
+
+    function selectAll() {
+        root.selectedNames = root.fileNames();
+    }
+
+    function selectInBand(base) {
+        const names = root.fileNames().filter(name => {
+            const cell = root.cells[name];
+            return cell && cell.x < root.bandX + root.bandWidth && cell.x + root.cellWidth > root.bandX && cell.y < root.bandY + root.bandHeight && cell.y + root.cellHeight > root.bandY;
+        });
+        root.selectedNames = base.concat(names.filter(name => !base.includes(name)));
+    }
+
+    function handlePress(icon, modifiers) {
+        root.forceActiveFocus();
+        root.closeMenu();
+        const control = (modifiers & Qt.ControlModifier) !== 0;
+        const shift = (modifiers & Qt.ShiftModifier) !== 0;
+        if (shift && root.anchorName.length > 0)
+            root.selectRange(icon.fileName);
+        else if (control)
+            root.toggleSelected(icon.fileName);
+        else if (!root.isSelected(icon.fileName))
+            root.selectOnly(icon.fileName);
+    }
+
+    function handleRelease(icon, modifiers) {
+        const plain = (modifiers & (Qt.ControlModifier | Qt.ShiftModifier)) === 0;
+        if (plain && root.selectedNames.length > 1)
+            root.selectOnly(icon.fileName);
+    }
+
+    function followDrag(name, deltaX, deltaY) {
+        root.dragPrimary = name;
+        root.dragDeltaX = deltaX;
+        root.dragDeltaY = deltaY;
+    }
+
+    function endDrag() {
+        root.dragPrimary = "";
+        root.dragDeltaX = 0;
+        root.dragDeltaY = 0;
+    }
+
+    function paths(icons) {
+        return icons.map(icon => icon.filePath);
     }
 
     function columnOf(x) {
@@ -132,42 +219,66 @@ Item {
         root.cells = result;
     }
 
-    function dropIcon(name, centerX, centerY) {
-        if (DesktopIcons.autoArrange)
-            return;
-        if (!DesktopIcons.alignToGrid) {
-            DesktopIcons.setPosition(name, {
-                x: root.clampX(centerX - root.cellWidth / 2),
-                y: root.clampY(centerY - root.cellHeight / 2)
-            });
-            return;
-        }
-        const targetColumn = Math.min(root.columns - 1, Math.max(0, root.columnOf(centerX - root.cellWidth / 2 + root.padding)));
-        const targetRow = Math.min(root.rows - 1, Math.max(0, root.rowOf(centerY - root.cellHeight / 2 + root.padding)));
-        const taken = {};
-        for (const other of Object.keys(root.cells)) {
-            if (other !== name)
-                taken[`${root.columnOf(root.cells[other].x)},${root.rowOf(root.cells[other].y)}`] = true;
-        }
+    function nearestFree(taken, column, row) {
         let best = null;
-        for (let column = 0; column < root.columns; column++) {
-            for (let row = 0; row < root.rows; row++) {
-                if (taken[`${column},${row}`])
+        for (let candidateColumn = 0; candidateColumn < root.columns; candidateColumn++) {
+            for (let candidateRow = 0; candidateRow < root.rows; candidateRow++) {
+                if (taken[`${candidateColumn},${candidateRow}`])
                     continue;
-                const distance = (column - targetColumn) ** 2 + (row - targetRow) ** 2;
+                const distance = (candidateColumn - column) ** 2 + (candidateRow - row) ** 2;
                 if (best === null || distance < best.distance)
                     best = {
-                        column: column,
-                        row: row,
+                        column: candidateColumn,
+                        row: candidateRow,
                         distance: distance
                     };
             }
         }
-        if (best !== null)
-            DesktopIcons.setPosition(name, {
-                column: best.column,
-                row: best.row
-            });
+        return best;
+    }
+
+    function dropSelection(primary, centerX, centerY) {
+        if (DesktopIcons.autoArrange)
+            return;
+        const names = root.isSelected(primary) ? root.selectedNames : [primary];
+        const origin = root.cells[primary];
+        if (!origin)
+            return;
+        const deltaX = centerX - root.cellWidth / 2 - origin.x;
+        const deltaY = centerY - root.cellHeight / 2 - origin.y;
+        const updates = {};
+        const moving = names.filter(name => root.cells[name]);
+        if (!DesktopIcons.alignToGrid) {
+            for (const name of moving) {
+                updates[name] = {
+                    x: root.clampX(root.cells[name].x + deltaX),
+                    y: root.clampY(root.cells[name].y + deltaY)
+                };
+            }
+            DesktopIcons.setPositions(updates);
+            return;
+        }
+        const deltaColumns = Math.round(deltaX / root.cellWidth);
+        const deltaRows = Math.round(deltaY / root.cellHeight);
+        const taken = {};
+        for (const other of Object.keys(root.cells)) {
+            if (!moving.includes(other))
+                taken[`${root.columnOf(root.cells[other].x)},${root.rowOf(root.cells[other].y)}`] = true;
+        }
+        const ordered = moving.slice().sort((a, b) => (root.cells[a].y - root.cells[b].y) || (root.cells[a].x - root.cells[b].x));
+        for (const name of ordered) {
+            const column = Math.min(root.columns - 1, Math.max(0, root.columnOf(root.cells[name].x) + deltaColumns));
+            const row = Math.min(root.rows - 1, Math.max(0, root.rowOf(root.cells[name].y) + deltaRows));
+            const spot = root.nearestFree(taken, column, row);
+            if (spot === null)
+                continue;
+            taken[`${spot.column},${spot.row}`] = true;
+            updates[name] = {
+                column: spot.column,
+                row: spot.row
+            };
+        }
+        DesktopIcons.setPositions(updates);
     }
 
     function refresh() {
@@ -183,12 +294,39 @@ Item {
         DesktopIcons.createTextFile(DesktopIcons.uniqueName(Translation.tr("New Text Document") + ".txt", root.fileNames()));
     }
 
-    function copyIcon(icon, cut) {
-        DesktopIcons.copyFiles([icon.filePath], cut);
+    function copyIcons(icons, cut) {
+        DesktopIcons.copyFiles(root.paths(icons), cut);
     }
 
-    function showProperties(icon) {
-        propertiesDialog.info = icon.propertiesInfo();
+    function showProperties(icons) {
+        if (icons.length === 1) {
+            propertiesDialog.info = icons[0].propertiesInfo();
+        } else {
+            const files = icons.filter(icon => !icon.fileIsDir);
+            const total = files.reduce((sum, icon) => sum + Number(icon.fileSize), 0);
+            propertiesDialog.info = {
+                name: Translation.tr("%1 items").arg(icons.length),
+                icon: Quickshell.iconPath("text-x-generic"),
+                rows: [
+                    {
+                        label: Translation.tr("Type"),
+                        value: Translation.tr("Multiple types")
+                    },
+                    {
+                        label: Translation.tr("Location"),
+                        value: DesktopIcons.desktopPath
+                    },
+                    {
+                        label: Translation.tr("Size"),
+                        value: icons[0].formatSize(total)
+                    },
+                    {
+                        label: Translation.tr("Contains"),
+                        value: Translation.tr("%1 files, %2 folders").arg(files.length).arg(icons.length - files.length)
+                    }
+                ]
+            };
+        }
         propertiesDialog.open();
     }
 
@@ -203,24 +341,35 @@ Item {
         contextMenu.openAt(x, y);
     }
 
-    function openItemMenu(icon, x, y, classic) {
-        root.selectedName = icon.fileName;
+    function openItemMenu(icons, x, y, classic) {
         root.lastMenu = {
             kind: "item",
-            icon: icon,
+            icons: icons,
             x: x,
-            y: y
+            y: y,
+            classic: classic
         };
-        root.openMenu(classic ? root.classicItemModel(icon) : root.itemModel(icon), x, y);
+        if (icons.length === 1)
+            DesktopIcons.queryOpenWith(icons[0].filePath);
+        root.openMenu(classic ? root.classicItemModel(icons) : root.itemModel(icons), x, y);
     }
 
     function openBackgroundMenu(x, y, classic) {
         root.lastMenu = {
             kind: "background",
             x: x,
-            y: y
+            y: y,
+            classic: classic
         };
         root.openMenu(classic ? root.classicBackgroundModel() : root.backgroundModel(), x, y);
+    }
+
+    function refreshItemMenu() {
+        const menu = root.lastMenu;
+        if (!contextMenu.visible || menu === null || menu.kind !== "item")
+            return;
+        contextMenu.closeSub();
+        contextMenu.model = menu.classic ? root.classicItemModel(menu.icons) : root.itemModel(menu.icons);
     }
 
     function showMoreOptions() {
@@ -229,42 +378,83 @@ Item {
             return;
         Qt.callLater(() => {
             if (menu.kind === "item")
-                root.openItemMenu(menu.icon, menu.x, menu.y, true);
+                root.openItemMenu(menu.icons, menu.x, menu.y, true);
             else
                 root.openBackgroundMenu(menu.x, menu.y, true);
         });
     }
 
-    function itemModel(icon) {
+    function openWithModel(icon) {
+        if (DesktopIcons.openWithPath !== icon.filePath)
+            return [
+                {
+                    text: Translation.tr("Searching..."),
+                    enabled: false
+                }
+            ];
+        const entries = DesktopIcons.openWithApps.map(id => DesktopEntries.byId(id.replace(/\.desktop$/, ""))).filter(entry => entry !== null && entry !== undefined);
+        if (entries.length === 0)
+            return [
+                {
+                    text: Translation.tr("No application found"),
+                    enabled: false
+                }
+            ];
+        return entries.map(entry => ({
+                    text: entry.name,
+                    iconSource: Quickshell.iconPath(entry.icon, "application-x-executable"),
+                    action: () => DesktopIcons.openWith(entry, [icon.filePath])
+                }));
+    }
+
+    function openAll(icons) {
+        for (const icon of icons)
+            icon.open();
+    }
+
+    function startRename(icon) {
+        root.renamingName = icon.fileName;
+    }
+
+    function itemModel(icons) {
+        const single = icons.length === 1;
+        const icon = icons[0];
+        const actions = [
+            {
+                icon: "cut",
+                action: () => root.copyIcons(icons, true)
+            },
+            {
+                icon: "copy",
+                action: () => root.copyIcons(icons, false)
+            }
+        ];
+        if (single)
+            actions.push({
+                icon: "rename",
+                action: () => root.startRename(icon)
+            });
+        actions.push({
+            icon: "delete",
+            action: () => DesktopIcons.trash(root.paths(icons))
+        });
         return [
             {
                 type: "row",
-                items: [
-                    {
-                        icon: "cut",
-                        action: () => root.copyIcon(icon, true)
-                    },
-                    {
-                        icon: "copy",
-                        action: () => root.copyIcon(icon, false)
-                    },
-                    {
-                        icon: "rename",
-                        action: () => root.renamingName = icon.fileName
-                    },
-                    {
-                        icon: "delete",
-                        action: () => DesktopIcons.trash(icon.filePath)
-                    }
-                ]
+                items: actions
             },
             {
                 text: Translation.tr("Open"),
                 icon: "open",
                 shortcut: "Enter",
-                action: () => icon.open()
+                action: () => root.openAll(icons)
             },
-            icon.fileIsDir ? {
+            single ? {
+                text: Translation.tr("Open with"),
+                icon: "apps",
+                submenu: root.openWithModel(icon)
+            } : null,
+            single && icon.fileIsDir ? {
                 text: Translation.tr("Open in Terminal"),
                 icon: "window-dev-tools",
                 action: () => DesktopIcons.openTerminal(icon.filePath)
@@ -275,19 +465,19 @@ Item {
             {
                 text: Translation.tr("Compress to ZIP file"),
                 icon: "folder-zip",
-                action: () => DesktopIcons.compress(icon.filePath)
+                action: () => DesktopIcons.compress(root.paths(icons))
             },
             {
                 text: Translation.tr("Copy as path"),
                 icon: "link",
                 shortcut: "Ctrl+Shift+C",
-                action: () => DesktopIcons.copyPath(icon.filePath)
+                action: () => DesktopIcons.copyPath(root.paths(icons))
             },
             {
                 text: Translation.tr("Properties"),
                 icon: "info",
                 shortcut: "Alt+Enter",
-                action: () => root.showProperties(icon)
+                action: () => root.showProperties(icons)
             },
             {
                 type: "separator"
@@ -301,13 +491,19 @@ Item {
         ].filter(entry => entry !== null);
     }
 
-    function classicItemModel(icon) {
+    function classicItemModel(icons) {
+        const single = icons.length === 1;
+        const icon = icons[0];
         return [
             {
                 text: Translation.tr("Open"),
-                action: () => icon.open()
+                action: () => root.openAll(icons)
             },
-            icon.fileIsDir ? {
+            single ? {
+                text: Translation.tr("Open with"),
+                submenu: root.openWithModel(icon)
+            } : null,
+            single && icon.fileIsDir ? {
                 text: Translation.tr("Open in Terminal"),
                 action: () => DesktopIcons.openTerminal(icon.filePath)
             } : null,
@@ -317,39 +513,53 @@ Item {
             {
                 text: Translation.tr("Cut"),
                 shortcut: "Ctrl+X",
-                action: () => root.copyIcon(icon, true)
+                action: () => root.copyIcons(icons, true)
             },
             {
                 text: Translation.tr("Copy"),
                 shortcut: "Ctrl+C",
-                action: () => root.copyIcon(icon, false)
+                action: () => root.copyIcons(icons, false)
             },
             {
                 type: "separator"
             },
             {
                 text: Translation.tr("Create shortcut"),
-                action: () => DesktopIcons.createShortcut(icon.filePath, icon.fileName)
+                action: () => {
+                    for (const target of icons)
+                        DesktopIcons.createShortcut(target.filePath, target.fileName);
+                }
             },
             {
                 text: Translation.tr("Delete"),
                 shortcut: "Del",
-                action: () => DesktopIcons.trash(icon.filePath)
+                action: () => DesktopIcons.trash(root.paths(icons))
             },
-            {
+            single ? {
                 text: Translation.tr("Rename"),
                 shortcut: "F2",
-                action: () => root.renamingName = icon.fileName
-            },
+                action: () => root.startRename(icon)
+            } : null,
             {
                 type: "separator"
             },
             {
                 text: Translation.tr("Properties"),
                 shortcut: "Alt+Enter",
-                action: () => root.showProperties(icon)
+                action: () => root.showProperties(icons)
             }
         ].filter(entry => entry !== null);
+    }
+
+    function undoEntry() {
+        if (DesktopIcons.undoLabel.length === 0)
+            return null;
+        return {
+            text: Translation.tr("Undo %1").arg(DesktopIcons.undoLabel),
+            icon: "arrow-undo",
+            shortcut: "Ctrl+Z",
+            action: () => DesktopIcons.undo()
+        };
     }
 
     function viewModel() {
@@ -454,6 +664,7 @@ Item {
             {
                 type: "separator"
             },
+            root.undoEntry(),
             {
                 text: Translation.tr("Paste"),
                 icon: "clipboard-paste",
@@ -496,7 +707,7 @@ Item {
                 shortcut: "Shift+F10",
                 action: () => root.showMoreOptions()
             }
-        ];
+        ].filter(entry => entry !== null);
     }
 
     function classicBackgroundModel() {
@@ -517,6 +728,7 @@ Item {
             {
                 type: "separator"
             },
+            root.undoEntry(),
             {
                 text: Translation.tr("Paste"),
                 shortcut: "Ctrl+V",
@@ -545,14 +757,14 @@ Item {
                 text: Translation.tr("Personalize"),
                 action: () => DesktopIcons.openSettings()
             }
-        ];
+        ].filter(entry => entry !== null);
     }
 
     function handleKey(event) {
         const control = (event.modifiers & Qt.ControlModifier) !== 0;
         const shift = (event.modifiers & Qt.ShiftModifier) !== 0;
         const alt = (event.modifiers & Qt.AltModifier) !== 0;
-        const icon = root.selectedIcon();
+        const icons = root.selectedIcons();
         if (event.key === Qt.Key_F5) {
             root.refresh();
             return true;
@@ -561,34 +773,42 @@ Item {
             DesktopIcons.paste();
             return true;
         }
-        if (icon === null)
-            return false;
-        if (event.key === Qt.Key_Delete) {
-            DesktopIcons.trash(icon.filePath);
+        if (control && event.key === Qt.Key_Z) {
+            DesktopIcons.undo();
             return true;
         }
-        if (event.key === Qt.Key_F2) {
-            root.renamingName = icon.fileName;
+        if (control && event.key === Qt.Key_A) {
+            root.selectAll();
+            return true;
+        }
+        if (icons.length === 0)
+            return false;
+        if (event.key === Qt.Key_Delete) {
+            DesktopIcons.trash(root.paths(icons));
+            return true;
+        }
+        if (event.key === Qt.Key_F2 && icons.length === 1) {
+            root.startRename(icons[0]);
             return true;
         }
         if (alt && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter)) {
-            root.showProperties(icon);
+            root.showProperties(icons);
             return true;
         }
         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-            icon.open();
+            root.openAll(icons);
             return true;
         }
         if (control && shift && event.key === Qt.Key_C) {
-            DesktopIcons.copyPath(icon.filePath);
+            DesktopIcons.copyPath(root.paths(icons));
             return true;
         }
         if (control && event.key === Qt.Key_C) {
-            root.copyIcon(icon, false);
+            root.copyIcons(icons, false);
             return true;
         }
         if (control && event.key === Qt.Key_X) {
-            root.copyIcon(icon, true);
+            root.copyIcons(icons, true);
             return true;
         }
         return false;
@@ -661,19 +881,49 @@ Item {
         function onAlignToGridChanged() {
             root.relayout();
         }
+
+        function onOpenWithAppsChanged() {
+            root.refreshItemMenu();
+        }
     }
 
     MouseArea {
+        id: background
+
+        property point origin: Qt.point(0, 0)
+        property var baseSelection: []
+
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onPressed: mouse => {
             root.forceActiveFocus();
             root.closeMenu();
-            root.selectedName = "";
             root.renamingName = "";
-            if (mouse.button === Qt.RightButton)
+            if (mouse.button === Qt.RightButton) {
+                root.clearSelection();
                 root.openBackgroundMenu(mouse.x, mouse.y, false);
+                return;
+            }
+            origin = Qt.point(mouse.x, mouse.y);
+            const keep = (mouse.modifiers & Qt.ControlModifier) !== 0;
+            baseSelection = keep ? root.selectedNames : [];
+            if (!keep)
+                root.clearSelection();
+            root.bandActive = false;
         }
+        onPositionChanged: mouse => {
+            if (!(pressedButtons & Qt.LeftButton))
+                return;
+            if (!root.bandActive && Math.hypot(mouse.x - origin.x, mouse.y - origin.y) < 6)
+                return;
+            root.bandActive = true;
+            root.bandX = Math.min(origin.x, mouse.x);
+            root.bandY = Math.min(origin.y, mouse.y);
+            root.bandWidth = Math.abs(mouse.x - origin.x);
+            root.bandHeight = Math.abs(mouse.y - origin.y);
+            root.selectInBand(baseSelection);
+        }
+        onReleased: root.bandActive = false
     }
 
     DropArea {
@@ -697,16 +947,24 @@ Item {
             cellY: root.cells[fileName]?.y ?? root.padding
             cellWidth: root.cellWidth
             cellHeight: root.cellHeight
-            selected: root.selectedName === fileName
+            selected: root.isSelected(fileName)
             renaming: root.renamingName === fileName
+            following: root.dragPrimary.length > 0
+            followX: root.dragPrimary.length > 0 && fileName !== root.dragPrimary && root.isSelected(fileName) ? root.dragDeltaX : 0
+            followY: root.dragPrimary.length > 0 && fileName !== root.dragPrimary && root.isSelected(fileName) ? root.dragDeltaY : 0
 
-            onClicked: {
-                root.forceActiveFocus();
-                root.closeMenu();
-                root.selectedName = fileName;
+            onClicked: modifiers => root.handlePress(icon, modifiers)
+            onClickReleased: modifiers => root.handleRelease(icon, modifiers)
+            onDragMoved: (deltaX, deltaY) => root.followDrag(fileName, deltaX, deltaY)
+            onContextRequested: (x, y) => {
+                if (!root.isSelected(fileName))
+                    root.selectOnly(fileName);
+                root.openItemMenu(root.selectedIcons(), x, y, false);
             }
-            onContextRequested: (x, y) => root.openItemMenu(icon, x, y, false)
-            onDropped: (centerX, centerY) => root.dropIcon(fileName, centerX, centerY)
+            onDropped: (centerX, centerY) => {
+                root.dropSelection(fileName, centerX, centerY);
+                root.endDrag();
+            }
             onRenameAccepted: newName => {
                 DesktopIcons.rename(fileName, newName);
                 root.renamingName = "";
@@ -717,6 +975,17 @@ Item {
                 root.forceActiveFocus();
             }
         }
+    }
+
+    Rectangle {
+        visible: root.bandActive
+        x: root.bandX
+        y: root.bandY
+        width: root.bandWidth
+        height: root.bandHeight
+        color: Qt.alpha(Looks.colors.accent, 0.25)
+        border.width: 1
+        border.color: Looks.colors.accent
     }
 
     DesktopMenu {

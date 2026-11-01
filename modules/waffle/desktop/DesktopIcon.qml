@@ -22,10 +22,15 @@ Item {
     required property real cellWidth
     required property real cellHeight
     property real iconSize: 48
+    property real followX: 0
+    property real followY: 0
+    property bool following: false
     property bool selected: false
     property bool renaming: false
 
-    signal clicked
+    signal clicked(int modifiers)
+    signal clickReleased(int modifiers)
+    signal dragMoved(real deltaX, real deltaY)
     signal contextRequested(real x, real y)
     signal dropped(real centerX, real centerY)
     signal renameAccepted(string newName)
@@ -130,18 +135,18 @@ Item {
     }
 
     function resetPosition() {
-        x = Qt.binding(() => root.cellX);
-        y = Qt.binding(() => root.cellY);
+        x = Qt.binding(() => root.cellX + root.followX);
+        y = Qt.binding(() => root.cellY + root.followY);
     }
 
-    x: cellX
-    y: cellY
+    x: cellX + followX
+    y: cellY + followY
     width: cellWidth
     height: cellHeight
     opacity: DesktopIcons.clipboardCut && DesktopIcons.clipboardPaths.includes(filePath) ? 0.5 : 1
 
     Behavior on x {
-        enabled: !area.drag.active
+        enabled: !area.drag.active && !root.following
         NumberAnimation {
             duration: 120
             easing.type: Easing.OutCubic
@@ -149,7 +154,7 @@ Item {
     }
 
     Behavior on y {
-        enabled: !area.drag.active
+        enabled: !area.drag.active && !root.following
         NumberAnimation {
             duration: 120
             easing.type: Easing.OutCubic
@@ -242,14 +247,18 @@ Item {
         drag.target: pressedButtons === Qt.LeftButton ? root : null
         drag.threshold: 6
 
-        onPressed: root.clicked()
+        onPressed: mouse => root.clicked(mouse.modifiers)
         onPositionChanged: {
-            if (drag.active)
-                moved = true;
-        }
-        onReleased: {
-            if (!moved)
+            if (!drag.active)
                 return;
+            moved = true;
+            root.dragMoved(root.x - root.cellX, root.y - root.cellY);
+        }
+        onReleased: mouse => {
+            if (!moved) {
+                root.clickReleased(mouse.modifiers);
+                return;
+            }
             moved = false;
             root.dropped(root.x + root.width / 2, root.y + root.height / 2);
             root.resetPosition();

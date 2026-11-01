@@ -22,15 +22,23 @@ Singleton {
     readonly property string sortBy: stateAdapter.sortBy
     readonly property bool sortReversed: stateAdapter.sortReversed
 
+    property var undoStack: []
+    property string openWithPath: ""
+    property var openWithApps: []
     property var clipboardPaths: []
     property bool clipboardCut: false
     property var externalTypes: []
+    readonly property string undoLabel: undoStack.length > 0 ? undoStack[undoStack.length - 1].label : ""
     readonly property bool canPaste: clipboardPaths.length > 0 || externalTypes.includes("x-special/gnome-copied-files") || externalTypes.includes("text/uri-list")
 
     function setPosition(name, entry) {
         const next = Object.assign({}, stateAdapter.positions);
         next[name] = entry;
         stateAdapter.positions = next;
+    }
+
+    function setPositions(updates) {
+        stateAdapter.positions = Object.assign({}, stateAdapter.positions, updates);
     }
 
     function clearPositions() {
@@ -78,8 +86,66 @@ Singleton {
         Quickshell.execDetached(["qs", "-p", Quickshell.shellPath("settings.qml")]);
     }
 
-    function trash(path) {
-        Quickshell.execDetached(["gio", "trash", path]);
+    function runJob(command, handler) {
+        jobComponent.createObject(root, {
+            command: command,
+            handler: handler,
+            running: true
+        });
+    }
+
+    function parseResult(text) {
+        try {
+            return JSON.parse(text);
+        } catch (error) {
+            return {
+                created: [],
+                moved: []
+            };
+        }
+    }
+
+    function pushUndo(entry) {
+        root.undoStack = root.undoStack.concat([entry]).slice(-20);
+    }
+
+    function undo() {
+        if (root.undoStack.length === 0)
+            return;
+        const entry = root.undoStack[root.undoStack.length - 1];
+        root.undoStack = root.undoStack.slice(0, -1);
+        if (entry.kind === "rename") {
+            Quickshell.execDetached(["mv", "-n", "--", entry.to, entry.from]);
+            root.movePosition(entry.toName, entry.fromName);
+        } else if (entry.kind === "delete") {
+            Quickshell.execDetached(["python3", root.filesScript, "restore", ...entry.paths]);
+        } else {
+            for (const move of entry.moved ?? [])
+                Quickshell.execDetached(["mv", "-n", "--", move.to, move.from]);
+            if ((entry.created ?? []).length > 0)
+                Quickshell.execDetached(["gio", "trash", ...entry.created]);
+        }
+    }
+
+    function movePosition(fromName, toName) {
+        const next = Object.assign({}, stateAdapter.positions);
+        if (next[fromName] === undefined)
+            return;
+        next[toName] = next[fromName];
+        delete next[fromName];
+        stateAdapter.positions = next;
+    }
+
+    function trash(paths) {
+        const list = Array.isArray(paths) ? paths : [paths];
+        if (list.length === 0)
+            return;
+        Quickshell.execDetached(["gio", "trash", ...list]);
+        root.pushUndo({
+            kind: "delete",
+            label: Translation.tr("Delete"),
+            paths: list
+        });
     }
 
     function rename(oldName, newName) {
@@ -87,12 +153,15 @@ Singleton {
         if (target.length === 0 || target === oldName || target.includes("/"))
             return;
         Quickshell.execDetached(["mv", "-n", "--", `${root.desktopPath}/${oldName}`, `${root.desktopPath}/${target}`]);
-        const next = Object.assign({}, stateAdapter.positions);
-        if (next[oldName] !== undefined) {
-            next[target] = next[oldName];
-            delete next[oldName];
-            stateAdapter.positions = next;
-        }
+        root.movePosition(oldName, target);
+        root.pushUndo({
+            kind: "rename",
+            label: Translation.tr("Rename"),
+            from: `${root.desktopPath}/${oldName}`,
+            to: `${root.desktopPath}/${target}`,
+            fromName: oldName,
+            toName: target
+        });
     }
 
     function uniqueName(base, existing) {
@@ -107,28 +176,83 @@ Singleton {
 
     function createFolder(name) {
         Quickshell.execDetached(["mkdir", "-p", "--", `${root.desktopPath}/${name}`]);
+        root.pushUndo({
+            kind: "create",
+            label: Translation.tr("New"),
+            created: [`${root.desktopPath}/${name}`]
+        });
     }
 
     function createTextFile(name) {
         Quickshell.execDetached(["touch", "--", `${root.desktopPath}/${name}`]);
+        root.pushUndo({
+            kind: "create",
+            label: Translation.tr("New"),
+            created: [`${root.desktopPath}/${name}`]
+        });
     }
 
     function createShortcut(path, name) {
-        Quickshell.execDetached(["ln", "-s", "--", path, `${root.desktopPath}/${name} - Shortcut`]);
+        const link = `${root.desktopPath}/${name} - Shortcut`;
+        Quickshell.execDetached(["ln", "-s", "--", path, link]);
+        root.pushUndo({
+            kind: "create",
+            label: Translation.tr("Create shortcut"),
+            created: [link]
+        });
     }
 
-    function compress(path) {
-        Quickshell.execDetached(["python3", root.filesScript, "zip", root.desktopPath, path]);
+    function compress(paths) {
+        const list = Array.isArray(paths) ? paths : [paths];
+        root.runJob(["python3", root.filesScript, "zip", root.desktopPath, ...list], text => {
+            const result = root.parseResult(text);
+            root.pushUndo({
+                kind: "zip",
+                label: Translation.tr("Compress"),
+                created: result.created,
+                moved: result.moved
+            });
+        });
     }
 
-    function copyPath(path) {
-        Quickshell.clipboardText = path;
+    function copyPath(paths) {
+        Quickshell.clipboardText = (Array.isArray(paths) ? paths : [paths]).join("\n");
     }
 
     function transfer(paths, cut) {
         if (paths.length === 0)
             return;
-        Quickshell.execDetached(["python3", root.filesScript, "transfer", root.desktopPath, cut ? "move" : "copy", ...paths]);
+        root.runJob(["python3", root.filesScript, "transfer", root.desktopPath, cut ? "move" : "copy", ...paths], text => {
+            const result = root.parseResult(text);
+            if (result.created.length + result.moved.length === 0)
+                return;
+            root.pushUndo({
+                kind: "paste",
+                label: cut ? Translation.tr("Move") : Translation.tr("Copy"),
+                created: result.created,
+                moved: result.moved
+            });
+        });
+    }
+
+    function queryOpenWith(path) {
+        root.openWithPath = path;
+        root.openWithApps = [];
+        root.runJob(["sh", "-c", "mime=$(gio info -a standard::content-type -- \"$1\" 2>/dev/null | sed -n 's/^ *standard::content-type: //p'); [ -n \"$mime\" ] && gio mime \"$mime\" 2>/dev/null", "sh", path], text => {
+            const ids = [];
+            for (const line of text.split("\n")) {
+                const match = line.match(/^\s+(\S+\.desktop)\s*$/);
+                if (match && !ids.includes(match[1]))
+                    ids.push(match[1]);
+            }
+            if (root.openWithPath === path)
+                root.openWithApps = ids;
+        });
+    }
+
+    function openWith(entry, paths) {
+        const command = entry.runInTerminal ? ["bash", "-c", Config.options.apps.terminal + " -e " + entry.command.concat(paths).map(part => "'" + part.replace(/'/g, "'\\''") + "'").join(" ")] : entry.command.concat(paths);
+        Quickshell.execDetached(command);
     }
 
     function importUrls(urls) {
@@ -200,6 +324,24 @@ Singleton {
         if (command.length === 0)
             return;
         Quickshell.execDetached(["sh", "-c", command]);
+    }
+
+    Component {
+        id: jobComponent
+
+        Process {
+            id: job
+
+            property var handler: null
+
+            stdout: StdioCollector {
+                onStreamFinished: {
+                    if (job.handler)
+                        job.handler(text);
+                    job.destroy();
+                }
+            }
+        }
     }
 
     Process {
