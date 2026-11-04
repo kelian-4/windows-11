@@ -472,8 +472,8 @@ Singleton {
 
     function addApiKeyAdvice(model) {
         root.addMessage(
-            Translation.tr('To set an API key, pass it with the %4 command\n\nTo view the key, pass "get" with the command<br/>\n\n### For %1:\n\n**Link**: %2\n\n%3')
-                .arg(model.name).arg(model.key_get_link).arg(model.key_get_description ?? Translation.tr("<i>No further instruction provided</i>")).arg("/key"), 
+            Translation.tr("An API key is needed to use %1.\n\n**Link**: %2\n\n%3")
+                .arg(model.name).arg(model.key_get_link).arg(model.key_get_description ?? Translation.tr("<i>No further instruction provided</i>")), 
             Ai.interfaceRole
         );
     }
@@ -499,7 +499,7 @@ Singleton {
             if (feedback) root.addMessage(Translation.tr("Model set to %1").arg(model.name), root.interfaceRole);
             if (model.requires_key) {
                 // If key not there show advice
-                if (root.apiKeysLoaded && (!root.apiKeys[model.key_id] || root.apiKeys[model.key_id].length === 0)) {
+                if (feedback && root.apiKeysLoaded && (!root.apiKeys[model.key_id] || root.apiKeys[model.key_id].length === 0)) {
                     root.addApiKeyAdvice(model)
                 }
             }
@@ -719,6 +719,12 @@ Singleton {
         if (message.length === 0) return;
         root.addMessage(message, "user");
         requester.makeRequest();
+    }
+
+    readonly property bool isGenerating: requester.running
+
+    function stopGeneration() {
+        requester.running = false;
     }
 
     function attachFile(filePath: string) {

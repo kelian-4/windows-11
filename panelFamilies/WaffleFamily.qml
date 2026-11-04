@@ -3,6 +3,7 @@ import Quickshell
 
 import qs.modules.common
 import qs.modules.waffle.actionCenter
+import qs.modules.waffle.aiChat
 import qs.modules.waffle.bar
 import qs.modules.waffle.desktop
 import qs.modules.waffle.lock
@@ -27,6 +28,7 @@ import qs.modules.ii.wallpaperSelector
 
 Scope {
     PanelLoader { component: WaffleActionCenter {} }
+    PanelLoader { component: WaffleAiChat {} }
     PanelLoader { component: WaffleBar {} }
     PanelLoader { component: WaffleLock {} }
     PanelLoader { component: WaffleNotificationCenter {} }

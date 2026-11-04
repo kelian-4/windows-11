@@ -291,7 +291,7 @@ ContentPage {
                     Config.options.background.widgets.clock.cookie.aiStyling = checked;
                 }
                 StyledToolTip {
-                    text: Translation.tr("Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.")
+                    text: Translation.tr("Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set your Gemini API key in the AI assistant first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.")
                 }
             }
 

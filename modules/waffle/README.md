@@ -3,6 +3,7 @@
 A recreation of Windoes. It's WIP!
 
 - Launch the shell with `qs -p <path to this repository>/shell.qml`, and the settings app with `qs -p <path to this repository>/settings.qml`.
+- The AI assistant opens from the taskbar button, with `qs -p <path to this repository>/shell.qml ipc call ai toggle`, or with the global shortcut `aiToggle`.
 
 ## From EWW version to Quickshell
 

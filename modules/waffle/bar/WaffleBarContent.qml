@@ -58,6 +58,7 @@ Rectangle {
         StartButton {}
         SearchButton {}
         TaskViewButton {}
+        AiButton {}
         Tasks {}
     }
 

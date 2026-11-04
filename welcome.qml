@@ -165,7 +165,7 @@ ApplicationWindow {
 
                     NoticeBox {
                         Layout.fillWidth: true
-                        text: Translation.tr("Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the left sidebar with Super+A, set model to Gemini (if it isn't already)\n2. Type /key, hit Enter and follow the instructions\n3. Type /key YOUR_API_KEY\n4. Type the locale of your language below and press Generate")
+                        text: Translation.tr("Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the AI assistant from the taskbar and set the model to Gemini (if it isn't already)\n2. Paste your Gemini API key and press Save\n3. Type the locale of your language below and press Generate")
                     }
 
                     ContentSubsection {
