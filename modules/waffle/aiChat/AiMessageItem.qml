@@ -42,15 +42,17 @@ Item {
         }
         spacing: 4
 
-        WText {
+        Loader {
             Layout.fillWidth: true
-            visible: root.isInterface
-            text: root.messageData?.content ?? ""
-            textFormat: Text.MarkdownText
-            wrapMode: Text.Wrap
-            horizontalAlignment: Text.AlignHCenter
-            color: Looks.colors.subfg
-            onLinkActivated: link => Qt.openUrlExternally(link)
+            active: root.isInterface
+            visible: active
+            sourceComponent: Component {
+                AiTextBlock {
+                    blockText: root.messageData?.content ?? ""
+                    textColor: Looks.colors.subfg
+                    alignment: TextEdit.AlignHCenter
+                }
+            }
         }
 
         RowLayout {

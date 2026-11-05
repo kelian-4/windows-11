@@ -8,7 +8,6 @@ import qs.modules.waffle.looks
 Item {
     id: root
 
-    property bool canSend: true
     signal suggestionChosen(string text)
 
     readonly property var suggestions: [
@@ -55,7 +54,6 @@ Item {
             delegate: WBorderedButton {
                 required property string modelData
                 Layout.fillWidth: true
-                enabled: root.canSend
                 text: modelData
                 onClicked: root.suggestionChosen(modelData)
             }

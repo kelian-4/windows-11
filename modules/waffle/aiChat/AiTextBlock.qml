@@ -9,6 +9,8 @@ ColumnLayout {
     id: root
 
     required property string blockText
+    property color textColor: Looks.colors.fg
+    property int alignment: TextEdit.AlignLeft
     readonly property var parsed: root.extractLinks(root.blockText)
 
     function extractLinks(source) {
@@ -48,7 +50,8 @@ ColumnLayout {
         selectByMouse: true
         wrapMode: TextEdit.Wrap
         textFormat: TextEdit.MarkdownText
-        color: Looks.colors.fg
+        color: root.textColor
+        horizontalAlignment: root.alignment
         selectionColor: Looks.colors.selection
         selectedTextColor: Looks.colors.selectionFg
         renderType: Text.NativeRendering

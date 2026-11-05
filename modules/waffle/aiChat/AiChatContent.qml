@@ -13,11 +13,14 @@ WBarAttachedPanelContent {
     property real maxPanelHeight: 700
     property bool modelPickerOpen: false
     readonly property bool hasMessages: Ai.messageIDs.length > 0
-    readonly property bool needsKey: Ai.apiKeysLoaded && !Ai.currentModelHasApiKey
+
+    AiCommands {
+        id: aiCommands
+    }
 
     function send(text) {
         messageList.scrollToEnd();
-        Ai.sendUserMessage(text);
+        aiCommands.handle(text);
     }
 
     function startNewChat() {
@@ -73,7 +76,6 @@ WBarAttachedPanelContent {
                     AiEmptyState {
                         anchors.fill: parent
                         visible: !root.hasMessages
-                        canSend: !root.needsKey
                         onSuggestionChosen: text => root.send(text)
                     }
 
@@ -95,20 +97,12 @@ WBarAttachedPanelContent {
                     }
                 }
 
-                AiKeyPrompt {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 12
-                    Layout.rightMargin: 12
-                    Layout.bottomMargin: 4
-                    visible: root.needsKey
-                }
-
                 WPanelSeparator {}
 
                 AiInputBar {
                     id: inputBar
                     Layout.fillWidth: true
-                    canSend: !root.needsKey
+                    commands: aiCommands
                     onSendRequested: text => root.send(text)
                 }
             }

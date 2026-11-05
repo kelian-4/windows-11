@@ -11,9 +11,7 @@ TextField {
     verticalAlignment: Text.AlignVCenter
     color: Looks.colors.fg
 
-    palette {
-        active: Looks.colors.accent
-    }
+    palette.accent: Looks.colors.accent
 
     font {
         hintingPreference: Font.PreferDefaultHinting

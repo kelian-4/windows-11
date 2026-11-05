@@ -924,16 +924,11 @@
   "Give me ideas for a weekend project": "Donne-moi des idées de projet pour le week-end",
   "How can I help you today?": "Comment puis-je vous aider aujourd'hui ?",
   "Ask anything, or start with one of these ideas.": "Posez n'importe quelle question, ou commencez avec l'une de ces idées.",
-  "Ask me anything": "Demandez-moi n'importe quoi",
   "Send": "Envoyer",
-  "An API key is needed to use %1.": "Une clé API est nécessaire pour utiliser %1.",
-  "It is stored in your system keyring.": "Elle est stockée dans le trousseau de votre système.",
-  "Paste your API key": "Collez votre clé API",
-  "Get a key": "Obtenir une clé",
   "Reasoning": "Raisonnement",
   "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set your Gemini API key in the AI assistant first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Utilise Gemini pour catégoriser le fond d'écran puis choisit un préréglage basé sur celui-ci.\nVous devrez d'abord définir votre clé API Gemini dans l'assistant IA.\nLes images sont réduites pour les performances, mais par précaution,\nne sélectionnez pas de fonds d'écran contenant des informations sensibles.",
-  "You'll need to enter your Gemini API key first.\nYou can enter it in the AI assistant window.": "Vous devrez d'abord saisir votre clé API Gemini.\nVous pouvez la saisir dans la fenêtre de l'assistant IA.",
-  "An API key is needed to use %1.\n\n**Link**: %2\n\n%3": "Une clé API est nécessaire pour utiliser %1.\n\n**Lien** : %2\n\n%3",
-  "Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the AI assistant from the taskbar and set the model to Gemini (if it isn't already)\n2. Paste your Gemini API key and press Save\n3. Type the locale of your language below and press Generate": "Langue non listée ou traductions incomplètes ?\nVous pouvez choisir de générer des traductions avec Gemini.\n1. Ouvrez l'assistant IA depuis la barre des tâches et définissez le modèle sur Gemini (si ce n'est pas déjà fait)\n2. Collez votre clé API Gemini et appuyez sur Enregistrer\n3. Saisissez le code de locale de votre langue ci-dessous et appuyez sur Générer",
-  "No response was received. Check your connection and your API key.": "Aucune réponse reçue. Vérifiez votre connexion et votre clé API."
+  "No response was received. Check your connection and your API key.": "Aucune réponse reçue. Vérifiez votre connexion et votre clé API.",
+  "You'll need to enter your Gemini API key first.\nType /key in the AI assistant for instructions.": "Vous devrez d'abord saisir votre clé API Gemini.\nTapez /key dans l'assistant IA pour obtenir les instructions.",
+  "Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the AI assistant from the taskbar and set the model to Gemini (if it isn't already)\n2. Type /key, hit Enter and follow the instructions\n3. Type /key YOUR_API_KEY\n4. Type the locale of your language below and press Generate": "Langue non listée ou traductions incomplètes ?\nVous pouvez choisir de générer des traductions avec Gemini.\n1. Ouvrez l'assistant IA depuis la barre des tâches et définissez le modèle sur Gemini (si ce n'est pas déjà fait)\n2. Tapez /key, appuyez sur Entrée et suivez les instructions\n3. Tapez /key VOTRE_CLÉ_API\n4. Saisissez le code de locale de votre langue ci-dessous et appuyez sur Générer",
+  "Unknown command: ": "Commande inconnue : "
 }

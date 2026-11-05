@@ -117,7 +117,24 @@ RowLayout {
                             break;
                         }
                         const entry = allResults[i];
-                        const tweakedEntry = searchResultComp.createObject(null, Object.assign({}, entry));
+                        const tweakedEntry = searchResultComp.createObject(null, {
+                            type: entry.type,
+                            fontType: entry.fontType,
+                            name: entry.name,
+                            rawValue: entry.rawValue,
+                            iconName: entry.iconName,
+                            iconType: entry.iconType,
+                            verb: entry.verb,
+                            blurImage: entry.blurImage,
+                            execute: entry.execute,
+                            actions: entry.actions,
+                            id: entry.id,
+                            shown: entry.shown,
+                            comment: entry.comment,
+                            runInTerminal: entry.runInTerminal,
+                            genericName: entry.genericName,
+                            keywords: entry.keywords
+                        });
                         tweakedEntry.category = (!showingEverything && categorizedResults.length === 0) ? Translation.tr("Best match") : entry.type;
 
                         categorizedResults.push(tweakedEntry); // Section header
