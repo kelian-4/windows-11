@@ -6,6 +6,11 @@ pragma ComponentBehavior: Bound
 
 Singleton {
     id: root
+
+    FontLoader {
+        source: `file://${Quickshell.shellPath("assets/fonts/MaterialSymbols/MaterialSymbolsRounded.ttf")}`
+    }
+
     property QtObject m3colors
     property QtObject animation
     property QtObject animationCurves

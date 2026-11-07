@@ -8,6 +8,27 @@ import qs.modules.common.functions
 
 Singleton {
     id: root
+
+    FontLoader {
+        source: `file://${Quickshell.shellPath("assets/fonts/Selawik/Selawik-Regular.ttf")}`
+    }
+
+    FontLoader {
+        source: `file://${Quickshell.shellPath("assets/fonts/Selawik/Selawik-Light.ttf")}`
+    }
+
+    FontLoader {
+        source: `file://${Quickshell.shellPath("assets/fonts/Selawik/Selawik-Semilight.ttf")}`
+    }
+
+    FontLoader {
+        source: `file://${Quickshell.shellPath("assets/fonts/Selawik/Selawik-Semibold.ttf")}`
+    }
+
+    FontLoader {
+        source: `file://${Quickshell.shellPath("assets/fonts/Selawik/Selawik-Bold.ttf")}`
+    }
+
     property QtObject darkColors
     property QtObject lightColors
     property QtObject colors
@@ -150,11 +171,11 @@ Singleton {
     font: QtObject {
         id: font
         property QtObject family: QtObject {
-            property string ui: "Noto Sans"
+            property string ui: "Selawik"
         }
-        property QtObject weight: QtObject { // Noto is not Segoe, so we might use slightly different weights
-            property int thin: Font.Normal
-            property int regular: Font.Medium
+        property QtObject weight: QtObject {
+            property int thin: Font.Light
+            property int regular: Font.Normal
             property int strong: Font.DemiBold
             property int stronger: (Font.DemiBold + 2*Font.Bold) / 3
             property int strongest: Font.Bold

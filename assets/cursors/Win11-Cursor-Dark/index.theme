@@ -1,0 +1,4 @@
+[Icon Theme]
+Name=Win11-Cursor-Dark
+Comment=Dark arrow cursor theme based on Fluent cursors
+Inherits=Adwaita
