@@ -53,6 +53,15 @@ Singleton {
 
     reloadableId: "brightness"
 
+    property string backlightPath: ""
+
+    function onBacklightRead(): void {
+        const raw = parseInt(backlightActual.text());
+        const max = parseInt(backlightMax.text());
+        if (!isFinite(raw) || !isFinite(max) || max <= 0) return;
+        monitors.filter(m => !m.isDdc).forEach(m => m.applyExternalBrightness(raw / max));
+    }
+
     onMonitorsChanged: {
         ddcMonitors = [];
         ddcProc.running = true;
@@ -91,6 +100,35 @@ Singleton {
         id: setProc
     }
 
+    Process {
+        id: backlightProbe
+        running: true
+        command: ["sh", "-c", "ls -d /sys/class/backlight/*/ 2>/dev/null | head -n 1"]
+        stdout: StdioCollector {
+            onStreamFinished: root.backlightPath = text.trim().replace(/\/$/, "")
+        }
+    }
+
+    FileView {
+        id: backlightMax
+        path: root.backlightPath.length > 0 ? `${root.backlightPath}/max_brightness` : ""
+        printErrors: false
+    }
+
+    FileView {
+        id: backlightActual
+        path: root.backlightPath.length > 0 ? `${root.backlightPath}/actual_brightness` : ""
+        printErrors: false
+        onLoaded: root.onBacklightRead()
+    }
+
+    Timer {
+        running: root.backlightPath.length > 0
+        repeat: true
+        interval: 250
+        onTriggered: backlightActual.reload()
+    }
+
     component BrightnessMonitor: QtObject {
         id: monitor
 
@@ -102,6 +140,7 @@ Singleton {
         property real brightnessMultiplier: 1.0
         property real multipliedBrightness: Math.max(0, Math.min(1, brightness * (Config.options.light.antiFlashbang.enable ? brightnessMultiplier : 1)))
         property bool ready: false
+        property bool externalChange: false
         property bool animateChanges: !monitor.isDdc
 
         onBrightnessChanged: {
@@ -110,7 +149,7 @@ Singleton {
         }
 
         Behavior on multipliedBrightness {
-            enabled: monitor.animateChanges
+            enabled: monitor.animateChanges && !monitor.externalChange
             NumberAnimation {
                 duration: 200
                 easing.type: Easing.BezierSpline
@@ -118,6 +157,7 @@ Singleton {
             }
         }
         onMultipliedBrightnessChanged: {
+            if (monitor.externalChange) return;
             if (monitor.animationEnabled) syncBrightness();
             else setTimer.restart();
         }
@@ -169,6 +209,13 @@ Singleton {
                 if (valuePercentNumber == 0) valuePercent = "1"; // Prevent fully black
                 setProc.exec(["brightnessctl", "--class", "backlight", "s", valuePercent, "--quiet"])
             }
+        }
+
+        function applyExternalBrightness(value: real): void {
+            if (!monitor.ready || Math.abs(value - monitor.brightness) < 0.012) return;
+            monitor.externalChange = true;
+            monitor.brightness = Math.max(0, Math.min(1, value));
+            monitor.externalChange = false;
         }
 
         function setBrightness(value: real): void {

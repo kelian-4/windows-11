@@ -16,7 +16,8 @@ AbstractBackgroundWidget {
     implicitHeight: contentColumn.implicitHeight
     implicitWidth: contentColumn.implicitWidth
 
-    readonly property string clockStyle: GlobalStates.screenLocked ? Config.options.background.widgets.clock.styleLocked : Config.options.background.widgets.clock.style
+    readonly property bool wafflePanelFamily: Config.options.panelFamily === "waffle"
+    readonly property string clockStyle: wafflePanelFamily ? Config.options.waffles.clock.style : (GlobalStates.screenLocked ? Config.options.background.widgets.clock.styleLocked : Config.options.background.widgets.clock.style)
     readonly property bool forceCenter: (GlobalStates.screenLocked && Config.options.lock.centerClock)
     readonly property bool shouldShow: (!Config.options.background.widgets.clock.showOnlyWhenLocked || GlobalStates.screenLocked)
     property bool wallpaperSafetyTriggered: false
@@ -65,6 +66,15 @@ AbstractBackgroundWidget {
             fade: false
             sourceComponent: DigitalClock {
                 colText: root.colText
+                textHorizontalAlignment: root.textHorizontalAlignment
+            }
+        }
+        FadeLoader {
+            id: windowsClockLoader
+            anchors.horizontalCenter: parent.horizontalCenter
+            shown: root.clockStyle === "windows" && (root.shouldShow)
+            fade: false
+            sourceComponent: WindowsClock {
                 textHorizontalAlignment: root.textHorizontalAlignment
             }
         }

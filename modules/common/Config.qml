@@ -625,6 +625,9 @@ Singleton {
                 property JsonObject calendar: JsonObject {
                     property bool force2CharDayOfWeek: true
                 }
+                property JsonObject clock: JsonObject {
+                    property string style: "windows"
+                }
                 property JsonObject desktop: JsonObject {
                     property bool enable: true
                 }

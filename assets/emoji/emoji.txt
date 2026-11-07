@@ -1,4 +1,3 @@
-# Emoji data derived from github/gemoji (MIT, see LICENSE)
 ### DATA ###
 😀 grinning face | grinning smile happy
 😃 grinning face with big eyes | smiley happy joy haha
