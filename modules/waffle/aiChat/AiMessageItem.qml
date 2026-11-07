@@ -79,13 +79,26 @@ Item {
             visible: root.isUser || root.isAssistant
             implicitHeight: bubble.implicitHeight
 
+            Text {
+                id: sizer
+                visible: false
+                textFormat: Text.PlainText
+                wrapMode: Text.NoWrap
+                text: root.isUser ? (root.messageData?.content ?? "") : ""
+                font {
+                    family: Looks.font.family.ui
+                    pixelSize: Looks.font.pixelSize.large
+                    weight: Looks.font.weight.regular
+                }
+            }
+
             Rectangle {
                 id: bubble
                 readonly property real horizontalPadding: root.isUser ? 12 : 0
                 readonly property real verticalPadding: root.isUser ? 10 : 0
 
                 anchors.right: parent.right
-                width: root.isUser ? Math.min(parent.width, blocksColumn.implicitWidth + horizontalPadding * 2) : parent.width
+                width: root.isUser ? Math.min(parent.width, Math.max(48, sizer.implicitWidth) + horizontalPadding * 2 + 2) : parent.width
                 implicitHeight: blocksColumn.implicitHeight + verticalPadding * 2
                 radius: Looks.radius.large
                 color: root.isUser ? Looks.colors.bg2Base : "transparent"
@@ -192,10 +205,14 @@ Item {
 
         RowLayout {
             Layout.alignment: root.isUser ? Qt.AlignRight : Qt.AlignLeft
-            visible: !root.isInterface && root.isDone && (hoverHandler.hovered || (root.isAssistant && root.isLastMessage))
+            visible: !root.isInterface && root.isDone
+            opacity: hoverHandler.hovered || (root.isAssistant && root.isLastMessage) ? 1 : 0
+            enabled: opacity > 0
             spacing: 2
 
             AiActionButton {
+                implicitWidth: 24
+                implicitHeight: 24
                 iconName: root.copied ? "checkmark" : "copy"
                 tooltipText: Translation.tr("Copy")
                 onClicked: {
@@ -205,6 +222,8 @@ Item {
                 }
             }
             AiActionButton {
+                implicitWidth: 24
+                implicitHeight: 24
                 visible: root.isAssistant
                 enabled: !Ai.isGenerating
                 iconName: "arrow-clockwise"
@@ -212,6 +231,8 @@ Item {
                 onClicked: Ai.regenerate(root.messageIndex)
             }
             AiActionButton {
+                implicitWidth: 24
+                implicitHeight: 24
                 iconName: "delete"
                 tooltipText: Translation.tr("Delete")
                 onClicked: Ai.removeMessage(root.messageIndex)

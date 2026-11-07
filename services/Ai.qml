@@ -458,8 +458,8 @@ Singleton {
             "done": true,
         });
         const id = idForMessage(aiMessage);
-        root.messageIDs = [...root.messageIDs, id];
         root.messageByID[id] = aiMessage;
+        root.messageIDs = [...root.messageIDs, id];
     }
 
     function removeMessage(index) {
@@ -625,8 +625,8 @@ Singleton {
                 "done": false,
             });
             const id = idForMessage(requester.message);
-            root.messageIDs = [...root.messageIDs, id];
             root.messageByID[id] = requester.message;
+            root.messageIDs = [...root.messageIDs, id];
 
             /* Build header string for curl */ 
             let headerString = Object.entries(requestHeaders)
@@ -759,8 +759,8 @@ Singleton {
     function addFunctionOutputMessage(name, output) {
         const aiMessage = createFunctionOutputMessage(name, output);
         const id = idForMessage(aiMessage);
-        root.messageIDs = [...root.messageIDs, id];
         root.messageByID[id] = aiMessage;
+        root.messageIDs = [...root.messageIDs, id];
     }
 
     function rejectCommand(message: AiMessageData) {
@@ -775,8 +775,8 @@ Singleton {
 
         const responseMessage = createFunctionOutputMessage(message.functionName, "", false);
         const id = idForMessage(responseMessage);
-        root.messageIDs = [...root.messageIDs, id];
         root.messageByID[id] = responseMessage;
+        root.messageIDs = [...root.messageIDs, id];
 
         commandExecutionProc.message = responseMessage;
         commandExecutionProc.baseMessageContent = responseMessage.content;
@@ -863,6 +863,7 @@ Singleton {
         property string chatName: ""
         path: chatName.length > 0 ? `${Directories.aiChats}/${chatName}.json` : ""
         blockLoading: true // Prevent race conditions
+        blockAllReads: true
         printErrors: false
     }
 
@@ -889,10 +890,6 @@ Singleton {
             // console.log(saveContent)
             const saveData = JSON.parse(saveContent)
             root.clearMessages()
-            root.messageIDs = saveData.map((_, i) => {
-                return i
-            })
-            // console.log(JSON.stringify(messageIDs))
             for (let i = 0; i < saveData.length; i++) {
                 const message = saveData[i];
                 root.messageByID[i] = root.aiMessageComponent.createObject(root, {
@@ -913,6 +910,9 @@ Singleton {
                     "visibleToUser": message.visibleToUser,
                 });
             }
+            root.messageIDs = saveData.map((_, i) => {
+                return i
+            })
         } catch (e) {
         } finally {
             getSavedChats.running = true;
