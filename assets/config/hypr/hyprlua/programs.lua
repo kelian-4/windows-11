@@ -12,7 +12,7 @@ return {
     fileManager = firstAvailable({ "nautilus", "dolphin", "thunar", "pcmanfm-qt", "pcmanfm", "nemo", "caja" }),
     browser = firstAvailable({ "microsoft-edge-stable", "firefox", "zen-browser", "brave", "google-chrome-stable", "chromium", "librewolf", "vivaldi", "opera" }),
     codeEditor = firstAvailable({ "code", "codium", "cursor", "zeditor", "zed", "kate", "gnome-text-editor", "gedit" }),
-    shell = "qs -c windows-11",
+    shell = "qs -p ~/.config/quickshell/windows-11/shell.qml",
     settings = "qs -p ~/.config/quickshell/windows-11/settings.qml",
     cursor = {
         theme = "Win11-Cursor",

@@ -357,7 +357,7 @@ else
     contains -- $family arch debian fedora; and set auto 1
     echo "    distribution : $family"
 
-    set -l req 'magick|convert:imagemagick' brightnessctl:brightnessctl playerctl:playerctl wl-copy:wl-clipboard grim:grim slurp:slurp hyprpicker:hyprpicker jq:jq curl:curl python3:python3 gio:glib ydotool:ydotool cliphist:cliphist xdg-open:xdg-utils xdg-user-dir:xdg-user-dirs pw-dump:pipewire wpctl:wireplumber nmcli:networkmanager bluetoothctl:bluez upower:upower powerprofilesctl:power-profiles-daemon
+    set -l req 'magick|convert:imagemagick' brightnessctl:brightnessctl playerctl:playerctl wl-copy:wl-clipboard grim:grim slurp:slurp hyprpicker:hyprpicker jq:jq curl:curl python3:python3 gio:glib ydotool:ydotool cliphist:cliphist xdg-open:xdg-utils pw-dump:pipewire wpctl:wireplumber nmcli:networkmanager bluetoothctl:bluez upower:upower powerprofilesctl:power-profiles-daemon
     set -l missing_req (missing_items $req)
 
     if test $auto -eq 1
@@ -380,7 +380,7 @@ else
             break
         end
     end
-    set -l optional matugen:matugen easyeffects:easyeffects warp-cli:cloudflare-warp ddcutil:ddcutil songrec:songrec cava:cava wf-recorder:wf-recorder tesseract:tesseract qalc:libqalculate swappy:swappy hyprsunset:hyprsunset
+    set -l optional matugen:matugen easyeffects:easyeffects warp-cli:cloudflare-warp ddcutil:ddcutil songrec:songrec cava:cava wf-recorder:wf-recorder tesseract:tesseract qalc:libqalculate swappy:swappy hyprsunset:hyprsunset xdg-user-dir:xdg-user-dirs
     set -l missing_opt (missing_items $optional)
     test (count $missing_opt) -gt 0; and echo "    outils optionnels absents : $missing_opt"
     command -q ydotoold; or set -a warnings "ydotool est absent : le clavier a l'ecran ne pourra pas envoyer de touches"
@@ -748,7 +748,7 @@ else if test (count $blocking) -gt 0
         echo "      - $b"
     end
 else if test -z "$HYPRLAND_INSTANCE_SIGNATURE"
-    echo "    pas dans une session Hyprland : lance $qs_bin -c windows-11 -d -n"
+    echo "    pas dans une session Hyprland : lance $qs_bin -p $qs_dst/shell.qml -d -n"
 else
     set -l running 0
     pgrep -x quickshell >/dev/null 2>&1; and set running 1
@@ -756,7 +756,7 @@ else
         echo "    Quickshell tourne deja et son code n'a pas change"
     else
         if test $running -eq 1
-            $qs_bin -c windows-11 kill >/dev/null 2>&1
+            $qs_bin -p $qs_dst/shell.qml kill >/dev/null 2>&1
             for n in 1 2 3 4 5 6
                 pgrep -x quickshell >/dev/null 2>&1; or break
                 sleep 0.5
@@ -764,12 +764,12 @@ else
             pgrep -x quickshell >/dev/null 2>&1; and pkill -x quickshell
             sleep 0.5
         end
-        $qs_bin -c windows-11 -d -n
+        $qs_bin -p $qs_dst/shell.qml -d -n
         sleep 2
         if pgrep -x quickshell >/dev/null 2>&1
             echo "    Quickshell lance"
         else
-            echo "    Quickshell s'est arrete juste apres le lancement : lis $qs_bin -c windows-11 log" >&2
+            echo "    Quickshell s'est arrete juste apres le lancement : lis $qs_bin -p $qs_dst/shell.qml log" >&2
         end
     end
 end
