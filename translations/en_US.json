@@ -684,8 +684,6 @@
   "Two-letter day names in the calendar": "Two-letter day names in the calendar",
   "Project": "Project",
   "Repository": "Repository",
-  "Based on": "Based on",
-  "by end-4": "by end-4",
   "Choose wallpaper": "Choose wallpaper",
   "Images": "Images",
   "Accent color": "Accent color",
@@ -867,7 +865,6 @@
   "Account settings": "Account settings",
   "Lock the screen now": "Lock the screen now",
   "Opens your password change command": "Opens your password change command",
-  "Click again to confirm": "Click again to confirm",
   "End your session and close all apps": "End your session and close all apps",
   "Email & accounts": "Email & accounts",
   "Accounts used by email, calendar, and contacts": "Accounts used by email, calendar, and contacts",
@@ -930,5 +927,11 @@
   "No response was received. Check your connection and your API key.": "No response was received. Check your connection and your API key.",
   "You'll need to enter your Gemini API key first.\nType /key in the AI assistant for instructions.": "You'll need to enter your Gemini API key first.\nType /key in the AI assistant for instructions.",
   "Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the AI assistant from the taskbar and set the model to Gemini (if it isn't already)\n2. Type /key, hit Enter and follow the instructions\n3. Type /key YOUR_API_KEY\n4. Type the locale of your language below and press Generate": "Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the AI assistant from the taskbar and set the model to Gemini (if it isn't already)\n2. Type /key, hit Enter and follow the instructions\n3. Type /key YOUR_API_KEY\n4. Type the locale of your language below and press Generate",
-  "Unknown command: ": "Unknown command: "
+  "Unknown command: ": "Unknown command: ",
+  "Shut down?": "Shut down?",
+  "Your apps will be closed and the computer will turn off.": "Your apps will be closed and the computer will turn off.",
+  "Restart?": "Restart?",
+  "Your apps will be closed and the computer will restart.": "Your apps will be closed and the computer will restart.",
+  "Sign out?": "Sign out?",
+  "Your apps will be closed and your session will end.": "Your apps will be closed and your session will end."
 }

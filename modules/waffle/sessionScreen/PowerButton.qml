@@ -65,12 +65,18 @@ WSessionScreenTextButton {
         Action {
             icon.name: "power"
             text: Translation.tr("Shut down")
-            onTriggered: Session.poweroff()
+            onTriggered: {
+                GlobalStates.sessionOpen = false;
+                Session.confirm("poweroff");
+            }
         }
         Action {
             icon.name: "arrow-counterclockwise"
             text: Translation.tr("Restart")
-            onTriggered: Session.reboot()
+            onTriggered: {
+                GlobalStates.sessionOpen = false;
+                Session.confirm("reboot");
+            }
         }
     }
 }

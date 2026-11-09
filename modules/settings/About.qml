@@ -133,17 +133,5 @@ ContentPage {
                 }
             }
         }
-
-        WText {
-            Layout.topMargin: 6
-            text: `${Translation.tr("Based on")} <a href="https://github.com/end-4/dots-hyprland"><span style="color:${Looks.colors.accent}">dots-hyprland</span></a> ${Translation.tr("by end-4")}`
-            color: Looks.colors.fg1
-            font.pixelSize: Looks.font.pixelSize.normal
-            textFormat: Text.RichText
-            onLinkActivated: (link) => {
-                Qt.openUrlExternally(link)
-            }
-            PointingHandLinkHover {}
-        }
     }
 }

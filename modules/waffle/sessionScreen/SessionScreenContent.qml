@@ -37,7 +37,7 @@ Item {
             text: Translation.tr("Sign out")
             onClicked: {
                 GlobalStates.sessionOpen = false;
-                Session.logout();
+                Session.confirm("logout");
             }
             KeyNavigation.up: lockButton
             KeyNavigation.down: changePasswordButton

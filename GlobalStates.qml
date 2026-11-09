@@ -34,6 +34,7 @@ Singleton {
     property bool screenUnlockFailed: false
     property bool screenTranslatorOpen: false
     property bool sessionOpen: false
+    property string sessionConfirmAction: ""
     property bool superDown: false
     property bool superReleaseMightTrigger: true
     property bool wallpaperSelectorOpen: false

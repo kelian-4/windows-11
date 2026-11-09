@@ -52,6 +52,19 @@ Singleton {
         Quickshell.execDetached(["bash", "-c", `reboot || loginctl reboot`]);
     }
 
+    function confirm(action) {
+        GlobalStates.sessionConfirmAction = action;
+    }
+
+    function execute(action) {
+        if (action === "poweroff")
+            root.poweroff();
+        else if (action === "reboot")
+            root.reboot();
+        else if (action === "logout")
+            root.logout();
+    }
+
     function rebootToFirmware() {
         closeAllWindows();
         Quickshell.execDetached(["bash", "-c", `systemctl reboot --firmware-setup || loginctl reboot --firmware-setup`]);

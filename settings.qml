@@ -13,6 +13,7 @@ import qs.services
 import qs.modules.common
 import qs.modules.waffle.looks
 import qs.modules.waffle.settings
+import qs.modules.waffle.sessionConfirm
 
 ApplicationWindow {
     id: root
@@ -188,6 +189,11 @@ ApplicationWindow {
                 results: SettingsPages.search(sidebar.query)
                 onResultClicked: (pageIndex, subIndex) => root.openPage(pageIndex, subIndex)
             }
+        }
+
+        SessionConfirmDialog {
+            anchors.fill: parent
+            z: 1000
         }
     }
 

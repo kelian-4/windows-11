@@ -15,6 +15,7 @@ import qs.modules.common.widgets
 import qs.modules.common.panels.lock
 import qs.modules.waffle.looks
 import qs.modules.waffle.sessionScreen as SessionScreen
+import qs.modules.waffle.sessionConfirm
 
 LockScreen {
     id: root
@@ -178,6 +179,21 @@ LockScreen {
                     id: powerButton
                     visible: !Config.options.lock.security.requirePasswordToPower
                 }
+            }
+        }
+
+        SessionConfirmDialog {
+            anchors.fill: parent
+            z: 100
+            dark: true
+        }
+
+        Connections {
+            target: GlobalStates
+
+            function onSessionConfirmActionChanged() {
+                if (GlobalStates.sessionConfirmAction.length === 0)
+                    lockSurfaceItem.forceActiveFocus();
             }
         }
     }

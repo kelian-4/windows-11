@@ -92,7 +92,7 @@ WBorderlessButton {
                                 text: Translation.tr("Sign out")
                                 font.pixelSize: Looks.font.pixelSize.large
                             }
-                            onClicked: Session.logout()
+                            onClicked: Session.confirm("logout")
                         }
                     }
                     Item { // Force min width 360 (using min on the item somehow doesn't work)

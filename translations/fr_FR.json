@@ -684,8 +684,6 @@
   "Two-letter day names in the calendar": "Noms de jours sur deux lettres dans le calendrier",
   "Project": "Projet",
   "Repository": "Dépôt",
-  "Based on": "Basé sur",
-  "by end-4": "par end-4",
   "Choose wallpaper": "Choisir un fond d’écran",
   "Images": "Images",
   "Accent color": "Couleur d’accentuation",
@@ -867,7 +865,6 @@
   "Account settings": "Paramètres du compte",
   "Lock the screen now": "Verrouiller l’écran maintenant",
   "Opens your password change command": "Ouvre votre commande de changement de mot de passe",
-  "Click again to confirm": "Cliquez à nouveau pour confirmer",
   "End your session and close all apps": "Terminer votre session et fermer toutes les applications",
   "Email & accounts": "Messagerie et comptes",
   "Accounts used by email, calendar, and contacts": "Comptes utilisés par la messagerie, le calendrier et les contacts",
@@ -930,5 +927,11 @@
   "No response was received. Check your connection and your API key.": "Aucune réponse reçue. Vérifiez votre connexion et votre clé API.",
   "You'll need to enter your Gemini API key first.\nType /key in the AI assistant for instructions.": "Vous devrez d'abord saisir votre clé API Gemini.\nTapez /key dans l'assistant IA pour obtenir les instructions.",
   "Language not listed or incomplete translations?\nYou can choose to generate translations for it with Gemini.\n1. Open the AI assistant from the taskbar and set the model to Gemini (if it isn't already)\n2. Type /key, hit Enter and follow the instructions\n3. Type /key YOUR_API_KEY\n4. Type the locale of your language below and press Generate": "Langue non listée ou traductions incomplètes ?\nVous pouvez choisir de générer des traductions avec Gemini.\n1. Ouvrez l'assistant IA depuis la barre des tâches et définissez le modèle sur Gemini (si ce n'est pas déjà fait)\n2. Tapez /key, appuyez sur Entrée et suivez les instructions\n3. Tapez /key VOTRE_CLÉ_API\n4. Saisissez le code de locale de votre langue ci-dessous et appuyez sur Générer",
-  "Unknown command: ": "Commande inconnue : "
+  "Unknown command: ": "Commande inconnue : ",
+  "Shut down?": "Arrêter l'ordinateur ?",
+  "Your apps will be closed and the computer will turn off.": "Vos applications seront fermées et l'ordinateur s'éteindra.",
+  "Restart?": "Redémarrer l'ordinateur ?",
+  "Your apps will be closed and the computer will restart.": "Vos applications seront fermées et l'ordinateur redémarrera.",
+  "Sign out?": "Se déconnecter ?",
+  "Your apps will be closed and your session will end.": "Vos applications seront fermées et votre session prendra fin."
 }

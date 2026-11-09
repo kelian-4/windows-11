@@ -58,27 +58,11 @@ ContentPage {
         }
 
         SettingsCard {
-            id: signOutCard
-            property bool armed: false
-
             icon: "power"
             iconTint: "#3DC98B"
             title: Translation.tr("Sign out")
-            subtitle: armed ? Translation.tr("Click again to confirm") : Translation.tr("End your session and close all apps")
-            onClicked: {
-                if (armed) {
-                    Session.logout();
-                } else {
-                    armed = true;
-                    disarm.restart();
-                }
-            }
-
-            Timer {
-                id: disarm
-                interval: 4000
-                onTriggered: signOutCard.armed = false
-            }
+            subtitle: Translation.tr("End your session and close all apps")
+            onClicked: Session.confirm("logout")
         }
     }
 
