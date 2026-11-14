@@ -12,9 +12,7 @@ import Quickshell.Io
  */
 Singleton {
     id: root
-    readonly property string bundledPath: Quickshell.shellPath("assets/emoji/emoji.txt")
-    property string emojiScriptPath: `${Directories.config}/hypr/hyprland/scripts/fuzzel-emoji.sh`
-    property bool usingBundled: false
+    readonly property string dataPath: Quickshell.shellPath("assets/emoji/emoji.txt")
 	property string lineBeforeData: "### DATA ###"
     property list<var> list
     readonly property var preparedEntries: list.map(a => ({
@@ -44,29 +42,16 @@ Singleton {
         emojiFileView.reload()
     }
 
-    function useBundled() {
-        if (root.usingBundled)
-            return
-        root.usingBundled = true
-        emojiFileView.path = root.bundledPath
-    }
-
     function updateEmojis(fileContent) {
         const lines = fileContent.split("\n")
         const dataIndex = lines.indexOf(root.lineBeforeData)
-        if (dataIndex === -1) {
-            root.useBundled()
-            return
-        }
         const emojis = lines.slice(dataIndex + 1).filter(line => line.trim() !== "")
         root.list = emojis.map(line => line.trim())
     }
 
     FileView { 
         id: emojiFileView
-        path: Qt.resolvedUrl(root.emojiScriptPath)
-        printErrors: false
-        onLoadFailed: root.useBundled()
+        path: root.dataPath
         onLoadedChanged: {
             if (!emojiFileView.loaded)
                 return
