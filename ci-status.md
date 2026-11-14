@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: db50f13c895f4a5ccb77f8821c87f50c13c5566f
+Commit: 6702c332eef13507003015c81cdad07b0c3c6e6b
 Branche: dev
-Date: 2026-11-09 10:35:47 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/42601896161
+Date: 2026-11-14 16:40:53 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/43616909458
 
 | Etape | Resultat |
 |---|---|
@@ -23,6 +23,11 @@ scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: invalid escape sequence 
 
 ## Log complet - ShellCheck
 ```
+
+In scripts/keyring/unlock.sh line 19:
+eval $(echo -n "${UNLOCK_PASSWORD}" \
+     ^-- SC2046 (warning): Quote this to prevent word splitting.
+
 
 In scripts/colors/switchwall.sh line 10:
 MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
@@ -82,11 +87,6 @@ colorvalues=($colorstrings) # Array of color values
 In scripts/colors/applycolor.sh line 46:
   kill -SIGUSR1 $(pidof kitty)
                 ^------------^ SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/keyring/unlock.sh line 19:
-eval $(echo -n "${UNLOCK_PASSWORD}" \
-     ^-- SC2046 (warning): Quote this to prevent word splitting.
 
 For more information:
   https://www.shellcheck.net/wiki/SC2034 -- CACHE_DIR appears unused. Verify ...
