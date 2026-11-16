@@ -620,7 +620,7 @@ if test $do_shell -eq 1
     echo "    shell copie dans $qs_dst"
     set shell_replaced 1
 
-    pgrep -x quickshell >/dev/null 2>&1; and echo "    Quickshell tourne deja : relance-le completement pour charger la nouvelle copie."
+    pgrep -f "$qs_dst/shell.qml" >/dev/null 2>&1; and echo "    Quickshell tourne deja : relance-le completement pour charger la nouvelle copie."
 end
 
 say "Configuration Hyprland ($hypr_dst)"
@@ -629,20 +629,35 @@ set -l hypr_files (find $hypr_src -type f 2>/dev/null | sort)
 if test (count $hypr_files) -eq 0
     echo "    assets/config/hypr est absent, etape ignoree"
 else
-    set -l hypr_copied 0
+    set -l hypr_differing
     for f in $hypr_files
         set -l rel (string replace -- "$hypr_src/" "" $f)
-        set -l dst $hypr_dst/$rel
-        test -f $dst; and cmp -s $f $dst; and continue
-        backup $dst
-        mkdir -p (dirname $dst)
-        cp -f $f $dst; and set hypr_copied (math $hypr_copied + 1)
+        test -f $hypr_dst/$rel; and not cmp -s $f $hypr_dst/$rel; and set -a hypr_differing $rel
     end
-    echo "    $hypr_copied fichier(s) installe(s)"
-    set -l kb_layout (localectl status 2>/dev/null | string match -r 'X11 Layout: (\S+)')[2]
-    if test -n "$kb_layout"; and test -f $hypr_dst/hyprlua/input.lua
-        sed -i "s/kb_layout = \"us\"/kb_layout = \"$kb_layout\"/" $hypr_dst/hyprlua/input.lua
-        echo "    disposition clavier : $kb_layout"
+    set -l hypr_apply 1
+    if test (count $hypr_differing) -gt 0
+        echo "    ta configuration Hyprland existe et differe : $hypr_differing"
+        echo "    la remplacer retire tes raccourcis actuels (une sauvegarde est faite)"
+        ask "    Remplacer ta configuration Hyprland par celle de Windows 11 ?"; or set hypr_apply 0
+    end
+    if test $hypr_apply -eq 0
+        echo "    configuration Hyprland conservee, modeles dans $hypr_src"
+    else
+        set -l hypr_copied 0
+        for f in $hypr_files
+            set -l rel (string replace -- "$hypr_src/" "" $f)
+            set -l dst $hypr_dst/$rel
+            test -f $dst; and cmp -s $f $dst; and continue
+            backup $dst
+            mkdir -p (dirname $dst)
+            cp -f $f $dst; and set hypr_copied (math $hypr_copied + 1)
+        end
+        echo "    $hypr_copied fichier(s) installe(s)"
+        set -l kb_layout (localectl status 2>/dev/null | string match -r 'X11 Layout: (\S+)')[2]
+        if test -n "$kb_layout"; and test -f $hypr_dst/hyprlua/input.lua
+            sed -i "s/kb_layout = \"us\"/kb_layout = \"$kb_layout\"/" $hypr_dst/hyprlua/input.lua
+            echo "    disposition clavier : $kb_layout"
+        end
     end
 end
 
@@ -751,22 +766,22 @@ else if test -z "$HYPRLAND_INSTANCE_SIGNATURE"
     echo "    pas dans une session Hyprland : lance $qs_bin -p $qs_dst/shell.qml -d -n"
 else
     set -l running 0
-    pgrep -x quickshell >/dev/null 2>&1; and set running 1
+    pgrep -f "$qs_dst/shell.qml" >/dev/null 2>&1; and set running 1
     if test $running -eq 1; and test $shell_replaced -eq 0
         echo "    Quickshell tourne deja et son code n'a pas change"
     else
         if test $running -eq 1
             $qs_bin -p $qs_dst/shell.qml kill >/dev/null 2>&1
             for n in 1 2 3 4 5 6
-                pgrep -x quickshell >/dev/null 2>&1; or break
+                pgrep -f "$qs_dst/shell.qml" >/dev/null 2>&1; or break
                 sleep 0.5
             end
-            pgrep -x quickshell >/dev/null 2>&1; and pkill -x quickshell
+            pgrep -f "$qs_dst/shell.qml" >/dev/null 2>&1; and pkill -f "$qs_dst/shell.qml"
             sleep 0.5
         end
         $qs_bin -p $qs_dst/shell.qml -d -n
         sleep 2
-        if pgrep -x quickshell >/dev/null 2>&1
+        if pgrep -f "$qs_dst/shell.qml" >/dev/null 2>&1
             echo "    Quickshell lance"
         else
             echo "    Quickshell s'est arrete juste apres le lancement : lis $qs_bin -p $qs_dst/shell.qml log" >&2
