@@ -11,11 +11,12 @@ AcrylicButton {
     property var altAction: () => {}
     property var middleClickAction: () => {}
 
-    Layout.fillHeight: true
-    topInset: 4
-    bottomInset: 4
-    leftInset: 0
-    rightInset: 0
+    Layout.fillHeight: !Looks.barVertical
+    Layout.fillWidth: Looks.barVertical
+    topInset: Looks.barVertical ? 2 : 4
+    bottomInset: Looks.barVertical ? 2 : 4
+    leftInset: Looks.barVertical ? 8 : 0
+    rightInset: Looks.barVertical ? 8 : 0
     horizontalPadding: 8
 
     colBackground: ColorUtils.transparentize(Looks.colors.bg1)

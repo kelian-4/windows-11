@@ -617,6 +617,7 @@ Singleton {
                 }
                 property JsonObject bar: JsonObject {
                     property bool bottom: true
+                    property string side: ""
                     property bool leftAlignApps: false
                 }
                 property JsonObject actionCenter: JsonObject {

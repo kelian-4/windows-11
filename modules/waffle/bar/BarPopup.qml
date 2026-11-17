@@ -18,7 +18,8 @@ Loader {
     
     property Item anchorItem: parent
     property real visualMargin: 12
-    readonly property bool barAtBottom: Config.options.waffles.bar.bottom
+    readonly property string side: Looks.barSide
+    readonly property bool vertical: Looks.barVertical
     property real ambientShadowWidth: 1
 
     onFocusCleared: {
@@ -48,10 +49,10 @@ Loader {
         }
 
         anchor {
-            adjustment: PopupAdjustment.ResizeY | PopupAdjustment.SlideX
+            adjustment: Looks.barPopupAdjustment
             item: root.anchorItem
-            gravity: root.barAtBottom ? Edges.Top : Edges.Bottom
-            edges: root.barAtBottom ? Edges.Top : Edges.Bottom
+            gravity: Looks.barPopupEdge
+            edges: Looks.barPopupEdge
         }
 
         HyprlandFocusGrab {
@@ -73,7 +74,7 @@ Loader {
         implicitWidth: realContent.implicitWidth + (root.ambientShadowWidth * 2) + (root.visualMargin * 2)
         implicitHeight: realContent.implicitHeight + (root.ambientShadowWidth * 2) + (root.visualMargin * 2)
 
-        property real sourceEdgeMargin: -implicitHeight
+        property real sourceEdgeMargin: -(root.vertical ? implicitWidth : implicitHeight)
         PropertyAnimation {
             id: openAnim
             target: popupWindow
@@ -88,7 +89,7 @@ Loader {
             PropertyAnimation {
                 target: popupWindow
                 property: "sourceEdgeMargin"
-                to: -implicitHeight
+                to: -(root.vertical ? popupWindow.implicitWidth : popupWindow.implicitHeight)
                 duration: 150
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Looks.transition.easing.bezierCurve.easeOut
@@ -109,14 +110,16 @@ Loader {
             id: realContent
             z: 1
             anchors {
-                left: parent.left
-                right: parent.right
-                top: root.barAtBottom ? undefined : parent.top
-                bottom: root.barAtBottom ? parent.bottom : undefined
+                left: root.vertical ? (root.side === "left" ? parent.left : undefined) : parent.left
+                right: root.vertical ? (root.side === "right" ? parent.right : undefined) : parent.right
+                top: root.vertical ? parent.top : (root.side === "top" ? parent.top : undefined)
+                bottom: root.vertical ? parent.bottom : (root.side === "bottom" ? parent.bottom : undefined)
                 margins: root.ambientShadowWidth + root.visualMargin
                 // Opening anim
-                bottomMargin: root.barAtBottom ? popupWindow.sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
-                topMargin: root.barAtBottom ? (root.ambientShadowWidth + root.visualMargin) : popupWindow.sourceEdgeMargin
+                leftMargin: root.side === "left" ? popupWindow.sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
+                rightMargin: root.side === "right" ? popupWindow.sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
+                topMargin: root.side === "top" ? popupWindow.sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
+                bottomMargin: root.side === "bottom" ? popupWindow.sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
             }
             color: Looks.colors.bg1Base
             radius: Looks.radius.large

@@ -32,6 +32,9 @@ AppButton {
     signal hoverPreviewRequested()
     signal hoverPreviewDismissed()
 
+    width: Looks.barVertical ? (ListView.view?.width ?? 0) : implicitWidth
+    height: Looks.barVertical ? (width - leftInset - rightInset + topInset + bottomInset) : implicitHeight
+
     multiple: appEntry.toplevels.length > 1
     checked: active
     iconName: AppSearch.guessIcon(appEntry.appId)
@@ -69,18 +72,26 @@ AppButton {
         id: activeIndicator
         opacity: root.hasWindows ? 1 : 0
         anchors {
-            horizontalCenter: root.background.horizontalCenter
-            bottom: root.background.bottom
+            horizontalCenter: Looks.barVertical ? undefined : root.background.horizontalCenter
+            verticalCenter: Looks.barVertical ? root.background.verticalCenter : undefined
+            bottom: Looks.barVertical ? undefined : root.background.bottom
+            left: Looks.barSide === "left" ? root.background.left : undefined
+            right: Looks.barSide === "right" ? root.background.right : undefined
             bottomMargin: 1
+            leftMargin: 1
+            rightMargin: 1
         }
 
-        implicitWidth: root.active ? 16 : 6
-        implicitHeight: 3
-        radius: height / 2
+        implicitWidth: Looks.barVertical ? 3 : (root.active ? 16 : 6)
+        implicitHeight: Looks.barVertical ? (root.active ? 16 : 6) : 3
+        radius: Math.min(width, height) / 2
 
         color: root.active ? Looks.colors.accent : Looks.colors.accentUnfocused
 
         Behavior on implicitWidth {
+            animation: Looks.transition.enter.createObject(this)
+        }
+        Behavior on implicitHeight {
             animation: Looks.transition.enter.createObject(this)
         }
         Behavior on color {

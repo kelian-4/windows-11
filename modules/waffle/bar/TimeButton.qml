@@ -8,9 +8,9 @@ import qs.modules.waffle.looks
 BarButton {
     id: root
 
-    rightInset: 12 // For now this is the rightmost button. Desktop peek is useless. (for now)
-    leftPadding: 12
-    rightPadding: 22
+    rightInset: Looks.barVertical ? 8 : 12 // For now this is the rightmost button. Desktop peek is useless. (for now)
+    leftPadding: Looks.barVertical ? 4 : 12
+    rightPadding: Looks.barVertical ? 4 : 22
 
     checked: GlobalStates.sidebarRightOpen
     onClicked: {
@@ -19,10 +19,39 @@ BarButton {
 
     contentItem: Item {
         // anchors.centerIn: parent
-        implicitHeight: contentLayout.implicitHeight
-        implicitWidth: contentLayout.implicitWidth
+        implicitHeight: Looks.barVertical ? verticalLayout.implicitHeight : contentLayout.implicitHeight
+        implicitWidth: Looks.barVertical ? verticalLayout.implicitWidth : contentLayout.implicitWidth
+
+        Column {
+            id: verticalLayout
+            visible: Looks.barVertical
+            anchors.centerIn: parent
+            spacing: 2
+
+            WText {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: DateTime.time
+            }
+            WText {
+                width: Math.max(0, root.width - root.leftInset - root.rightInset - 8)
+                horizontalAlignment: Text.AlignHCenter
+                fontSizeMode: Text.HorizontalFit
+                minimumPixelSize: 7
+                font.pixelSize: Looks.font.pixelSize.small
+                text: DateTime.date
+            }
+            FluentIcon {
+                visible: Notifications.silent
+                anchors.horizontalCenter: parent.horizontalCenter
+                icon: "alert-snooze"
+                implicitSize: 16
+                filled: true
+            }
+        }
+
         Row {
             id: contentLayout
+            visible: !Looks.barVertical
             anchors.centerIn: parent
             spacing: 7
             

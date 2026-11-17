@@ -7,6 +7,7 @@ import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.waffle.looks
 
 Scope {
     id: root
@@ -21,14 +22,14 @@ Scope {
                 required property var modelData
                 screen: modelData
                 exclusionMode: ExclusionMode.Ignore
-                exclusiveZone: implicitHeight
+                exclusiveZone: Looks.barVertical ? implicitWidth : implicitHeight
                 WlrLayershell.namespace: "quickshell:bar"
 
                 anchors {
-                    left: true
-                    right: true
-                    bottom: Config.options.waffles.bar.bottom
-                    top: !Config.options.waffles.bar.bottom
+                    left: Looks.barVertical ? Looks.barSide === "left" : true
+                    right: Looks.barVertical ? Looks.barSide === "right" : true
+                    top: Looks.barVertical ? true : Looks.barSide === "top"
+                    bottom: Looks.barVertical ? true : Looks.barSide === "bottom"
                 }
 
                 color: "transparent"

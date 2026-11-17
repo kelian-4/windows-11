@@ -37,6 +37,16 @@ Singleton {
     property QtObject transition
     property string iconsPath: `${Directories.assetsPath}/icons/fluent`
     property bool dark: Appearance.m3colors.darkmode
+    readonly property string barSide: {
+        const side = Config.options.waffles.bar.side;
+        if (side === "top" || side === "bottom" || side === "left" || side === "right")
+            return side;
+        return Config.options.waffles.bar.bottom ? "bottom" : "top";
+    }
+    readonly property bool barVertical: root.barSide === "left" || root.barSide === "right"
+    readonly property real barThickness: root.barVertical ? 64 : 48
+    readonly property int barPopupEdge: root.barSide === "bottom" ? Edges.Top : root.barSide === "top" ? Edges.Bottom : root.barSide === "left" ? Edges.Right : Edges.Left
+    readonly property int barPopupAdjustment: root.barVertical ? (PopupAdjustment.ResizeX | PopupAdjustment.SlideY) : (PopupAdjustment.ResizeY | PopupAdjustment.SlideX)
 
     readonly property bool transparencyEnabled: Config.options.appearance.transparency.enable
     readonly property real transparencyLevel: Config.options.appearance.transparency.level

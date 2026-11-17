@@ -18,12 +18,14 @@ BarButton {
         anchors.fill: parent
         implicitHeight: column.implicitHeight
         implicitWidth: column.implicitWidth
-        Row {
+        Grid {
             id: column
+            columns: Looks.barVertical ? 1 : 10
             anchors {
-                top: parent.top
-                bottom: parent.bottom
+                top: Looks.barVertical ? undefined : parent.top
+                bottom: Looks.barVertical ? undefined : parent.bottom
                 horizontalCenter: parent.horizontalCenter
+                verticalCenter: Looks.barVertical ? parent.verticalCenter : undefined
             }
             spacing: 4
 
@@ -76,8 +78,8 @@ BarButton {
         id: hoverArea
         required property var iconItem
         anchors {
-            top: parent.top
-            bottom: parent.bottom
+            top: Looks.barVertical ? undefined : parent.top
+            bottom: Looks.barVertical ? undefined : parent.bottom
         }
         hoverEnabled: true
         implicitHeight: hoverArea.iconItem.implicitHeight

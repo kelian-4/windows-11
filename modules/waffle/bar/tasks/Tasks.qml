@@ -8,7 +8,8 @@ import qs.modules.waffle.looks
 MouseArea {
     id: root
 
-    Layout.fillHeight: true
+    Layout.fillHeight: !Looks.barVertical
+    Layout.fillWidth: Looks.barVertical
     implicitHeight: appRow.implicitHeight
     implicitWidth: appRow.implicitWidth
     hoverEnabled: true
@@ -20,16 +21,22 @@ MouseArea {
     Behavior on implicitWidth {
         animation: Looks.transition.move.createObject(this)
     }
+    Behavior on implicitHeight {
+        animation: Looks.transition.move.createObject(this)
+    }
 
     WListView {
         id: appRow
         anchors {
-            top: parent.top
-            bottom: parent.bottom
+            top: Looks.barVertical ? undefined : parent.top
+            bottom: Looks.barVertical ? undefined : parent.bottom
+            left: Looks.barVertical ? parent.left : undefined
+            right: Looks.barVertical ? parent.right : undefined
         }
-        orientation: Qt.Horizontal
+        orientation: Looks.barVertical ? Qt.Vertical : Qt.Horizontal
         spacing: 0
-        implicitWidth: contentWidth
+        implicitWidth: Looks.barVertical ? 0 : contentWidth
+        implicitHeight: Looks.barVertical ? contentHeight : 0
         clip: true
         interactive: false
         // TODO: Include only apps (and windows) in current workspace only | wait, does that even make sense in a Hyprland workflow?

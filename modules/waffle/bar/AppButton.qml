@@ -12,9 +12,10 @@ BarButton {
     property bool multiple: false
     property bool separateLightDark: false
     property alias tryCustomIcon: iconWidget.tryCustomIcon
-    leftInset: 2
-    rightInset: 2
+    leftInset: Looks.barVertical ? 8 : 2
+    rightInset: Looks.barVertical ? 8 : 2
     implicitWidth: height - topInset - bottomInset + leftInset + rightInset
+    Layout.preferredHeight: Looks.barVertical ? (width - leftInset - rightInset + topInset + bottomInset) : -1
 
     property real pressedScale: 5/6
 

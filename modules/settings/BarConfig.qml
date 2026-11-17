@@ -15,20 +15,31 @@ ContentPage {
             ContentSubsection {
                 title: Translation.tr("Taskbar position")
                 ConfigSelectionArray {
-                    currentValue: Config.options.waffles.bar.bottom ? 1 : 0
+                    currentValue: Config.options.waffles.bar.side.length > 0 ? Config.options.waffles.bar.side : (Config.options.waffles.bar.bottom ? "bottom" : "top")
                     onSelected: newValue => {
-                        Config.options.waffles.bar.bottom = newValue === 1;
+                        Config.options.waffles.bar.side = newValue;
+                        Config.options.waffles.bar.bottom = newValue === "bottom";
                     }
                     options: [
                         {
                             displayName: Translation.tr("Top"),
                             icon: "arrow_upward",
-                            value: 0
+                            value: "top"
                         },
                         {
                             displayName: Translation.tr("Bottom"),
                             icon: "arrow_downward",
-                            value: 1
+                            value: "bottom"
+                        },
+                        {
+                            displayName: Translation.tr("Left"),
+                            icon: "arrow_back",
+                            value: "left"
+                        },
+                        {
+                            displayName: Translation.tr("Right"),
+                            icon: "arrow_forward",
+                            value: "right"
                         }
                     ]
                 }

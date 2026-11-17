@@ -23,7 +23,9 @@ Item {
         closeAnim.start();
     }
 
-    readonly property bool barAtBottom: Config.options.waffles.bar.bottom
+    readonly property bool barAtBottom: Looks.barSide === "bottom"
+    readonly property bool slideSides: root.revealFromSides || Looks.barVertical
+    readonly property bool slideFromLeft: Looks.barVertical ? Looks.barSide === "left" : root.revealFromLeft
 
     implicitHeight: contentItem.implicitHeight + visualMargin * 2
     implicitWidth: contentItem.implicitWidth + visualMargin * 2
@@ -38,15 +40,15 @@ Item {
     Item {
         id: panelContent
         anchors {
-            left: (root.revealFromSides && !root.revealFromLeft) ? undefined : parent.left
-            right: (root.revealFromSides && root.revealFromLeft) ? undefined : parent.right
-            top: (!root.revealFromSides && root.barAtBottom) ? undefined : parent.top
-            bottom: (!root.revealFromSides && !root.barAtBottom) ? undefined : parent.bottom
+            left: (root.slideSides && !root.slideFromLeft) ? undefined : parent.left
+            right: (root.slideSides && root.slideFromLeft) ? undefined : parent.right
+            top: (!root.slideSides && root.barAtBottom) ? undefined : parent.top
+            bottom: (!root.slideSides && !root.barAtBottom) ? undefined : parent.bottom
             // Opening anim
-            bottomMargin: (!root.revealFromSides && root.barAtBottom) ? sourceEdgeMargin : root.visualMargin
-            topMargin: (!root.revealFromSides && !root.barAtBottom) ? sourceEdgeMargin : root.visualMargin
-            leftMargin: (root.revealFromSides && root.revealFromLeft) ? sideEdgeMargin : root.visualMargin
-            rightMargin: (root.revealFromSides && !root.revealFromLeft) ? sideEdgeMargin : root.visualMargin
+            bottomMargin: (!root.slideSides && root.barAtBottom) ? sourceEdgeMargin : root.visualMargin
+            topMargin: (!root.slideSides && !root.barAtBottom) ? sourceEdgeMargin : root.visualMargin
+            leftMargin: (root.slideSides && root.slideFromLeft) ? sideEdgeMargin : root.visualMargin
+            rightMargin: (root.slideSides && !root.slideFromLeft) ? sideEdgeMargin : root.visualMargin
         }
 
         Component.onCompleted: {

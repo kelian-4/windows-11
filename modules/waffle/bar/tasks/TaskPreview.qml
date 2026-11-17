@@ -34,7 +34,8 @@ PopupWindow {
     }
 
     ///////////////////// Internals /////////////////////
-    readonly property bool bottom: Config.options.waffles.bar.bottom
+    readonly property string side: Looks.barSide
+    readonly property bool vertical: Looks.barVertical
     property real visualMargin: 12
     property real ambientShadowWidth: 1
 
@@ -45,8 +46,8 @@ PopupWindow {
     anchor {
         adjustment: PopupAdjustment.Slide
         item: root.anchorItem
-        gravity: bottom ? Edges.Top : Edges.Bottom
-        edges: bottom ? Edges.Top : Edges.Bottom
+        gravity: Looks.barPopupEdge
+        edges: Looks.barPopupEdge
     }
 
     Timer {
@@ -70,20 +71,22 @@ PopupWindow {
 
         Rectangle {
             id: contentItem
-            property real sourceEdgeMargin: root.visible ? (root.ambientShadowWidth + root.visualMargin) : -root.implicitHeight
+            property real sourceEdgeMargin: root.visible ? (root.ambientShadowWidth + root.visualMargin) : -(root.vertical ? root.implicitWidth : root.implicitHeight)
             Behavior on sourceEdgeMargin {
                 id: marginBehavior
                 animation: Looks.transition.enter.createObject(this)
             }
             anchors {
-                left: parent.left
-                right: parent.right
-                top: root.bottom ? undefined : parent.top
-                bottom: root.bottom ? parent.bottom : undefined
+                left: root.vertical ? (root.side === "left" ? parent.left : undefined) : parent.left
+                right: root.vertical ? (root.side === "right" ? parent.right : undefined) : parent.right
+                top: root.vertical ? parent.top : (root.side === "top" ? parent.top : undefined)
+                bottom: root.vertical ? parent.bottom : (root.side === "bottom" ? parent.bottom : undefined)
                 margins: root.ambientShadowWidth + root.visualMargin
                 // Opening anim
-                bottomMargin: root.bottom ? sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
-                topMargin: root.bottom ? (root.ambientShadowWidth + root.visualMargin) : sourceEdgeMargin
+                leftMargin: root.side === "left" ? sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
+                rightMargin: root.side === "right" ? sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
+                topMargin: root.side === "top" ? sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
+                bottomMargin: root.side === "bottom" ? sourceEdgeMargin : (root.ambientShadowWidth + root.visualMargin)
             }
             color: Looks.colors.bg1Base
             radius: Looks.radius.large

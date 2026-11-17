@@ -9,14 +9,19 @@ import qs.modules.common.widgets
 import qs.modules.waffle.looks
 import qs.modules.waffle.bar
 
-RowLayout {
+GridLayout {
     id: root
 
     property bool overflowOpen: false
     property bool dragging: false
 
-    Layout.fillHeight: true
-    spacing: 0
+    Layout.fillHeight: !Looks.barVertical
+    Layout.fillWidth: Looks.barVertical
+    flow: Looks.barVertical ? GridLayout.TopToBottom : GridLayout.LeftToRight
+    columns: Looks.barVertical ? 1 : 1000
+    rows: Looks.barVertical ? 1000 : 1
+    rowSpacing: 0
+    columnSpacing: 0
 
     BarIconButton {
         id: overflowButton
@@ -26,7 +31,12 @@ RowLayout {
 
         iconName: "chevron-down"
         iconMonochrome: true
-        iconRotation: (Config.options.waffles.bar.bottom ? 180 : 0) + (root.overflowOpen ? 180 : 0)
+        iconRotation: ({
+                "bottom": 180,
+                "top": 0,
+                "left": -90,
+                "right": 90
+            })[Looks.barSide] + (root.overflowOpen ? 180 : 0)
         Behavior on iconRotation {
             animation: Looks.transition.rotate.createObject(this)
         }
@@ -72,12 +82,14 @@ RowLayout {
                 id: dragArea
                 anchors.fill: parent
                 drag.target: parent
-                drag.axis: Drag.XAxis
+                drag.axis: Looks.barVertical ? Drag.YAxis : Drag.XAxis
                 drag.threshold: 2
 
                 onPressed: event => {
                     trayButton.Drag.hotSpot.x = event.x;
+                    trayButton.Drag.hotSpot.y = event.y;
                     trayButton.initialX = trayButton.x;
+                    trayButton.initialY = trayButton.y;
                     root.dragging = true;
                     trayButton.Drag.active = true;
                 }
@@ -95,6 +107,7 @@ RowLayout {
                             pinDropArea.willPin = false;
                         } else {
                             trayButton.x = trayButton.initialX;
+                            trayButton.y = trayButton.initialY;
                         }
                     }
                     trayButton.Drag.active = false;

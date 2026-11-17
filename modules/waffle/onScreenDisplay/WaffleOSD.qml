@@ -97,8 +97,10 @@ Scope {
             WlrLayershell.namespace: "quickshell:wOnScreenDisplay"
             WlrLayershell.layer: WlrLayer.Overlay
             anchors {
-                top: !Config.options.waffles.bar.bottom
-                bottom: Config.options.waffles.bar.bottom
+                top: Looks.barVertical ? false : Looks.barSide === "top"
+                bottom: Looks.barVertical ? false : Looks.barSide === "bottom"
+                left: Looks.barSide === "left"
+                right: Looks.barSide === "right"
             }
             mask: Region {
                 item: osdIndicatorLoader

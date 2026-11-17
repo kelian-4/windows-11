@@ -14,7 +14,6 @@ BarIconButton {
 
     required property SystemTrayItem item
     property alias menuOpen: menu.visible
-    readonly property bool barAtBottom: Config.options.waffles.bar.bottom
     iconSource: item.icon
     iconScale: 0
     Component.onCompleted: {
@@ -38,10 +37,10 @@ BarIconButton {
         id: menu
         menu: root.item.menu
         anchor {
-            adjustment: PopupAdjustment.ResizeY | PopupAdjustment.SlideX
+            adjustment: Looks.barPopupAdjustment
             item: root
-            gravity: root.barAtBottom ? Edges.Top : Edges.Bottom
-            edges: root.barAtBottom ? Edges.Top : Edges.Bottom
+            gravity: Looks.barPopupEdge
+            edges: Looks.barPopupEdge
         }
     }
 

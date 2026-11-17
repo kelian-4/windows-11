@@ -6,6 +6,7 @@ import Quickshell.Hyprland
 import qs
 import qs.services
 import qs.modules.common
+import qs.modules.waffle.looks
 
 Scope {
     id: root
@@ -45,9 +46,10 @@ Scope {
             color: "transparent"
 
             anchors {
-                bottom: Config.options.waffles.bar.bottom
-                top: !Config.options.waffles.bar.bottom
-                right: true
+                bottom: Looks.barVertical ? true : Looks.barSide === "bottom"
+                top: Looks.barVertical ? false : Looks.barSide === "top"
+                right: Looks.barVertical ? Looks.barSide === "right" : true
+                left: Looks.barVertical ? Looks.barSide === "left" : false
             }
 
             implicitWidth: content.implicitWidth

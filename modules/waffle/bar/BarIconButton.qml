@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import qs
 import qs.services
@@ -19,6 +20,7 @@ BarButton {
     property alias overlayingItems: iconContent.data
 
     implicitWidth: 32
+    Layout.preferredHeight: Looks.barVertical ? 32 : -1
 
     contentItem: Item {
         anchors.centerIn: parent
