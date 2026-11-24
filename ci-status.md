@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: 20ac44dd9331e61ade2d2d7a416935985551805b
+Commit: 719d095bc29be156023a821effba0935004c37da
 Branche: dev
-Date: 2026-11-17 07:32:50 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/44039523840
+Date: 2026-11-24 12:58:00 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/45398593747
 
 | Etape | Resultat |
 |---|---|
@@ -17,7 +17,7 @@ Run: https://github.com/kelian-4/windows-11/actions/runs/44039523840
 
 ## Log complet - Syntaxe Python
 ```
-scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: invalid escape sequence '\{'
+scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: "\{" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\{"? A raw string is also an option.
   nested_pattern = '\{'.join(pattern_parts)
 ```
 
@@ -27,6 +27,26 @@ scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: invalid escape sequence 
 In scripts/keyring/unlock.sh line 19:
 eval $(echo -n "${UNLOCK_PASSWORD}" \
      ^-- SC2046 (warning): Quote this to prevent word splitting.
+
+
+In scripts/colors/applycolor.sh line 6:
+CACHE_DIR="$XDG_CACHE_HOME/quickshell"
+^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
+
+
+In scripts/colors/applycolor.sh line 25:
+colorlist=($colornames)     # Array of color names
+           ^---------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
+
+
+In scripts/colors/applycolor.sh line 26:
+colorvalues=($colorstrings) # Array of color values
+             ^-----------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
+
+
+In scripts/colors/applycolor.sh line 46:
+  kill -SIGUSR1 $(pidof kitty)
+                ^------------^ SC2046 (warning): Quote this to prevent word splitting.
 
 
 In scripts/colors/switchwall.sh line 10:
@@ -67,26 +87,6 @@ In scripts/colors/switchwall.sh line 448:
 In scripts/colors/switchwall.sh line 449:
         local imgbase="$(basename "$imgpath")"
               ^-----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
-
-
-In scripts/colors/applycolor.sh line 6:
-CACHE_DIR="$XDG_CACHE_HOME/quickshell"
-^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/applycolor.sh line 25:
-colorlist=($colornames)     # Array of color names
-           ^---------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
-
-
-In scripts/colors/applycolor.sh line 26:
-colorvalues=($colorstrings) # Array of color values
-             ^-----------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
-
-
-In scripts/colors/applycolor.sh line 46:
-  kill -SIGUSR1 $(pidof kitty)
-                ^------------^ SC2046 (warning): Quote this to prevent word splitting.
 
 For more information:
   https://www.shellcheck.net/wiki/SC2034 -- CACHE_DIR appears unused. Verify ...
