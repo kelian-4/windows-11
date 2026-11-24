@@ -38,7 +38,7 @@ BarButton {
                 fontSizeMode: Text.HorizontalFit
                 minimumPixelSize: 7
                 font.pixelSize: Looks.font.pixelSize.small
-                text: DateTime.date
+                text: DateTime.shortDate
             }
             FluentIcon {
                 visible: Notifications.silent
