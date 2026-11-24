@@ -12,6 +12,7 @@ return {
     fileManager = firstAvailable({ "nautilus", "dolphin", "thunar", "pcmanfm-qt", "pcmanfm", "nemo", "caja" }),
     browser = firstAvailable({ "microsoft-edge-stable", "firefox", "zen-browser", "brave", "google-chrome-stable", "chromium", "librewolf", "vivaldi", "opera" }),
     codeEditor = firstAvailable({ "code", "codium", "cursor", "zeditor", "zed", "kate", "gnome-text-editor", "gedit" }),
+    mediaPlayer = firstAvailable({ "mpv", "vlc", "celluloid", "haruna", "totem" }),
     shell = "qs -p ~/.config/quickshell/windows-11/shell.qml",
     settings = "qs -p ~/.config/quickshell/windows-11/settings.qml",
     cursor = {

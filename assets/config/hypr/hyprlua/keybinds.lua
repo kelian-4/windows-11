@@ -6,35 +6,34 @@ local function shellShortcut(name)
     return hl.dsp.global("quickshell:" .. name)
 end
 
-hl.bind(mainMod .. " + S", shellShortcut("searchToggle"))
+hl.bind(mainMod .. " + space", shellShortcut("searchToggle"))
+hl.bind("CTRL + " .. mainMod .. " + Q", shellShortcut("lock"))
+
 hl.bind(mainMod .. " + A", shellShortcut("sidebarLeftToggle"))
 hl.bind(mainMod .. " + N", shellShortcut("sidebarRightToggle"))
 hl.bind(mainMod .. " + W", shellShortcut("widgetsToggle"))
-hl.bind(mainMod .. " + C", shellShortcut("aiToggle"))
-hl.bind(mainMod .. " + V", shellShortcut("overviewClipboardToggle"))
-hl.bind(mainMod .. " + period", shellShortcut("overviewEmojiToggle"))
 hl.bind(mainMod .. " + X", shellShortcut("sessionToggle"))
 hl.bind(mainMod .. " + K", shellShortcut("mediaControlsToggle"))
+hl.bind(mainMod .. " + period", shellShortcut("overviewEmojiToggle"))
+hl.bind(mainMod .. " + SHIFT + V", shellShortcut("overviewClipboardToggle"))
+hl.bind(mainMod .. " + SHIFT + C", shellShortcut("aiToggle"))
 hl.bind(mainMod .. " + F1", shellShortcut("cheatsheetToggle"))
-hl.bind(mainMod .. " + L", shellShortcut("lock"))
 hl.bind("CTRL + " .. mainMod .. " + O", shellShortcut("oskToggle"))
 hl.bind(mainMod .. " + SHIFT + S", shellShortcut("regionScreenshot"))
 hl.bind(mainMod .. " + SHIFT + R", shellShortcut("regionRecord"))
 hl.bind(mainMod .. " + SHIFT + T", shellShortcut("regionOcr"))
-hl.bind("PRINT", shellShortcut("regionScreenshot"))
 
-hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(programs.settings))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(programs.fileManager))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
+hl.bind(mainMod .. " + Q", hl.dsp.window.close())
+hl.bind(mainMod .. " + V", hl.dsp.window.float())
+hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
+hl.bind("ALT + " .. mainMod .. " + Escape", hl.dsp.exec_cmd("hyprctl kill"))
+
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(programs.terminal))
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(programs.fileManager))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(programs.browser))
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(programs.terminal))
-hl.bind("CTRL + ALT + T", hl.dsp.exec_cmd(programs.terminal))
-hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd(programs.codeEditor))
-hl.bind(mainMod .. " + space", hl.dsp.exec_cmd("hyprctl switchxkblayout all next"))
-
-hl.bind("ALT + F4", hl.dsp.window.close())
-hl.bind("F11", hl.dsp.window.fullscreen())
-hl.bind(mainMod .. " + Z", hl.dsp.window.float())
-hl.bind("CTRL + ALT + Escape", hl.dsp.exec_cmd("hyprctl kill"))
+hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(programs.codeEditor))
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(programs.mediaPlayer))
 
 hl.bind("ALT + Tab", hl.dsp.window.cycle_next(), { repeating = true })
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }), { repeating = true })
@@ -59,6 +58,12 @@ for _, direction in ipairs({ "left", "right", "up", "down" }) do
     )
 end
 
+hl.bind(
+    mainMod .. " + PRINT",
+    hl.dsp.exec_cmd([[mkdir -p ~/Pictures/Screenshots && grim -g "$(slurp)" - | tee ~/Pictures/Screenshots/$(date +%F_%T).png | wl-copy]])
+)
+hl.bind(mainMod .. " + SHIFT + PRINT", hl.dsp.exec_cmd([[grim -g "$(slurp)" - | wl-copy]]))
+
 for i = 1, 10 do
     local key = i % 10
     hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
@@ -67,6 +72,8 @@ end
 
 hl.bind("CTRL + " .. mainMod .. " + left", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind("CTRL + " .. mainMod .. " + right", hl.dsp.focus({ workspace = "e+1" }))
+
+hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
 
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
