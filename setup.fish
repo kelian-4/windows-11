@@ -718,6 +718,18 @@ else
     echo "    non modifie"
 end
 
+if test "$QT_QPA_PLATFORMTHEME" != qt6ct
+    echo "    QT_QPA_PLATFORMTHEME vaut '$QT_QPA_PLATFORMTHEME' dans cette session : qt6ct sera lu apres rechargement de Hyprland (env.lua le definit)"
+end
+if command -q kbuildsycoca6
+    kbuildsycoca6 --noincremental >/dev/null 2>&1; and echo "    cache KDE (kbuildsycoca6) reconstruit"
+else
+    echo "    kbuildsycoca6 est introuvable : le cache KDE n'a pas ete reconstruit"
+end
+if test $family = nixos
+    echo "    NixOS : qt6ct doit etre installe dans ta configuration pour que Qt lise qt6ct.conf"
+end
+
 say "Polices par defaut (fontconfig)"
 set -l fc_file ~/.config/fontconfig/fonts.conf
 set -l fc_tmp (mktemp)
