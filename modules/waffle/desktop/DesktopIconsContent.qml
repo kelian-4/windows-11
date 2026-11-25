@@ -169,6 +169,14 @@ Item {
         return Math.max(0, Math.min(y, root.height - root.cellHeight));
     }
 
+    function overlapsPlaced(placed, x, y) {
+        for (const other of Object.values(placed)) {
+            if (Math.abs(other.x - x) < root.cellWidth && Math.abs(other.y - y) < root.cellHeight)
+                return true;
+        }
+        return false;
+    }
+
     function relayout() {
         const names = root.fileNames();
         const saved = DesktopIcons.autoArrange ? {} : (DesktopIcons.positions ?? {});
@@ -192,6 +200,8 @@ Item {
             } else {
                 const x = root.clampX(position.x ?? root.padding + (position.column ?? 0) * root.cellWidth);
                 const y = root.clampY(position.y ?? root.padding + (position.row ?? 0) * root.cellHeight);
+                if (root.overlapsPlaced(result, x, y))
+                    continue;
                 taken[`${root.columnOf(x)},${root.rowOf(y)}`] = true;
                 result[name] = {
                     x: x,
@@ -205,12 +215,14 @@ Item {
             for (let column = 0; result[name] === undefined; column++) {
                 for (let row = 0; row < root.rows; row++) {
                     const key = `${column},${row}`;
-                    if (taken[key])
+                    const cellX = root.padding + column * root.cellWidth;
+                    const cellY = root.padding + row * root.cellHeight;
+                    if (taken[key] || root.overlapsPlaced(result, cellX, cellY))
                         continue;
                     taken[key] = true;
                     result[name] = {
-                        x: root.padding + column * root.cellWidth,
-                        y: root.padding + row * root.cellHeight
+                        x: cellX,
+                        y: cellY
                     };
                     break;
                 }
