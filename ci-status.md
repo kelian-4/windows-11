@@ -1,15 +1,15 @@
 # CI Status
 
-Commit: b0482b7faa053a056c784c99441f0e0efb867b6f
+Commit: 0fb3bacc29dcff1e496cabb6e26572aa18ea34e5
 Branche: dev
-Date: 2026-11-25 08:27:00 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/45576342691
+Date: 2026-11-25 08:29:09 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/45576655549
 
 | Etape | Resultat |
 |---|---|
 | JSON traductions | success |
 | Syntaxe Python | success |
-| ShellCheck | failure |
+| ShellCheck | success |
 
 ## Log complet - JSON traductions
 ```
@@ -23,73 +23,4 @@ scripts/hyprland/hyprconfigurator.py:50: SyntaxWarning: "\{" is an invalid escap
 
 ## Log complet - ShellCheck
 ```
-
-In scripts/keyring/unlock.sh line 19:
-eval $(echo -n "${UNLOCK_PASSWORD}" \
-     ^-- SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/colors/applycolor.sh line 6:
-CACHE_DIR="$XDG_CACHE_HOME/quickshell"
-^-------^ SC2034 (warning): CACHE_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/applycolor.sh line 25:
-colorlist=($colornames)     # Array of color names
-           ^---------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
-
-
-In scripts/colors/applycolor.sh line 26:
-colorvalues=($colorstrings) # Array of color values
-             ^-----------^ SC2206 (warning): Quote to prevent word splitting/globbing, or split robustly with mapfile or read -a.
-
-
-In scripts/colors/applycolor.sh line 46:
-  kill -SIGUSR1 $(pidof kitty)
-                ^------------^ SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/colors/switchwall.sh line 10:
-MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
-^---------^ SC2034 (warning): MATUGEN_DIR appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/switchwall.sh line 71:
-    local screen_width="$1"
-          ^----------^ SC2034 (warning): screen_width appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/switchwall.sh line 72:
-    local screen_height="$2"
-          ^-----------^ SC2034 (warning): screen_height appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/switchwall.sh line 73:
-    local wallpaper_path="$3"
-          ^------------^ SC2034 (warning): wallpaper_path appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/switchwall.sh line 199:
-    cursorposy_inverted=$((screensizey - cursorposy))
-    ^-----------------^ SC2034 (warning): cursorposy_inverted appears unused. Verify use (or export if used externally).
-
-
-In scripts/colors/switchwall.sh line 380:
-                    set_accent_color $(hyprpicker --no-fancy)
-                                     ^----------------------^ SC2046 (warning): Quote this to prevent word splitting.
-
-
-In scripts/colors/switchwall.sh line 467:
-        local imgdir="$(dirname "$imgpath")"
-              ^----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
-
-
-In scripts/colors/switchwall.sh line 468:
-        local imgbase="$(basename "$imgpath")"
-              ^-----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
-
-For more information:
-  https://www.shellcheck.net/wiki/SC2034 -- CACHE_DIR appears unused. Verify ...
-  https://www.shellcheck.net/wiki/SC2046 -- Quote this to prevent word splitt...
-  https://www.shellcheck.net/wiki/SC2155 -- Declare and assign separately to ...
 ```
