@@ -16,8 +16,8 @@ fi
 
 # Unlock
 killall -q -u "$(whoami)" gnome-keyring-daemon
-eval $(echo -n "${UNLOCK_PASSWORD}" \
+eval "$(echo -n "${UNLOCK_PASSWORD}" \
            | gnome-keyring-daemon --daemonize --login \
-           | sed -e 's/^/export /')
+           | sed -e 's/^/export /')"
 unset UNLOCK_PASSWORD
 echo '' >&2

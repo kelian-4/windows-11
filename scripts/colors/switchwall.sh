@@ -7,7 +7,6 @@ CACHE_DIR="$XDG_CACHE_HOME/quickshell"
 STATE_DIR="$XDG_STATE_HOME/quickshell"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/env.sh"
-MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
 terminalscheme="$SCRIPT_DIR/terminal/scheme-base.json"
 
 handle_kde_material_you_colors() {
@@ -68,10 +67,6 @@ pre_process() {
 }
 
 post_process() {
-    local screen_width="$1"
-    local screen_height="$2"
-    local wallpaper_path="$3"
-
     handle_kde_material_you_colors &
     "$SCRIPT_DIR/code/material-code-set-color.sh" &
 }
@@ -191,12 +186,11 @@ switch() {
         categorize_wallpaper "$imgpath" &
     fi
 
-    read scale screenx screeny screensizey < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
+    read scale screenx screeny _ < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
     cursorposx=$(hyprctl cursorpos -j | jq '.x' 2>/dev/null) || cursorposx=960
     cursorposx=$(bc <<< "scale=0; ($cursorposx - $screenx) * $scale / 1")
     cursorposy=$(hyprctl cursorpos -j | jq '.y' 2>/dev/null) || cursorposy=540
     cursorposy=$(bc <<< "scale=0; ($cursorposy - $screeny) * $scale / 1")
-    cursorposy_inverted=$((screensizey - cursorposy))
 
     matugen_args=(--source-color-index 0)
 
@@ -377,7 +371,8 @@ main() {
                     set_accent_color ""
                     shift 2
                 else
-                    set_accent_color $(hyprpicker --no-fancy)
+                    picked_color="$(hyprpicker --no-fancy)"
+                    set_accent_color $picked_color
                     shift
                 fi
                 ;;
@@ -464,8 +459,9 @@ main() {
     # If mode_flag is dark or light, try to find a variant with that mode suffix
     if [[ "$mode_flag" == "dark" || "$mode_flag" == "light" ]]; then
         # Get directory, filename without extension, and extension
-        local imgdir="$(dirname "$imgpath")"
-        local imgbase="$(basename "$imgpath")"
+        local imgdir imgbase
+        imgdir="$(dirname "$imgpath")"
+        imgbase="$(basename "$imgpath")"
         local imgname="${imgbase%.*}"
         local imgext="${imgbase##*.}"
 
