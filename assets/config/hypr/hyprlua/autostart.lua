@@ -2,6 +2,7 @@ local programs = require("hyprlua/programs")
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("hyprctl setcursor " .. programs.cursor.theme .. " " .. programs.cursor.size)
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_SESSION_DESKTOP QT_QPA_PLATFORMTHEME")
     hl.exec_cmd(programs.shell)
     hl.exec_cmd("pgrep -x hypridle > /dev/null || hypridle")
     hl.exec_cmd("pgrep -x ydotoold > /dev/null || ydotoold")

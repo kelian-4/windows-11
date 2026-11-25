@@ -713,6 +713,7 @@ else if ask "    Appliquer ?"
         end
         ini_set $f $qt_sections[$i] $qt_keys[$i] $qt_values[$i]
     end
+    sh $repo/scripts/colors/win11-colors dark; and echo "    palette de couleurs KDE appliquee"
     echo "    applique"
 else
     echo "    non modifie"

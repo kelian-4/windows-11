@@ -33,18 +33,17 @@ handle_kde_material_you_colors() {
 }
 
 apply_app_theme() {
-    local mode_flag="$1" icons="Win11-dark" scheme="BreezeDark"
+    local mode_flag="$1" icons="Win11-dark"
     if [[ "$mode_flag" == "light" ]]; then
         icons="Win11"
-        scheme="BreezeLight"
     elif [[ "$mode_flag" != "dark" ]]; then
         return 0
     fi
     gsettings set org.gnome.desktop.interface icon-theme "$icons" 2>/dev/null
     if command -v kwriteconfig6 >/dev/null 2>&1; then
         kwriteconfig6 --file kdeglobals --group Icons --key Theme "$icons"
-        kwriteconfig6 --file kdeglobals --group General --key ColorScheme "$scheme"
     fi
+    sh "$SCRIPT_DIR/win11-colors" "$mode_flag"
     local qt6ct_conf="${XDG_CONFIG_HOME:-$HOME/.config}/qt6ct/qt6ct.conf"
     if [[ -f "$qt6ct_conf" ]]; then
         sed -i "s/^icon_theme=.*/icon_theme=$icons/" "$qt6ct_conf"
