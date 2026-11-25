@@ -32,8 +32,28 @@ handle_kde_material_you_colors() {
     "$XDG_CONFIG_HOME"/matugen/templates/kde/kde-material-you-colors-wrapper.sh --scheme-variant "$kde_scheme_variant"
 }
 
+apply_app_theme() {
+    local mode_flag="$1" icons="Win11-dark" scheme="BreezeDark"
+    if [[ "$mode_flag" == "light" ]]; then
+        icons="Win11"
+        scheme="BreezeLight"
+    elif [[ "$mode_flag" != "dark" ]]; then
+        return 0
+    fi
+    gsettings set org.gnome.desktop.interface icon-theme "$icons" 2>/dev/null
+    if command -v kwriteconfig6 >/dev/null 2>&1; then
+        kwriteconfig6 --file kdeglobals --group Icons --key Theme "$icons"
+        kwriteconfig6 --file kdeglobals --group General --key ColorScheme "$scheme"
+    fi
+    local qt6ct_conf="${XDG_CONFIG_HOME:-$HOME/.config}/qt6ct/qt6ct.conf"
+    if [[ -f "$qt6ct_conf" ]]; then
+        sed -i "s/^icon_theme=.*/icon_theme=$icons/" "$qt6ct_conf"
+    fi
+}
+
 pre_process() {
     local mode_flag="$1"
+    apply_app_theme "$mode_flag"
     # Set GNOME color-scheme if mode_flag is dark or light
     if [[ "$mode_flag" == "dark" ]]; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
