@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import QtQuick.Layouts
 import qs.services
 import qs.modules.common
@@ -46,7 +47,7 @@ ContentPage {
             iconTint: "#3DC98B"
             title: Translation.tr("Lock")
             subtitle: Translation.tr("Lock the screen now")
-            onClicked: Session.lock()
+            onClicked: Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "lock", "activate"])
         }
 
         SettingsCard {

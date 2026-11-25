@@ -58,11 +58,8 @@ for _, direction in ipairs({ "left", "right", "up", "down" }) do
     )
 end
 
-hl.bind(
-    mainMod .. " + PRINT",
-    hl.dsp.exec_cmd([[mkdir -p ~/Pictures/Screenshots && grim -g "$(slurp)" - | tee ~/Pictures/Screenshots/$(date +%F_%T).png | wl-copy]])
-)
-hl.bind(mainMod .. " + SHIFT + PRINT", hl.dsp.exec_cmd([[grim -g "$(slurp)" - | wl-copy]]))
+hl.bind("PRINT", shellShortcut("regionScreenshot"))
+hl.bind(mainMod .. " + PRINT", shellShortcut("regionScreenshot"))
 
 for i = 1, 10 do
     local key = i % 10
