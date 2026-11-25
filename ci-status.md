@@ -1,9 +1,9 @@
 # CI Status
 
-Commit: dd0480e107977369420a886c419907bdb59d67be
+Commit: bdd626fad4c1747125ee103947a5cad7681b8fae
 Branche: dev
-Date: 2026-11-24 13:07:18 UTC
-Run: https://github.com/kelian-4/windows-11/actions/runs/45400138281
+Date: 2026-11-25 07:29:32 UTC
+Run: https://github.com/kelian-4/windows-11/actions/runs/45568525257
 
 | Etape | Resultat |
 |---|---|
@@ -54,37 +54,37 @@ MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
 ^---------^ SC2034 (warning): MATUGEN_DIR appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 52:
+In scripts/colors/switchwall.sh line 72:
     local screen_width="$1"
           ^----------^ SC2034 (warning): screen_width appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 53:
+In scripts/colors/switchwall.sh line 73:
     local screen_height="$2"
           ^-----------^ SC2034 (warning): screen_height appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 54:
+In scripts/colors/switchwall.sh line 74:
     local wallpaper_path="$3"
           ^------------^ SC2034 (warning): wallpaper_path appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 180:
+In scripts/colors/switchwall.sh line 200:
     cursorposy_inverted=$((screensizey - cursorposy))
     ^-----------------^ SC2034 (warning): cursorposy_inverted appears unused. Verify use (or export if used externally).
 
 
-In scripts/colors/switchwall.sh line 361:
+In scripts/colors/switchwall.sh line 381:
                     set_accent_color $(hyprpicker --no-fancy)
                                      ^----------------------^ SC2046 (warning): Quote this to prevent word splitting.
 
 
-In scripts/colors/switchwall.sh line 448:
+In scripts/colors/switchwall.sh line 468:
         local imgdir="$(dirname "$imgpath")"
               ^----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
 
 
-In scripts/colors/switchwall.sh line 449:
+In scripts/colors/switchwall.sh line 469:
         local imgbase="$(basename "$imgpath")"
               ^-----^ SC2155 (warning): Declare and assign separately to avoid masking return values.
 
