@@ -25,6 +25,9 @@ Item {
         anchors.fill: parent
         fillMode: Image.PreserveAspectFit
         smooth: true
+        mipmap: true
+        sourceSize.width: root.implicitSize * 2
+        sourceSize.height: root.implicitSize * 2
         asynchronous: true
         source: {
             if (root.icon === "")
